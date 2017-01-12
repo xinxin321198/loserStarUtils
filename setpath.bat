@@ -10,3 +10,4 @@ set classpath=.;.\classes\;.\target\test-classes\;.\target\classes\;%JAVA_HOME%\
 set LANG=zh_CN.UTF8
 set path=.;%MAVEN_HOME%;%JAVA_HOME%\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem
 call mvn -v
+echo ------------end--------------
