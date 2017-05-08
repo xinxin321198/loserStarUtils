@@ -1,33 +1,50 @@
 package com.loserstar.utils.http;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.HashMap;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.Set;
 
+import javax.net.ssl.SSLContext;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
+
+import com.loserstar.utils.file.FileUtil;
+
+import jodd.io.StreamUtil;
+
 public final class UrlUtil {
 
-	public static String sendGet(String realURL)throws Exception{  
-        String result = "";    
-        BufferedReader in = null;  
-        URL url = new URL(realURL);  
-        URLConnection conn = url.openConnection();  
-        conn.connect();  
-        in = new BufferedReader(    
-                new InputStreamReader(conn.getInputStream()));    
-        String line;    
-        while ((line = in.readLine()) != null) {    
-            result += line;    
-        }  
-        return result;  
-    }  
-	
+	public static String sendGet(String realURL) throws Exception {
+		String result = "";
+		BufferedReader in = null;
+		URL url = new URL(realURL);
+		URLConnection conn = url.openConnection();
+		conn.connect();
+		in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		String line;
+		while ((line = in.readLine()) != null) {
+			result += line;
+		}
+		return result;
+	}
+
 	/**
 	 * @Title: getDataFromURL
 	 * @Description: 根据URL跨域获取输出结果，支持http
@@ -55,35 +72,97 @@ public final class UrlUtil {
 		}
 		// 将最后的 '&' 去掉
 		sb.deleteCharAt(sb.length() - 1);
+		System.out.println("跨域请求的最终URL：" + sb.toString());
 		writer.write(sb.toString());
 		writer.flush();
 		writer.close();
 
 		InputStreamReader reder = new InputStreamReader(conn.getInputStream(), "utf-8");
 		BufferedReader breader = new BufferedReader(reder);
-//		 BufferedWriter w = new BufferedWriter(new FileWriter("d:/1.txt"));
+		//		 BufferedWriter w = new BufferedWriter(new FileWriter("d:/1.txt"));
 		String content = "";
 		String result = "";
 		while ((content = breader.readLine()) != null) {
 			result += content;
 		}
-//		w.write(result);
+		//		w.write(result);
 		return result;
 	}
- 
 
-	public static void main(String[] args) throws Exception {
-		try{
-			String url = "http://feedback.api.juhe.cn/ISBN?sub=9787213076824&key=8c7a6ba75675f83f5003244ef712def9";
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("type", "1");
-			map.put("name", "昆明");
-//			String msg = getDataFromURL(url, map);
-			String msg  = sendGet(url);
-			System.out.println(msg);
-			
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+
+	/**
+	 * 远程请求https的连接
+	 * @param url
+	 * @param params
+	 * @param headers
+	 * @return
+	 * @throws KeyManagementException
+	 * @throws NoSuchAlgorithmException
+	 * @throws KeyStoreException
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 */
+	public static String httpsDoPost(String url,Map<String, String> params,String[][] headers) throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, ClientProtocolException, IOException, URISyntaxException{
+
+			SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, (certificate, authType) -> true).build();
+
+			CloseableHttpClient client = HttpClients.custom().setSSLContext(sslContext).setSSLHostnameVerifier(new NoopHostnameVerifier()).build();
+			URIBuilder uriBuilder = new URIBuilder(url);
+			for (String key : params.keySet()) {
+				uriBuilder.setParameter(key, params.get(key));
+			}
+
+			HttpGet action = new HttpGet(uriBuilder.build());
+			for (String[] header : headers) {
+				action.setHeader(header[0], header[1]);
+			}
+			HttpResponse response = client.execute(action);
+			byte[] bytes= StreamUtil.readBytes(response.getEntity().getContent());
+			return new String(bytes);
+
 	}
+	
+	/**
+	 * 从一个http远程地址下载文件，保存到一个本地的地址
+	 * @param remoteFilePath
+	 * @param remoteFilePath
+	 * @throws Exception
+	 */
+	public static void downloadFile(String remoteFilePath, String localFilePath) throws Exception{
+        URL urlfile = null;
+        HttpURLConnection httpUrl = null;
+        try
+        {
+            urlfile = new URL(remoteFilePath);
+            httpUrl = (HttpURLConnection)urlfile.openConnection();
+            httpUrl.connect();
+            FileUtil.outPutFile(httpUrl.getInputStream(),localFilePath);
+            httpUrl.disconnect();
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+    }
+	
+	public static void main(String[] args) throws Exception {
+		//测试用12301获取数据，https的方式
+/*		String url = "https://opencomplain.12301e.com/process/prov/details";
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("order_type", "-1");
+		params.put("start_day", "20160101");
+		params.put("end_day", "20170428");
+		params.put("start_page", "1");
+		params.put("one_page_nums", "100");
+		*/
+//		String[][] headers = { { "accept", "*/*" }, { "connection", "Keep-Alive" }, { "user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)" }, { "Content-Type", "application/json" }, { "x-12301-key", "avbhvqlecaslnadhkcald38412dcaad" }, { "x-12301-version", "1.1" } };
+/*		String returnStr = httpsDoPost(url, params, headers);
+		System.out.println(returnStr);
+
+		ObjectMapper jsonMapper = new ObjectMapper();
+		VDocking12301Obj vDocking12301Obj = jsonMapper.readValue(returnStr, VDocking12301Obj.class);
+		System.out.println(vDocking12301Obj);*/
+	}
+
 }
