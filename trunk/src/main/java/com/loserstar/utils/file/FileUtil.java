@@ -7,11 +7,11 @@
  */
 package com.loserstar.utils.file;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import com.loserstar.utils.idgen.IdGen;
 
@@ -58,41 +58,16 @@ public class FileUtil {
 		return suffix;
 	}
 	
-	/**
-	 * 根据一个输入流，传入路径，文件名，生成一个文件
-	 * @param outputStream 输出流
-	 * @param dir 路径名
-	 * @param fileName 文件名（不包含路径）
-	 * @throws IOException 
-	 */
-	public static void outPutFile(InputStream inputStream, String dir , String fileName) throws IOException{
-		if (dir.substring(dir.length()).equals("\\")&&dir.substring(dir.length()).equals("/")) {
-			dir = dir+"/";
-		}
-		File dirFile = new File(dir);
-		if (!dirFile.exists()) {
-			dirFile.mkdirs();
-		}
-		File newFile = new File(dir+fileName);
-		@SuppressWarnings("resource")
-		OutputStream outputStream = new FileOutputStream(newFile);
-        int len = 2048;
-        byte[] b = new byte[len];
-        while ((len = inputStream.read(b)) != -1)
-        {
-        	outputStream.write(b, 0, len);
-        }
-        outputStream.flush();
-        inputStream.close();
-	}
 	
 	/**
-	 * 根据一个输入流，传入文件的全路径，生成文件
+	 * 根据一个输入流，传入文件的全路径，生成文件(这个方法的流有问题)
 	 * @param inputStream
 	 * @param filePath
-	 * @throws IOException
+	 * @throws Exception 
 	 */
-	public static void outPutFile(InputStream inputStream,String filePath) throws IOException{
+	@Deprecated
+	//XXX loserStar:这个方法的流有问题，不建议使用
+	public static void outPutFile(InputStream inputStream,String filePath) throws Exception{
 		int i1 = filePath.lastIndexOf("\\");
 		int i2 = filePath.lastIndexOf("/");
 		int index = 0;
@@ -103,7 +78,35 @@ public class FileUtil {
 		}
 		String dir = filePath.substring(0, index+1);
 		String fileName = filePath.substring(index+1, filePath.length());
-		outPutFile(inputStream, dir, fileName);
+		
+		
+		BufferedOutputStream bo = null;
+		BufferedInputStream bi = null;
+		
+		try {
+			
+			if (dir.substring(dir.length()).equals("\\")&&dir.substring(dir.length()).equals("/")) {
+				dir = dir+"/";
+			}
+			File dirFile = new File(dir);
+			if (!dirFile.exists()) {
+				dirFile.mkdirs();
+			}
+			File newFile = new File(filePath);
+			bo = new BufferedOutputStream(new FileOutputStream(newFile));
+			bi = new BufferedInputStream(inputStream);
+			int len = 1024;
+			byte[] b = new byte[len];
+			while ((len = bi.read(b)) != -1)
+			{
+				bo.write(b, 0, len);
+			}
+		} catch (Exception e) {
+			throw e ;
+		}finally{
+			bo.flush();
+			bi.close();
+		}
 	}
 	
 }

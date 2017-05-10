@@ -1,10 +1,11 @@
 package com.loserstar.utils.http;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -24,9 +25,10 @@ import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
+import org.nutz.http.Http;
+import org.nutz.http.Response;
 
-import com.loserstar.utils.file.FileUtil;
-
+import jodd.io.FileUtil;
 import jodd.io.StreamUtil;
 
 public final class UrlUtil {
@@ -89,7 +91,6 @@ public final class UrlUtil {
 		return result;
 	}
 
-
 	/**
 	 * 远程请求https的连接
 	 * @param url
@@ -103,49 +104,63 @@ public final class UrlUtil {
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 */
-	public static String httpsDoPost(String url,Map<String, String> params,String[][] headers) throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, ClientProtocolException, IOException, URISyntaxException{
+	public static String httpsDoPost(String url, Map<String, String> params, String[][] headers) throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, ClientProtocolException,
+			IOException, URISyntaxException {
 
-			SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, (certificate, authType) -> true).build();
+		SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, (certificate, authType) -> true).build();
 
-			CloseableHttpClient client = HttpClients.custom().setSSLContext(sslContext).setSSLHostnameVerifier(new NoopHostnameVerifier()).build();
-			URIBuilder uriBuilder = new URIBuilder(url);
-			for (String key : params.keySet()) {
-				uriBuilder.setParameter(key, params.get(key));
-			}
+		CloseableHttpClient client = HttpClients.custom().setSSLContext(sslContext).setSSLHostnameVerifier(new NoopHostnameVerifier()).build();
+		URIBuilder uriBuilder = new URIBuilder(url);
+		for (String key : params.keySet()) {
+			uriBuilder.setParameter(key, params.get(key));
+		}
 
-			HttpGet action = new HttpGet(uriBuilder.build());
-			for (String[] header : headers) {
-				action.setHeader(header[0], header[1]);
-			}
-			HttpResponse response = client.execute(action);
-			byte[] bytes= StreamUtil.readBytes(response.getEntity().getContent());
-			return new String(bytes);
+		HttpGet action = new HttpGet(uriBuilder.build());
+		for (String[] header : headers) {
+			action.setHeader(header[0], header[1]);
+		}
+		HttpResponse response = client.execute(action);
+		byte[] bytes = StreamUtil.readBytes(response.getEntity().getContent());
+		return new String(bytes);
 
 	}
-	
+
 	/**
 	 * 从一个http远程地址下载文件，保存到一个本地的地址
 	 * @param remoteFilePath
 	 * @param remoteFilePath
 	 * @throws Exception
 	 */
-	public static void downloadFile(String remoteFilePath, String localFilePath) throws Exception{
-        URL urlfile = null;
-        HttpURLConnection httpUrl = null;
-        try
-        {
-            urlfile = new URL(remoteFilePath);
-            httpUrl = (HttpURLConnection)urlfile.openConnection();
-            httpUrl.connect();
-            FileUtil.outPutFile(httpUrl.getInputStream(),localFilePath);
-            httpUrl.disconnect();
-        }
-        catch (Exception e)
-        {
-            throw e;
-        }
-    }
-	
+	public static void downloadFile(String remoteFilePath, String localFilePath) throws Exception {
+		InputStream in = null;
+		try {
+			//生成目录
+			int i1 = localFilePath.lastIndexOf("\\");
+			int i2 = localFilePath.lastIndexOf("/");
+			int index = 0;
+			if (i1>i2) {
+				index = i1;
+			}else{
+				index = i2;
+			}
+			String dir = localFilePath.substring(0, index+1);
+			File dirFile = new File(dir);
+			if (!dirFile.exists()) {
+				dirFile.mkdirs();
+			}
+			
+			System.out.println("正在下载文件：" + remoteFilePath + "--------------保存至本地：" + localFilePath);
+			Response response = Http.get(remoteFilePath);
+			in = response.getStream();
+			FileUtil.writeStream(localFilePath, in);
+//			com.dataagg.util.FileUtil.outPutFile(in, localFilePath);//这方法有问题
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			StreamUtil.close(in);
+		}
+	}
+
 	public static void main(String[] args) throws Exception {
 		//测试用12301获取数据，https的方式
 /*		String url = "https://opencomplain.12301e.com/process/prov/details";
@@ -155,7 +170,7 @@ public final class UrlUtil {
 		params.put("end_day", "20170428");
 		params.put("start_page", "1");
 		params.put("one_page_nums", "100");
-		*/
+*/
 //		String[][] headers = { { "accept", "*/*" }, { "connection", "Keep-Alive" }, { "user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)" }, { "Content-Type", "application/json" }, { "x-12301-key", "avbhvqlecaslnadhkcald38412dcaad" }, { "x-12301-version", "1.1" } };
 /*		String returnStr = httpsDoPost(url, params, headers);
 		System.out.println(returnStr);
