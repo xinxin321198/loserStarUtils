@@ -11,6 +11,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 import com.loserstar.utils.idgen.IdGen;
@@ -42,8 +43,29 @@ public class FileUtil {
 	 * @return
 	 */
 	public static String getFileNameNotSuffix(String sourceFileName){
-		String oldFileName = sourceFileName.indexOf(".") != -1 ? sourceFileName.substring(0, sourceFileName.lastIndexOf(".")) : sourceFileName;
+		int i1 = sourceFileName.lastIndexOf("\\");
+		int i2 = sourceFileName.lastIndexOf("/");
+		int index = 0;
+		if (i1>i2) {
+			index = i1;
+		}else{
+			index = i2;
+		}
+		
+		String oldFileName = sourceFileName.indexOf(".") != -1 ? sourceFileName.substring(index+1, sourceFileName.lastIndexOf(".")) : sourceFileName;
 		return oldFileName;
+	}
+	
+	/**
+	 * 提取文件的文件名，带后缀
+	 * test.doc   ->    test.doc
+	 * test    ->    test
+	 * @param sourceFileName
+	 * @return
+	 */
+	public static String getFileNameWithSuffix(String sourceFileName){
+		String fileName = getFileNameNotSuffix(sourceFileName)+getFileNameSuffix(sourceFileName);
+		return fileName;
 	}
 	
 	/**
@@ -63,11 +85,11 @@ public class FileUtil {
 	 * 根据一个输入流，传入文件的全路径，生成文件(这个方法的流有问题)
 	 * @param inputStream
 	 * @param filePath
-	 * @throws Exception 
+	 * @throws IOException
 	 */
-	@Deprecated
 	//XXX loserStar:这个方法的流有问题，不建议使用
-	public static void outPutFile(InputStream inputStream,String filePath) throws Exception{
+	@Deprecated
+	public static void outPutFile(InputStream inputStream,String filePath) throws IOException{
 		int i1 = filePath.lastIndexOf("\\");
 		int i2 = filePath.lastIndexOf("/");
 		int index = 0;
@@ -109,4 +131,38 @@ public class FileUtil {
 		}
 	}
 	
+	
+	/**
+	 * 生成目录
+	 * author: loserStar
+	 * date: 2017年5月22日下午4:22:01
+	 * email:362527240@qq.com
+	 * remarks:
+	 */
+	public static void genDirectory(String localFilePath){
+		int i1 = localFilePath.lastIndexOf("\\");
+		int i2 = localFilePath.lastIndexOf("/");
+		int index = 0;
+		if (i1>i2) {
+			index = i1;
+		}else{
+			index = i2;
+		}
+		String dir = localFilePath.substring(0, index+1);
+		File dirFile = new File(dir);
+		if (!dirFile.exists()) {
+			dirFile.mkdirs();
+		}
+	}
+	
+	 public static void main(String[] args) {
+		 System.out.println(getFileNameNotSuffix("5bab31b8f06640f0a90052484dae49d0.jpg"));
+		 File file = new File("e:\\wdtc\\html\\temp\\5bab31b8f06640f0a90052484dae49d0.jpg");
+		 if (file.exists()) {
+			file.deleteOnExit();;
+		}else
+		{
+			System.out.println("文件不存在");
+		}
+	 }
 }

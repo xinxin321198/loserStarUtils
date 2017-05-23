@@ -1,7 +1,6 @@
 package com.loserstar.utils.http;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,6 +11,7 @@ import java.net.URLConnection;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -135,19 +135,7 @@ public final class UrlUtil {
 		InputStream in = null;
 		try {
 			//生成目录
-			int i1 = localFilePath.lastIndexOf("\\");
-			int i2 = localFilePath.lastIndexOf("/");
-			int index = 0;
-			if (i1>i2) {
-				index = i1;
-			}else{
-				index = i2;
-			}
-			String dir = localFilePath.substring(0, index+1);
-			File dirFile = new File(dir);
-			if (!dirFile.exists()) {
-				dirFile.mkdirs();
-			}
+			com.loserstar.utils.file.FileUtil.genDirectory(localFilePath);
 			
 			System.out.println("正在下载文件：" + remoteFilePath + "--------------保存至本地：" + localFilePath);
 			Response response = Http.get(remoteFilePath);
@@ -163,19 +151,19 @@ public final class UrlUtil {
 
 	public static void main(String[] args) throws Exception {
 		//测试用12301获取数据，https的方式
-/*		String url = "https://opencomplain.12301e.com/process/prov/details";
+		String url = "https://opencomplain.12301e.com/process/prov/details";
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("order_type", "-1");
 		params.put("start_day", "20160101");
 		params.put("end_day", "20170428");
 		params.put("start_page", "1");
 		params.put("one_page_nums", "100");
-*/
-//		String[][] headers = { { "accept", "*/*" }, { "connection", "Keep-Alive" }, { "user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)" }, { "Content-Type", "application/json" }, { "x-12301-key", "avbhvqlecaslnadhkcald38412dcaad" }, { "x-12301-version", "1.1" } };
-/*		String returnStr = httpsDoPost(url, params, headers);
+
+		String[][] headers = { { "accept", "*/*" }, { "connection", "Keep-Alive" }, { "user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)" }, { "Content-Type", "application/json" }, { "x-12301-key", "avbhvqlecaslnadhkcald38412dcaad" }, { "x-12301-version", "1.1" } };
+		String returnStr = httpsDoPost(url, params, headers);
 		System.out.println(returnStr);
 
-		ObjectMapper jsonMapper = new ObjectMapper();
+/*		ObjectMapper jsonMapper = new ObjectMapper();
 		VDocking12301Obj vDocking12301Obj = jsonMapper.readValue(returnStr, VDocking12301Obj.class);
 		System.out.println(vDocking12301Obj);*/
 	}
