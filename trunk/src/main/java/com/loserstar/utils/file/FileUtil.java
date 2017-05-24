@@ -127,6 +127,7 @@ public class FileUtil {
 			throw e ;
 		}finally{
 			bo.flush();
+			bo.close();
 			bi.close();
 		}
 	}
