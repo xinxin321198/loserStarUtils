@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  * @author ThinkGem
  * @version 2013-05-22
  */
-public class JSONUtils {
+public class JacksonUtils {
 
     private static final ObjectMapper objectMapper;
     static {
