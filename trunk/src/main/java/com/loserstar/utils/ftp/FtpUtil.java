@@ -145,6 +145,7 @@ public class FtpUtil {
 	 *            文件类型，为空则使用默认值"FTPClient.BINARY_FILE_TYPE"
 	 * @throws Exception 
 	 */
+	@Deprecated
 	public boolean download(OutputStream fos, String remoteFileName, String encoding, Integer fileType) throws Exception {
 		if(null == encoding) {
 			encoding = "GBK";
