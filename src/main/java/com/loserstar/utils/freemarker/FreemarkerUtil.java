@@ -42,7 +42,7 @@ public class FreemarkerUtil {
 			FreemarkerUtil.class.getClassLoader().getResource("/template/");
 			打出出来发现路径是
 			file:/E:/loserStarWorkSpace/loserStarUtils/target/classes/
-			所以第二个参数得加上包路径
+			所以第二个参数得加上包路径，但是mvn编译并不会把src目录下的除*.java之外的文件打包过去，所以我们的ftl文件得放到resources目录的同包名目录下
 		 */
 		cfg.setClassForTemplateLoading(FreemarkerUtil.class, "/com/loserstar/utils/freemarker");
 		System.out.println(FreemarkerUtil.class.getResource("/"));
