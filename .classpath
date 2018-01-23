@@ -28,6 +28,11 @@
 	<classpathentry kind="var" path="M2_REPO/org/nutz/nutz/1.r.61/nutz-1.r.61.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-net/commons-net/3.6/commons-net-3.6.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/google/code/gson/gson/2.8.1/gson-2.8.1.jar" sourcepath="M2_REPO/com/google/code/gson/gson/2.8.1/gson-2.8.1-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/freemarker/freemarker/2.3.23/freemarker-2.3.23.jar" sourcepath="/M2_REPO">
+		<attributes>
+			<attribute name="source_encoding" value="UTF-8"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
