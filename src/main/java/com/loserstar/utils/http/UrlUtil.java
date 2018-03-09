@@ -1,4 +1,4 @@
-package com.loserstar.utils.http;
+/*package com.loserstar.utils.http;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -47,7 +47,7 @@ public final class UrlUtil {
 		return result;
 	}
 
-	/**
+	*//**
 	 * @Title: getDataFromURL
 	 * @Description: 根据URL跨域获取输出结果，支持http
 	 * @param strURL
@@ -56,7 +56,7 @@ public final class UrlUtil {
 	 *            参数
 	 * @return 结果字符串
 	 * @throws Exception
-	 */
+	 *//*
 	public static String getDataFromURL(String strURL, Map<String, String> param) throws Exception {
 		URL url = new URL(strURL);
 		URLConnection conn = url.openConnection();
@@ -91,7 +91,7 @@ public final class UrlUtil {
 		return result;
 	}
 
-	/**
+	*//**
 	 * 远程请求https的连接
 	 * @param url
 	 * @param params
@@ -103,7 +103,7 @@ public final class UrlUtil {
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 * @throws URISyntaxException
-	 */
+	 *//*
 	public static String httpsDoPost(String url, Map<String, String> params, String[][] headers) throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, ClientProtocolException,
 			IOException, URISyntaxException {
 
@@ -125,12 +125,12 @@ public final class UrlUtil {
 
 	}
 
-	/**
+	*//**
 	 * 从一个http远程地址下载文件，保存到一个本地的地址
 	 * @param remoteFilePath
 	 * @param remoteFilePath
 	 * @throws Exception
-	 */
+	 *//*
 	public static void downloadFile(String remoteFilePath, String localFilePath) throws Exception {
 		InputStream in = null;
 		try {
@@ -159,13 +159,14 @@ public final class UrlUtil {
 		params.put("start_page", "1");
 		params.put("one_page_nums", "100");
 
-		String[][] headers = { { "accept", "*/*" }, { "connection", "Keep-Alive" }, { "user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)" }, { "Content-Type", "application/json" }, { "x-12301-key", "avbhvqlecaslnadhkcald38412dcaad" }, { "x-12301-version", "1.1" } };
+		String[][] headers = { { "accept", "*" }, { "connection", "Keep-Alive" }, { "user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)" }, { "Content-Type", "application/json" }, { "x-12301-key", "avbhvqlecaslnadhkcald38412dcaad" }, { "x-12301-version", "1.1" } };
 		String returnStr = httpsDoPost(url, params, headers);
 		System.out.println(returnStr);
 
-/*		ObjectMapper jsonMapper = new ObjectMapper();
+		ObjectMapper jsonMapper = new ObjectMapper();
 		VDocking12301Obj vDocking12301Obj = jsonMapper.readValue(returnStr, VDocking12301Obj.class);
-		System.out.println(vDocking12301Obj);*/
+		System.out.println(vDocking12301Obj);
 	}
 
 }
+*/

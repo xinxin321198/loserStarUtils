@@ -1,4 +1,4 @@
-package com.loserstar.utils.json;
+/*package com.loserstar.utils.json;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,23 +42,23 @@ public class WJsonUtils {
 		}
 	}
 
-	/**
+	*//**
 	 * 根据cls反序列化json字符串
 	 *
 	 * @param json
 	 * @param cls
 	 * @return
-	 */
+	 *//*
 	public static <T extends Object> T fromJson(String json, Class<T> cls) {
 		return getGsonBuilder(true).create().fromJson(json, cls);
 	}
 
 
-	/**
+	*//**
 	 * 构建通用GsonBuilder, 封装初始化工作
 	 *
 	 * @return
-	 */
+	 *//*
 	public static GsonBuilder getGsonBuilder(boolean prettyPrinting) {
 		GsonBuilder gb = new GsonBuilder();
 		gb.setDateFormat("yyyy-MM-dd HH:mm:ss:mss");
@@ -112,14 +112,14 @@ public class WJsonUtils {
 		}
 	}
 
-	/**
+	*//**
 	 * 根据cls和泛型类型反序列化json字符串
 	 *
 	 * @param json
 	 * @param cls
 	 * @param genericCls
 	 * @return
-	 */
+	 *//*
 	public static <T extends Object> T toObject(String json, Class<T> cls, Type... genericCls) {
 		ParameterizedType pt = new ParameterizedType() {
 			@Override
@@ -153,3 +153,4 @@ public class WJsonUtils {
 		return toObject(json, cls, genericCls);
 	}
 }
+*/

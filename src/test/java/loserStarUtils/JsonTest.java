@@ -4,7 +4,7 @@
  * email:362527240@qq.com
  * github:https://github.com/xinxin321198
  * remarks: json示例
- */
+ *//*
 package loserStarUtils;
 
 import java.io.IOException;
@@ -51,3 +51,4 @@ public class JsonTest {
 		System.out.println(userDeserialize_gson.getGoods().get("ear"));
 	}
 }
+*/

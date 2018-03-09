@@ -10,7 +10,7 @@ import jodd.json.JsonSerializer;
  * email:362527240@qq.com
  * remarks:
  */
-public class JsonUtil {
+public class LoserStarJsonUtil {
 	private static JsonSerializer jsonSerializer = new JsonSerializer();
 	private static JsonParser jsonParser = new JsonParser();
 	

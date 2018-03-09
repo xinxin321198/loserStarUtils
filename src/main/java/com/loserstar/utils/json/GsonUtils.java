@@ -1,4 +1,4 @@
-package com.loserstar.utils.json;
+/*package com.loserstar.utils.json;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -12,19 +12,19 @@ import java.lang.reflect.Type;
 
 public class GsonUtils {
 
-	/**
+	*//**
 	 * 是否格式化json打印
-	 */
+	 *//*
 	public static boolean IS_PRETTY_PRINT = true;
 	
-	/**
+	*//**
 	 * 根据cls和泛型类型反序列化json字符串
 	 *
 	 * @param json
 	 * @param cls
 	 * @param genericCls
 	 * @return
-	 */
+	 *//*
 	public static <T extends Object> T toObject(String json, Class<T> cls, Type... genericCls) {
 		ParameterizedType pt = new ParameterizedType() {
 			@Override
@@ -45,13 +45,13 @@ public class GsonUtils {
 		return getGsonBuilder().create().fromJson(json, pt);
 	}
 
-	/**
+	*//**
 	 * 根据cls反序列化json字符串
 	 *
 	 * @param json
 	 * @param cls
 	 * @return
-	 */
+	 *//*
 	public static <T extends Object> T fromJson(String json, Class<T> cls) {
 		return (T) getGsonBuilder().create().fromJson(json, cls);
 	}
@@ -80,20 +80,20 @@ public class GsonUtils {
 		FileUtil.writeString(file, getGsonBuilder().create().toJson(obj), "utf-8");
 	}
 
-	/**
+	*//**
 	 * 构建通用GsonBuilder, 封装初始化工作
 	 *
 	 * @return
-	 */
+	 *//*
 	public static GsonBuilder getGsonBuilder() {
 		return getGsonBuilder(IS_PRETTY_PRINT);
 	}
 
-	/**
+	*//**
 	 * 构建通用GsonBuilder, 封装初始化工作
 	 *
 	 * @return
-	 */
+	 *//*
 	public static GsonBuilder getGsonBuilder(boolean prettyPrinting) {
 		GsonBuilder gb = new GsonBuilder();
 		gb.setDateFormat("yyyy-MM-dd HH:mm:ss:mss");
@@ -128,3 +128,4 @@ public class GsonUtils {
 		return getter.str(key) != null ? Double.valueOf(getter.str(key)).intValue():defaultVal;
 	}
 }
+*/

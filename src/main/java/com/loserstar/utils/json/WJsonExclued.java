@@ -1,4 +1,4 @@
-package com.loserstar.utils.json;
+/*package com.loserstar.utils.json;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -12,3 +12,4 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface WJsonExclued {
 
 }
+*/
