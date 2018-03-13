@@ -1,19 +1,14 @@
 package com.loserstar.utils.freemarker;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.loserstar.utils.file.LoserStarFileUtil;
 
 import freemarker.core.ParseException;
 import freemarker.template.Configuration;
@@ -61,20 +56,12 @@ public class LoserStarFreemarkerUtil {
 		Map<String, Object> map = new HashMap<>();
 		try {
 			Template temp =cfg.getTemplate("test.ftl");
-			System.out.println("读一个字符");
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-			char c = (char)bufferedReader.read();
-			char c2= (char)bufferedReader.read();
-			map.put("data", "loserStar freemakrer!!!!!"+c+c2);
+			map.put("data", "loserStar freemakrer!!!!!");
 			StringWriter stringWriter = new StringWriter();
-			temp.process(map,stringWriter );
+			temp.process(map,stringWriter);
 			System.out.println(stringWriter.toString());
 			String filePath = "c://loserStarFreemarkerTemplate.txt";
-			File file = new File(filePath);
-			FileWriter fileWriter = new FileWriter(file);
-			fileWriter.write(stringWriter.toString());
-			fileWriter.flush();
-			fileWriter.close();
+			LoserStarFileUtil.WriterForFile(filePath, stringWriter.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
