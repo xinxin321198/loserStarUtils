@@ -7,11 +7,13 @@
  */
 package com.loserstar.utils.http;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
@@ -119,6 +121,18 @@ public class LoserStarHttpUtil {
 	
 	public static void main(String[] args) {
 			String urlStr = "http://www.cts-yn.com/";
-			System.out.println(get(urlStr));
+//			System.out.println(get(urlStr));
+			try {
+				URL url = new URL(urlStr);
+				InputStream inputStream = url.openStream();
+				BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+				byte[] buf = new byte[1024];
+				while ((-1!=bufferedInputStream.read(buf))) {
+					System.out.println(new String(buf,"utf-8"));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 	}
 }
