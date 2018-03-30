@@ -15,13 +15,36 @@ public class LoserStarJsonUtil {
 	private static JsonParser jsonParser = new JsonParser();
 	
 	/**
-	 * 序列化
+	 * 简单序列化（不包含集合）
 	 * @param object
 	 * @return
 	 */
-	public static String toJson(Object object) {
-		  String json = jsonSerializer.serialize(object);
+	public static String toJsonSimple(Object object) {
+		  String json = toJson(object, false);
 		  return json;
+	}
+	
+	/**
+	 * 深度序列化（包含集合）
+	 *
+	 * @param object
+	 * @return
+	 */
+	public static String toJsonDeep(Object object){
+		String json =toJson(object, true);
+		return json;
+	}
+	
+	/**
+	 * 根据isDeep决定转换json是否包含集合属性
+	 *
+	 * @param object
+	 * @param isDeep
+	 * @return
+	 */
+	public static String toJson(Object object,boolean isDeep){
+		String json = jsonSerializer.deep(isDeep).serialize(object);
+		return json;
 	}
 	
 	/**

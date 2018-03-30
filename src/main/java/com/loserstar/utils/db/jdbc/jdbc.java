@@ -1,3 +1,4 @@
+package com.loserstar.utils.db.jdbc;
 /*步骤：
 1.Load the Driver
 			1 Class.forName()| Class.forName().newInstance()|new DriverName()

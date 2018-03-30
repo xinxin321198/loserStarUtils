@@ -1,4 +1,4 @@
-package com.loserstar.utils.db;
+package com.loserstar.utils.db.jdbc;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
