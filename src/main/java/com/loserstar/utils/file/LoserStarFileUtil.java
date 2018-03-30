@@ -59,9 +59,9 @@ public class LoserStarFileUtil {
 	 * @param filePath
 	 * @param string
 	 */
-	public static void WriterForFile(String filePath,String string){
+	public static void WriterForFile(String filePath,String string,boolean isAppend){
 		try {
-			Writer writer = new FileWriter(new File(filePath));
+			Writer writer = new FileWriter(new File(filePath),isAppend);
 			writer.write(string);
 			writer.flush();
 			writer.close();
@@ -77,9 +77,9 @@ public class LoserStarFileUtil {
 	 * @param filePath
 	 * @param printStr
 	 */
-	public static void PrintWriterForFile(String filePath,String printStr){
+	public static void PrintWriterForFile(String filePath,String printStr,boolean isAppend){
 		try {
-			FileWriter fileWriter = new FileWriter(new File(filePath));
+			FileWriter fileWriter = new FileWriter(new File(filePath),isAppend);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
 			printWriter.print(printStr);
 			printWriter.flush();

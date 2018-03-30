@@ -61,7 +61,7 @@ public class LoserStarFreemarkerUtil {
 			temp.process(map,stringWriter);
 			System.out.println(stringWriter.toString());
 			String filePath = "c://loserStarFreemarkerTemplate.txt";
-			LoserStarFileUtil.WriterForFile(filePath, stringWriter.toString());
+			LoserStarFileUtil.WriterForFile(filePath, stringWriter.toString(),false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
