@@ -11,6 +11,13 @@
 ### 9.对象的集合和List或MAP的转换类
 ### 10.汉子转拼音（基于pinyin4j），支持多音字
 ### 11.随机数类
+### 12.字符串处理
+### 13.数组的排序、去重
+### 14.jfinal的DB操作
+### 15.FTP工具类
+### 16.HTTP工具类
+### 17.freemarker使用工具类
+### 18.IO操作工具类
 
 * 昵称：loserStar<br/>
 * email:xinxin321198@gmail.com<br/>
