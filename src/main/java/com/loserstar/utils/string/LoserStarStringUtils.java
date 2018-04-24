@@ -46,13 +46,15 @@ public class LoserStarStringUtils {
 	}
 	
 	/**
-	 * 把一个集合以某个字符串分割输出
+	 * 把一个集合以某个字符串分割输出，并且每一项添加个前缀和后缀
 	 * form jodd StringUtil.join
 	 * @param collection
 	 * @param separator
+	 * @param perfix 每一项的前缀
+	 * @param suffix 每一项的后缀
 	 * @return
 	 */
-	public static String join(final Collection collection,String separator) {
+	public static String join(final Collection collection,String separator,String perfix,String suffix) {
 		if (collection == null) {
 			return null;
 		}
@@ -67,8 +69,31 @@ public class LoserStarStringUtils {
 			if (i > 0) {
 				sb.append(separator);
 			}
-			sb.append(it.next());
+			sb.append(perfix+it.next()+suffix);
 		}
 		return sb.toString();
+	}
+	
+	/**
+	 * 把一个数组以某个字符串分割输出，并且每一项添加个前缀和后缀
+	 * form jodd StringUtil.join
+	 * @param collection
+	 * @param separator
+	 * @param perfix 每一项的前缀
+	 * @param suffix 每一项的后缀
+	 * @return
+	 */
+	public static String join(final Object[] strings,String separator,String perfix,String suffix) {
+		if (strings.length==0) {
+			return "";
+		}
+		StringBuffer stringBuffer = new StringBuffer();
+		for (int i = 0; i < strings.length; i++) {
+			if (i>0) {
+				stringBuffer.append(separator);
+			}
+			stringBuffer.append(perfix+strings[i]+suffix);
+		}
+		return stringBuffer.toString();
 	}
 }

@@ -134,6 +134,32 @@ public class LoserStarFileUtil {
 		return null;
 	}
 	
+	/**
+	 * 写一个inputStream流到某个文件中
+	 * @param filePath
+	 * @param inputStream
+	 * @param isAppend
+	 */
+	public static void WriteInputStreamForFile(String filePath,InputStream inputStream,boolean isAppend) {
+		try {
+			 FileOutputStream fileOutputStream = new FileOutputStream(new File(filePath),isAppend);
+			//在内存中开辟一个byte数组
+			byte[] buf = new byte[1024];
+			//利用字节流读取文件
+			int byteCount = 0;
+			while ((byteCount = inputStream.read(buf)) != -1)
+            {
+               fileOutputStream.write(buf);
+            }
+			fileOutputStream.flush();
+			fileOutputStream.close();
+			inputStream.close();
+			System.out.println("WriteInputStreamForFile end");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	/**
 	 * 写byte数组到某个文件中
