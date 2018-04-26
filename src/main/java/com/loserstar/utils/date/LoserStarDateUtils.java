@@ -53,4 +53,15 @@ Z	时区	RFC 822 time zone	-0800
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 		return simpleDateFormat.parse(dateStr);
 	}
+	
+	/**
+	 * 日期对象格式化为字符串输出
+	 * @param date 日期对象
+	 * @param pattern 格式化表达式
+	 * @return
+	 */
+	public static String format(Date date,String pattern) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+		return simpleDateFormat.format(date);
+	}
 }

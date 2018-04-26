@@ -10,8 +10,11 @@ package com.loserstar.utils.http;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -114,11 +117,36 @@ public class LoserStarHttpUtil {
 	}
 
 	
+	/**
+	 * 下载一个远程的文件
+	 * @param url 远程文件url
+	 * @param localPath 本地存储路径（必须带文件名及后缀名）
+	 */
+	public static void downloadRemoteFile(String fileUrl,String localPath) {
+		try {
+			OutputStream outputStream = new FileOutputStream(new File(localPath));
+			URL url = new URL(fileUrl);
+			InputStream inputStream = url.openStream();
+			BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+			byte[] buf = new byte[1024];
+			while ((-1!=bufferedInputStream.read(buf))) {
+				outputStream.write(buf);
+			}
+			outputStream.flush();
+			outputStream.close();
+			inputStream.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
+
+
+
 	
 	
 	public static void main(String[] args) {
-			String urlStr = "http://www.cts-yn.com/";
+/*			String urlStr = "http://www.cts-yn.com/";
 //			System.out.println(get(urlStr));
 			try {
 				URL url = new URL(urlStr);
@@ -130,7 +158,10 @@ public class LoserStarHttpUtil {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
+			}*/
 			
+		//下载文件
+		downloadRemoteFile("http://xiazai.xiazaiba.com/Soft/N/NetTraffic_1.49.0_XiaZaiBa.zip","c://baidu_jgylogo3.zip");
+		
 	}
 }

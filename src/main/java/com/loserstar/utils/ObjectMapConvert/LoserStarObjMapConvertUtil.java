@@ -1,6 +1,7 @@
-package com.loserstar.utils.ObjListToMemberList;
+package com.loserstar.utils.ObjectMapConvert;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,7 +23,7 @@ import org.apache.commons.beanutils.PropertyUtilsBean;
  * @date 2012-5-11 下午1:54:08
  * @version V1.0
  */
-public class ObjListToMemberList {
+public class LoserStarObjMapConvertUtil {
 
 	/**
 	 * 根据对象列表和对象的某个属性返回属性的List集合
@@ -79,5 +80,49 @@ public class ObjListToMemberList {
 			maps.put(propertyName[i], getPropertyList(objList, propertyName[i]));
 		}
 		return maps;
+	}
+	
+	/**
+	 * 把某种Map类型的父或子对象转为Map
+	 * @param obj
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> Map<String,T> ConvertToMap(T t) throws Exception {
+		if (t instanceof Map) {
+			return (Map<String, T>) t;
+		}else {
+			throw new Exception("对象非Map类型，不能转换");
+		}
+	}
+
+	/**
+	 * 把某种Map的父对象或子对象的的List转为List<Map>
+	 * @param objectList
+	 * @return
+	 * @throws Exception
+	 */
+	public static <T> List<Map<String, T>> ConvertListToMapList(List<T> list) throws Exception{
+		List<Map<String, T>> resultList = new ArrayList<Map<String,T>>();
+		for (T t: list) {
+			resultList.add(ConvertToMap(t));
+		}
+		return resultList;
+	}
+	
+	/**
+	 * 某个List的父或子对象转为List
+	 * @param t
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> List<T> ConvertToList(T t) throws Exception{
+		if (t instanceof List) {
+			return (List<T>)t;
+		}else {
+			throw new Exception("对象非List类型，不能转换");
+		}
 	}
 }
