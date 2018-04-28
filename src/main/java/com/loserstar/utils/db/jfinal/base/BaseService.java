@@ -28,7 +28,7 @@ public  abstract class BaseService {
 	/**
 	 * 批量curd时的标记名称
 	 */
-	private static final String EDIT_FLAG = "curdFlag";
+	private static final String EDIT_FLAG = "curd_flag";
 	/**
 	 * 返回具体表名称
 	 * @return
