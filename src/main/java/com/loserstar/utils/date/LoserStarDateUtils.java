@@ -6,7 +6,6 @@
  * remarks:
  */
 package com.loserstar.utils.date;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;

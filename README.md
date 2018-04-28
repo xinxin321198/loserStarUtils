@@ -1,23 +1,26 @@
 # loserStarUtils
-##loserStar收藏及封装的一些常用工具集
-### 1.代码量的统计
-### 2.cookie的操作
-### 3.时间日期的转换格式化类
-### 4.字符编码解码工具类
-### 5.excel操作工具类（基于POI），导入导出
-### 6.身份证工具类
-### 7.GUID生成工具类
-### 8.json操作类
-### 9.对象的集合和List或MAP的转换类
-### 10.汉子转拼音（基于pinyin4j），支持多音字
-### 11.随机数类
-### 12.字符串处理
-### 13.数组的排序、去重
-### 14.jfinal的DB操作
-### 15.FTP工具类
-### 16.HTTP工具类
-### 17.freemarker使用工具类
-### 18.IO操作工具类
+## loserStar收藏及封装的一些常用工具集
+* ### 数组(排序、去重等)
+* ### 代码量的统计(指定路径、文件名的正则进行扫描)
+* ### 普通sql转为Java拼接的字符串（String和StringBuffer）
+* ### cookie的操作
+* ### 时间日期的转换格式化(支持基于jdk的和基于jodd的)
+* ### DB相关的操作(基本的jdbc和基于jfinal的快速操作框架)
+* ### 字符编码解码工具类
+* ### excel导入导出（基于POI）
+* ### 文件IO操作
+* ### freemarker使用工具类
+* ### FTP操作
+* ### HTTP操作(爬虫、下载文件等，基于原生的和基于jodd的)
+* ### 身份证工具类
+* ### GUID生成工具类
+* ### json操作(基于Jackson的、基于jfinalJson的、基于jodd的、基于JSON-java的)
+* ### 对象的集合和List或MAP的转换类
+* ### 汉子转拼音（基于pinyin4j），支持多音字
+* ### properties配置文件操作
+* ### 随机数类
+* ### servlet相关工具(获取路径、文件上传下载等)
+* ### 字符串处理
 
 * 昵称：loserStar<br/>
 * email:xinxin321198@gmail.com<br/>
