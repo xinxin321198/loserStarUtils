@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-
 import jodd.util.CharUtil;
 import jodd.util.StringUtil;
 import net.sourceforge.pinyin4j.PinyinHelper;

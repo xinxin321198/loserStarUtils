@@ -1,11 +1,9 @@
 package com.loserstar.utils.http;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import jodd.http.HttpRequest;
 import jodd.http.HttpResponse;
-import net.sf.cglib.beans.BulkBean;
 
 /**
  * author: loserStar
