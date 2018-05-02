@@ -3,7 +3,6 @@ package com.loserstar.utils.string;
 import java.util.Collection;
 import java.util.Iterator;
 
-import jodd.util.StringPool;
 
 /**
  * 
@@ -46,6 +45,17 @@ public class LoserStarStringUtils {
 	}
 	
 	/**
+	 * 去除字符串中开头的某个字符串
+	 * @param sourceStr 原字符串
+	 * @param removeStr 要剔除的第一个字符串
+	 */
+	public static String cutPrefix(String string,String prefix) {
+		if (string.startsWith(prefix)) {
+			string = string.substring(prefix.length());
+		}
+		return string;
+	}
+	/**
 	 * 把一个集合以某个字符串分割输出，并且每一项添加个前缀和后缀
 	 * form jodd StringUtil.join
 	 * @param collection
@@ -60,7 +70,7 @@ public class LoserStarStringUtils {
 		}
 
 		if (collection.size() == 0) {
-			return StringPool.EMPTY;
+			return "";
 		}
 		final StringBuilder sb = new StringBuilder(collection.size() * 16);
 		final Iterator it = collection.iterator();

@@ -10,7 +10,7 @@ package com.loserstar.utils.db.jfinal.base;
 import java.util.ArrayList;
 import java.util.List;
 
-import jodd.util.StringUtil;
+import com.loserstar.utils.string.LoserStarStringUtils;
 
 /**
  * author: loserStar
@@ -67,12 +67,12 @@ public class WhereHelper {
 			String string = this.strWhereList.get(i);
 			if (i==0) {
 				string = string.trim();
-				string = StringUtil.cutPrefix(string.trim(), "where");
-				string = StringUtil.cutPrefix(string.trim(), "WHERE");
-				string = StringUtil.cutPrefix(string.trim(), "and");
-				string = StringUtil.cutPrefix(string.trim(), "AND");
-				string = StringUtil.cutPrefix(string.trim(), "or");
-				string = StringUtil.cutPrefix(string.trim(), "OR");
+				string = LoserStarStringUtils.cutPrefix(string.trim(), "where");
+				string = LoserStarStringUtils.cutPrefix(string.trim(), "WHERE");
+				string = LoserStarStringUtils.cutPrefix(string.trim(), "and");
+				string = LoserStarStringUtils.cutPrefix(string.trim(), "AND");
+				string = LoserStarStringUtils.cutPrefix(string.trim(), "or");
+				string = LoserStarStringUtils.cutPrefix(string.trim(), "OR");
 			}
 			andStr.append(" "+string);
 		}
