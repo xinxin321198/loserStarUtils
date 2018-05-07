@@ -71,11 +71,15 @@ protected HttpServletResponse response;
 	}
 	
 	/**
-	 * 得到项目绝对路径
+	 * 得到项目绝对路径（末尾带斜杠）
 	 * @return
 	 */
 	protected String getRealPath() {
-		return this.getServletContext().getRealPath(File.separator);
+		String root = request.getServletContext().getRealPath(File.separator);
+		 if (!root.endsWith(java.io.File.separator)) {
+		        root = root + java.io.File.separator;
+	        }
+		return root;
 	}
 	/**
 	 * 得到配置文件目录
