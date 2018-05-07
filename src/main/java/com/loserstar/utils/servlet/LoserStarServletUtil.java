@@ -127,11 +127,8 @@ protected HttpServletResponse response;
              for (FileItem item : formItems) {
                  // 处理不在表单中的字段
                  if (!item.isFormField()) {
-            		 String fileRealName =item.getName();                   //获得原始文件名
             		 String uploadDir = LoserStarPropertiesUtil.getProperties(request.getServletContext().getRealPath("配置文件路径")).getProperty("kaen.uploaddir");//获取文件上传路径
-            		 LoserStarFileUtil.createDir(uploadDir);//创建上传路径
-            		 String newFileName = LoserStarFileUtil.generateUUIDFileName(fileRealName);//生成新文件名
-            		 LoserStarFileUtil.WriteInputStreamForFile(uploadDir+newFileName,item.getInputStream(), false);//输出文件
+            		 uploadFile(uploadDir,item);
                      request.setAttribute("message",
                          "文件上传成功!");
                  }
@@ -141,17 +138,45 @@ protected HttpServletResponse response;
 	}
 	
 	/**
-	 * 下载文件
+	 * 上传文件到某个绝对路径
+	 * @param uploadDir 系统的绝对路径
+	 * @param file 文件对象
+	 * @return
+	 * @throws IOException
+	 */
+	protected String uploadFile(String uploadDir,FileItem file) throws IOException {
+		String fileRealName = file.getName();                   //获得原始文件名
+		LoserStarFileUtil.createDir(uploadDir);//创建上传路径
+		String newFileName = LoserStarFileUtil.generateUUIDFileName(fileRealName);//生成新文件名
+		LoserStarFileUtil.WriteInputStreamForFile(uploadDir+newFileName,file.getInputStream(), false);//输出文件
+		return newFileName;
+	}
+	/**
+	 * 下载配置文件配置的路径下的某个文件
 	 * @param fileUrl 文件的uuid文件名（带后缀）
 	 * @param downName 下载时的名称
+	 * @throws Exception 
 	 */
-	protected void downloadFile(String fileUrl,String downName) {
+	protected void downloadPropertiesDirFile(String fileUrl,String downName) throws Exception {
 		String uploadDir = LoserStarPropertiesUtil.getProperties(request.getServletContext().getRealPath("配置文件路径")).getProperty("kaen.uploaddir");//获取文件上传路径
 		String downloadFilePath = uploadDir+fileUrl;
+		downloadFile(downloadFilePath,downName);
+	}
+	
+	/**
+	 * 下载文件，指定一个文件的绝对路径以及下载时显示的文件名
+	 * @param downloadFilePath 文件的绝对路径
+	 * @param downName 下载时的名称,为null时默认取真实的该文件名称
+	 * @throws Exception
+	 */
+	protected void downloadFile(String downloadFilePath,String downName) throws Exception {
 		InputStream inputStream;
 		OutputStream outputStream ;
 		try {
 			File file = new File(downloadFilePath);
+			if (downName==null||downName.equals("")) {
+				downName = file.getName();
+			}
 			inputStream = new FileInputStream(file);
 			outputStream = response.getOutputStream();
 			response.addHeader("Content-Disposition", "attachment;filename=" + new String(java.net.URLEncoder.encode(downName, "UTF-8")));
