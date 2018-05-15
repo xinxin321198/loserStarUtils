@@ -34,7 +34,7 @@ public class LoserStarJfinalDBMain {
 		ActiveRecordPlugin arp = new ActiveRecordPlugin(UUID.randomUUID().toString(),dp);
 		arp.setShowSql(false);//打印出执行的sql
 		arp.setDialect(new AnsiSqlDialect());
-		arp.setContainerFactory(new CaseInsensitiveContainerFactory(true));// 不区分大小写
+		arp.setContainerFactory(new CaseInsensitiveContainerFactory(true));//false 是大写, true是小写, 不写是区分大小写
 		dp.start();
 		arp.start();
 	}
