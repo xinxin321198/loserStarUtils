@@ -31,12 +31,12 @@ import java.util.UUID;
  */
 public class LoserStarFileUtil {
 	/**
-	 * 从某个文件中读取字符串
+	 * 以字符流的方式从一个文件路径读取文件的字符(二进制读出来肯定是乱码，不用想，二进制文件要使用字节流的方式)
 	 *
 	 * @param filePath
 	 * @return
 	 */
-	public static String ReaderForFile(String filePath){
+	public static String ReadReaderForFile(String filePath){
 		StringBuffer stringBuffer = new StringBuffer();
 		try {
 			FileReader fileReader = new FileReader(new File(filePath));
@@ -53,25 +53,269 @@ public class LoserStarFileUtil {
 		return stringBuffer.toString();
 	}
 	
+	/**
+	 * 从某个文件中读取对象到内存中(泛型)
+	 * @return 
+	 */
+	public static <T> T ReadObject(String objectFilePath,Class<T> class1){
+		try {
+			InputStream inputStream = new FileInputStream(new File(objectFilePath));
+			ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+			@SuppressWarnings("unchecked")
+			T resultObject = (T)objectInputStream.readObject();
+			objectInputStream.close();
+			System.out.println("readObject end");
+			return resultObject;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	
+	
 	
 	/**
-	 * 基于字符流Writer类，写入字符串到某个文件中
-	 *
-	 * @param filePath
-	 * @param string
+	 * 以字节的方式读取一个流中的内容（只读一次，传入读取的大小）
+	 * @param inputStream
+	 * @param length 
+	 * @return
 	 */
-	public static void WriterForFile(String filePath,String string,boolean isAppend){
+	public static byte[] ReadByteForInputStream(InputStream inputStream,int length){
 		try {
-			Writer writer = new FileWriter(new File(filePath),isAppend);
-			writer.write(string);
-			writer.flush();
-			writer.close();
-			System.out.println("WriterForFile end");
+			//利用字节流读取文件
+			byte[] buf = new byte[length];
+			inputStream.read(buf);
+			inputStream.close();
+			System.out.println("ReadByteForInputStream end");
+			return buf;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * 以字节的方式读取一个流中的内容（只读一次，大小以inputStream.available()的值来决定）
+	 * @param inputStream
+	 * @return
+	 */
+	public static byte[] ReadByteForInputStream(InputStream inputStream){
+		try {
+			byte[] buf = ReadByteForInputStream(inputStream, inputStream.available());
+			System.out.println("ReadByteForInputStream end");
+			return buf;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * 以字节的方式读取文件中的内容，一次读取文件所有
+	 * @param filePath 文件路径
+	 */
+	public static byte[] ReadByteForFilePath(String filePath){
+		try {
+			File file = new File(filePath);
+			byte[] buf = ReadByteForFile(file);
+			System.out.println("ReadByteForFilePath end");
+			return buf;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	/**
+	 * 以字节的方式读取文件中的内容，一次读取文件所有
+	 * @param file File对象
+	 * @return
+	 */
+	public static byte[] ReadByteForFile(File file) {
+		try {
+			byte[] buf = ReadByteForInputStream(new FileInputStream(file));
+			System.out.println("ReadByteForFile end");
+			return buf;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * 写对象到文件中
+	 */
+	public static void WriteObject(String objectFilePath,Object object){
+		try {
+			
+			OutputStream outputStream = new FileOutputStream(new File(objectFilePath));
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+			objectOutputStream.writeObject(object);
+			objectOutputStream.flush();
+			objectOutputStream.close();
+			System.out.println("writeObject end");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+
+	
+	/**
+	 * 基于字符流Writer类，写入字符串到某个文件路径中
+	 *
+	 * @param filePath
+	 * @param string
+	 * @param isAppend 是否追加内容
+	 */
+	public static void WriteStringForFilePath(String string,String filePath,boolean isAppend){
+		try {
+			WriteStringForFile(string,new File(filePath),isAppend);
+			System.out.println("WriteStringForFilePath end");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 *  基于字符流Writer类，写入字符串到某个文件中
+	 * @param string
+	 * @param filePath
+	 * @param isAppend 是否追加内容
+	 */
+	public static void WriteStringForFile(String string,File file,boolean isAppend){
+		try {
+			Writer writer = new FileWriter(file,isAppend);
+			WriteStringForWriter(string, writer, isAppend);
+			System.out.println("WriteStringForFile end");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 基于字符流Writer类，写入字符串到某个Writer中
+	 * @param string
+	 * @param writer
+	 * @param isAppend
+	 */
+	public static void WriteStringForWriter(String string,Writer writer,boolean isAppend){
+		try {
+			writer.write(string);
+			writer.flush();
+			writer.close();
+			System.out.println("WriteStringFoWriter end");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 写一个inputStream流到某个文件路径中
+	 * @param filePath
+	 * @param inputStream
+	 * @param isAppend
+	 */
+	public static void WriteInputStreamForFilePath(InputStream inputStream,String filePath,boolean isAppend) {
+		try {
+			File file = new File(filePath);
+			WriteInputStreamForFile(inputStream, file, isAppend);
+			System.out.println("WriteInputStreamForFilePath end");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * 写一个inputStream流到某个文件中
+	 * @param inputStream
+	 * @param file
+	 * @param isAppend
+	 */
+	public static void WriteInputStreamForFile(InputStream inputStream,File file,boolean isAppend) {
+		try {
+			byte[] buf = new byte[inputStream.available()];
+			//利用字节流读取文件
+			inputStream.read(buf);
+			inputStream.close();
+			WriteBytesForFile(buf,file, isAppend);
+			System.out.println("WriteInputStreamForFile end");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 写byte数组到某个文件路径中
+	 *
+	 * @param filePath
+	 * @param data
+	 */
+	public static void WriteBytesForFilePath(byte[] bytes,String filePath,boolean isAppend){
+		try {
+			File file = new File(filePath);
+			WriteBytesForFile(bytes, file, isAppend);
+			System.out.println("WriteBytesForFilePath end");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 写byte数组到某个文件中
+	 * @param bytes
+	 * @param file
+	 * @param isAppend
+	 */
+	public static void WriteBytesForFile(byte[] bytes,File file,boolean isAppend){
+		try {
+			FileOutputStream fileOutputStream = new FileOutputStream(file,isAppend);
+			fileOutputStream.write(bytes);
+			fileOutputStream.flush();
+			fileOutputStream.close();
+			System.out.println("WriteBytesForFile end");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 写byte数组到某个outputstream中
+	 * @param buf
+	 * @param outputStream
+	 */
+	public static void WriteByteForOutputStream(byte[] buf,OutputStream outputStream) {
+		try {
+			outputStream.write(buf);
+			outputStream.close();
+			System.out.println("WriterInputStreamToOutputStream end");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 *写inputstream到某个outputstream中
+	 * @param inputStream
+	 * @param outputStream
+	 */
+	public static void WriteInputStreamForOutputStream(InputStream inputStream,OutputStream outputStream) {
+		try {
+			//在内存中开辟一个byte数组
+			byte[] buf = new byte[inputStream.available()];
+			//利用字节流读取文件
+			inputStream.read(buf);
+			inputStream.close();
+			WriteByteForOutputStream(buf, outputStream);
+			System.out.println("WriterInputStreamToOutputStream end");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+
 	/**
 	 *  利用包装流PrintWriter包装Writer,输出字符串到文本文件中
 	 *
@@ -108,138 +352,6 @@ public class LoserStarFileUtil {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	/**
-	 * 以字节的方式读取文件中的内容，一次读取文件所有(如果不是UT-8不能读中文)
-	 *
-	 * @param filePath
-	 */
-	public static String ReadByteForFile(String filePath){
-		try {
-			String encoding = "UTF-8";
-			//拿到文件的大小
-			File file = new File(filePath);
-			long length = file.length();
-			//在内存中开辟一个和文件大小一样的byte数组
-			byte[] buf = new byte[(int)length];
-			//利用字节流读取文件
-			FileInputStream fileInputStream = new FileInputStream(file);
-			fileInputStream.read(buf);
-			fileInputStream.close();
-			System.out.println("readByteForFile end");
-			return new String(buf, encoding);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	/**
-	 * 写一个inputStream流到某个文件中
-	 * @param filePath
-	 * @param inputStream
-	 * @param isAppend
-	 */
-	public static void WriteInputStreamForFile(String filePath,InputStream inputStream,boolean isAppend) {
-		try {
-			 FileOutputStream fileOutputStream = new FileOutputStream(new File(filePath),isAppend);
-			//在内存中开辟一个byte数组
-			byte[] buf = new byte[1024];
-			//利用字节流读取文件
-			int byteCount = 0;
-			while ((byteCount = inputStream.read(buf)) != -1)
-            {
-               fileOutputStream.write(buf);
-            }
-			fileOutputStream.flush();
-			fileOutputStream.close();
-			inputStream.close();
-			System.out.println("WriteInputStreamForFile end");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	
-	/**
-	 * 写byte数组到某个文件中
-	 *
-	 * @param filePath
-	 * @param data
-	 */
-	public static void WriteBytesForFile(String filePath,byte[] bytes,boolean isAppend){
-		try {
-			FileOutputStream fileOutputStream = new FileOutputStream(new File(filePath),isAppend);
-			fileOutputStream.write(bytes);
-			fileOutputStream.flush();
-			fileOutputStream.close();
-			System.out.println("writeBytesForFile end");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * 写对象到文件中
-	 */
-	public static void WriteObject(String objectFilePath,Object object){
-		try {
-			
-			OutputStream outputStream = new FileOutputStream(new File(objectFilePath));
-			ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-			objectOutputStream.writeObject(object);
-			objectOutputStream.flush();
-			objectOutputStream.close();
-			System.out.println("writeObject end");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * 从一个input流写入到一个output流中
-	 * @param inputStream
-	 * @param outputStream
-	 */
-	public static void WriterInputStreamToOutputStream(InputStream inputStream,OutputStream outputStream) {
-		try {
-			//在内存中开辟一个byte数组
-			byte[] buf = new byte[1024];
-			//利用字节流读取文件
-			int byteCount = 0;
-			while ((byteCount = inputStream.read(buf)) != -1)
-           {
-				outputStream.write(buf);
-           }
-			outputStream.flush();
-			outputStream.close();
-			inputStream.close();
-			System.out.println("WriterInputStreamToOutputStream end");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * 从某个文件中读取对象到内存中(泛型)
-	 * @return 
-	 */
-	public static <T> T ReadObject(String objectFilePath,Class<T> class1){
-		try {
-			InputStream inputStream = new FileInputStream(new File(objectFilePath));
-			ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-			@SuppressWarnings("unchecked")
-			T resultObject = (T)objectInputStream.readObject();
-			objectInputStream.close();
-			System.out.println("readObject end");
-			return resultObject;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
 	
 	
 	/**
