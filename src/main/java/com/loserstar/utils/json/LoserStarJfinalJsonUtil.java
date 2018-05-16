@@ -17,10 +17,14 @@ import com.jfinal.json.JFinalJsonFactory;
  * remarks:
  */
 public class LoserStarJfinalJsonUtil {
-	private static final JFinalJson JfinalJson = (JFinalJson) JFinalJsonFactory.me().getJson();
+	private static final JFinalJson jfinalJson = (JFinalJson) JFinalJsonFactory.me().getJson();
 	
 	public static String toJson(Object object) {
-		return JfinalJson.toJson(object);
+		return jfinalJson.toJson(object);
 	}
 	
+	
+	public static <T> T toModel(String jsonString,Class<T> classz) {
+		return jfinalJson.parse(jsonString, classz);
+	}
 }
