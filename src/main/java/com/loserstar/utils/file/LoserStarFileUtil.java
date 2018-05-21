@@ -470,4 +470,42 @@ public class LoserStarFileUtil {
 		}
 		 return flag;
 	}
+	
+	/**
+	 * 该文件对象是否是一个文件
+	 * @param file
+	 * @return
+	 */
+	public static boolean isFile(File file) {
+		return file.isFile();
+	}
+	
+	/**
+	 * 该路径是否是一个文件
+	 * @param filePath
+	 * @return
+	 */
+	public static boolean isFile(String filePath) {
+		File file = new File(filePath);
+		return isFile(file);
+	}
+	
+	/**
+	 * 文件对象是否是一个目录
+	 * @param file
+	 * @return
+	 */
+	public static boolean isDirectory(File file) {
+		return file.isDirectory();
+	}
+	
+	/**
+	 * 路径是否是一个目录
+	 * @param filePath
+	 * @return
+	 */
+	public static boolean isDirectory(String filePath) {
+		File file = new File(filePath);
+		return isDirectory(file);
+	}
 }
