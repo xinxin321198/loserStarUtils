@@ -46,7 +46,7 @@ public class LoserStarApacheBase64Util {
 		try {
 			fileInputStream = new FileInputStream(file);
 			int length = fileInputStream.available();
-			String fileBase64Str = Base64.encodeBase64String(LoserStarFileUtil.ReadByteForInputStream(fileInputStream));
+			String fileBase64Str = Base64.encodeBase64String(LoserStarFileUtil.ReadByteByInputStream(fileInputStream));
 			System.out.println(fileBase64Str);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
