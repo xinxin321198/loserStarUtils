@@ -82,16 +82,18 @@ Z	时区	RFC 822 time zone	-0800
 		return simpleDateFormat.format(date);
 	}
 	
+
+	
 	/**
-	 * 加减天数
-	 * @param date 当前时间
-	 * @param day 天数
+	 * 加减年
+	 * @param date
+	 * @param year
 	 * @return
 	 */
-	public static Date addDay(Date date,int day) {
+	public static Date addYear(Date date,int year) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
-		calendar.add(Calendar.DAY_OF_MONTH,day);
+		calendar.add(Calendar.YEAR,year);
 		return calendar.getTime();
 	}
 	
@@ -109,15 +111,28 @@ Z	时区	RFC 822 time zone	-0800
 	}
 	
 	/**
-	 * 加减年
+	 * 加减星期
 	 * @param date
-	 * @param year
+	 * @param week
 	 * @return
 	 */
-	public static Date addYear(Date date,int year) {
+	public static Date addWeek(Date date,int week) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
-		calendar.add(Calendar.YEAR,year);
+		calendar.add(Calendar.WEEK_OF_MONTH,week);
+		return calendar.getTime();
+	}
+	
+	/**
+	 * 加减天数
+	 * @param date 当前时间
+	 * @param day 天数
+	 * @return
+	 */
+	public static Date addDay(Date date,int day) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.DAY_OF_MONTH,day);
 		return calendar.getTime();
 	}
 
@@ -193,6 +208,11 @@ Z	时区	RFC 822 time zone	-0800
 		Date date6 = LoserStarDateUtils.addSecond(new Date(), 20);
 		String formatDat6 = LoserStarDateUtils.format(date6);
 		System.out.println("加秒："+formatDat6);
+		
+		//星期计算
+		Date date7 = LoserStarDateUtils.addWeek(new Date(), 2);
+		String formatDat7 = LoserStarDateUtils.format(date7);
+		System.out.println("加星期："+formatDat7);
 		
 	}
 }
