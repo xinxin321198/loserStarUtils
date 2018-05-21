@@ -30,16 +30,16 @@ import java.util.UUID;
  * remarks:
  */
 public class LoserStarFileUtil {
+	
 	/**
-	 * 以字符流的方式从一个文件路径读取文件的字符(二进制读出来肯定是乱码，不用想，二进制文件要使用字节流的方式)
-	 *
-	 * @param filePath
+	 * 以字符流方式读取一个文件对象里的字符
+	 * @param file
 	 * @return
 	 */
-	public static String ReadReaderForFile(String filePath){
+	public static String ReadReaderByFile(File file){
 		StringBuffer stringBuffer = new StringBuffer();
 		try {
-			FileReader fileReader = new FileReader(new File(filePath));
+			FileReader fileReader = new FileReader(file);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 			String line = null;
 			while ((line = bufferedReader.readLine())!=null) {
@@ -52,12 +52,22 @@ public class LoserStarFileUtil {
 		}
 		return stringBuffer.toString();
 	}
+	/**
+	 * 以字符流的方式从一个文件路径读取文件的字符(二进制文件读出来肯定是乱码，不用想，二进制文件要使用字节流的方式)
+	 *
+	 * @param filePath
+	 * @return
+	 */
+	public static String ReadReaderByFilePath(String filePath){
+		File file = new File(filePath);
+		return ReadReaderByFile(file);
+	}
 	
 	/**
 	 * 从某个文件中读取对象到内存中(泛型)
 	 * @return 
 	 */
-	public static <T> T ReadObject(String objectFilePath,Class<T> class1){
+	public static <T> T ReadObjectByFilePath(String objectFilePath,Class<T> class1){
 		try {
 			InputStream inputStream = new FileInputStream(new File(objectFilePath));
 			ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
@@ -82,7 +92,7 @@ public class LoserStarFileUtil {
 	 * @param length 
 	 * @return
 	 */
-	public static byte[] ReadByteForInputStream(InputStream inputStream,int length){
+	public static byte[] ReadByteByInputStream(InputStream inputStream,int length){
 		try {
 			//利用字节流读取文件
 			byte[] buf = new byte[length];
@@ -101,9 +111,9 @@ public class LoserStarFileUtil {
 	 * @param inputStream
 	 * @return
 	 */
-	public static byte[] ReadByteForInputStream(InputStream inputStream){
+	public static byte[] ReadByteByInputStream(InputStream inputStream){
 		try {
-			byte[] buf = ReadByteForInputStream(inputStream, inputStream.available());
+			byte[] buf = ReadByteByInputStream(inputStream, inputStream.available());
 			System.out.println("ReadByteForInputStream end");
 			return buf;
 		} catch (Exception e) {
@@ -116,10 +126,10 @@ public class LoserStarFileUtil {
 	 * 以字节的方式读取文件中的内容，一次读取文件所有
 	 * @param filePath 文件路径
 	 */
-	public static byte[] ReadByteForFilePath(String filePath){
+	public static byte[] ReadByteByFilePath(String filePath){
 		try {
 			File file = new File(filePath);
-			byte[] buf = ReadByteForFile(file);
+			byte[] buf = ReadByteByFile(file);
 			System.out.println("ReadByteForFilePath end");
 			return buf;
 		} catch (Exception e) {
@@ -134,9 +144,9 @@ public class LoserStarFileUtil {
 	 * @param file File对象
 	 * @return
 	 */
-	public static byte[] ReadByteForFile(File file) {
+	public static byte[] ReadByteByFile(File file) {
 		try {
-			byte[] buf = ReadByteForInputStream(new FileInputStream(file));
+			byte[] buf = ReadByteByInputStream(new FileInputStream(file));
 			System.out.println("ReadByteForFile end");
 			return buf;
 		} catch (Exception e) {
@@ -148,7 +158,7 @@ public class LoserStarFileUtil {
 	/**
 	 * 写对象到文件中
 	 */
-	public static void WriteObject(String objectFilePath,Object object){
+	public static void WriteObjectToFilePath(String objectFilePath,Object object){
 		try {
 			
 			OutputStream outputStream = new FileOutputStream(new File(objectFilePath));
@@ -171,9 +181,9 @@ public class LoserStarFileUtil {
 	 * @param string
 	 * @param isAppend 是否追加内容
 	 */
-	public static void WriteStringForFilePath(String string,String filePath,boolean isAppend){
+	public static void WriteStringToFilePath(String string,String filePath,boolean isAppend){
 		try {
-			WriteStringForFile(string,new File(filePath),isAppend);
+			WriteStringToFile(string,new File(filePath),isAppend);
 			System.out.println("WriteStringForFilePath end");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -186,10 +196,10 @@ public class LoserStarFileUtil {
 	 * @param filePath
 	 * @param isAppend 是否追加内容
 	 */
-	public static void WriteStringForFile(String string,File file,boolean isAppend){
+	public static void WriteStringToFile(String string,File file,boolean isAppend){
 		try {
 			Writer writer = new FileWriter(file,isAppend);
-			WriteStringForWriter(string, writer, isAppend);
+			WriteStringToWriter(string, writer, isAppend);
 			System.out.println("WriteStringForFile end");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -202,7 +212,7 @@ public class LoserStarFileUtil {
 	 * @param writer
 	 * @param isAppend
 	 */
-	public static void WriteStringForWriter(String string,Writer writer,boolean isAppend){
+	public static void WriteStringToWriter(String string,Writer writer,boolean isAppend){
 		try {
 			writer.write(string);
 			writer.flush();
@@ -214,49 +224,15 @@ public class LoserStarFileUtil {
 	}
 	
 	/**
-	 * 写一个inputStream流到某个文件路径中
-	 * @param filePath
-	 * @param inputStream
-	 * @param isAppend
-	 */
-	public static void WriteInputStreamForFilePath(InputStream inputStream,String filePath,boolean isAppend) {
-		try {
-			File file = new File(filePath);
-			WriteInputStreamForFile(inputStream, file, isAppend);
-			System.out.println("WriteInputStreamForFilePath end");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	/**
-	 * 写一个inputStream流到某个文件中
-	 * @param inputStream
-	 * @param file
-	 * @param isAppend
-	 */
-	public static void WriteInputStreamForFile(InputStream inputStream,File file,boolean isAppend) {
-		try {
-			byte[] buf = new byte[inputStream.available()];
-			//利用字节流读取文件
-			inputStream.read(buf);
-			inputStream.close();
-			WriteBytesForFile(buf,file, isAppend);
-			System.out.println("WriteInputStreamForFile end");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
 	 * 写byte数组到某个文件路径中
 	 *
 	 * @param filePath
 	 * @param data
 	 */
-	public static void WriteBytesForFilePath(byte[] bytes,String filePath,boolean isAppend){
+	public static void WriteBytesToFilePath(byte[] bytes,String filePath,boolean isAppend){
 		try {
 			File file = new File(filePath);
-			WriteBytesForFile(bytes, file, isAppend);
+			WriteBytesToFile(bytes, file, isAppend);
 			System.out.println("WriteBytesForFilePath end");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -269,7 +245,7 @@ public class LoserStarFileUtil {
 	 * @param file
 	 * @param isAppend
 	 */
-	public static void WriteBytesForFile(byte[] bytes,File file,boolean isAppend){
+	public static void WriteBytesToFile(byte[] bytes,File file,boolean isAppend){
 		try {
 			FileOutputStream fileOutputStream = new FileOutputStream(file,isAppend);
 			fileOutputStream.write(bytes);
@@ -286,7 +262,7 @@ public class LoserStarFileUtil {
 	 * @param buf
 	 * @param outputStream
 	 */
-	public static void WriteByteForOutputStream(byte[] buf,OutputStream outputStream) {
+	public static void WriteByteToOutputStream(byte[] buf,OutputStream outputStream) {
 		try {
 			outputStream.write(buf);
 			outputStream.close();
@@ -297,23 +273,61 @@ public class LoserStarFileUtil {
 	}
 	
 	/**
+	 * 写一个inputStream流到某个文件路径中
+	 * @param filePath
+	 * @param inputStream
+	 * @param isAppend
+	 */
+	public static void WriteInputStreamToFilePath(InputStream inputStream,String filePath,boolean isAppend) {
+		try {
+			File file = new File(filePath);
+			WriteInputStreamToFile(inputStream, file, isAppend);
+			System.out.println("WriteInputStreamForFilePath end");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * 写一个inputStream流到某个文件中
+	 * @param inputStream
+	 * @param file
+	 * @param isAppend
+	 */
+	public static void WriteInputStreamToFile(InputStream inputStream,File file,boolean isAppend) {
+		try {
+			byte[] buf = new byte[inputStream.available()];
+			//利用字节流读取文件
+			inputStream.read(buf);
+			inputStream.close();
+			WriteBytesToFile(buf,file, isAppend);
+			System.out.println("WriteInputStreamForFile end");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 *写inputstream到某个outputstream中
 	 * @param inputStream
 	 * @param outputStream
 	 */
-	public static void WriteInputStreamForOutputStream(InputStream inputStream,OutputStream outputStream) {
+	public static void WriteInputStreamToOutputStream(InputStream inputStream,OutputStream outputStream) {
 		try {
 			//在内存中开辟一个byte数组
 			byte[] buf = new byte[inputStream.available()];
 			//利用字节流读取文件
 			inputStream.read(buf);
 			inputStream.close();
-			WriteByteForOutputStream(buf, outputStream);
+			WriteByteToOutputStream(buf, outputStream);
 			System.out.println("WriterInputStreamToOutputStream end");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
+
+	
+
 	
 
 	/**
@@ -322,7 +336,7 @@ public class LoserStarFileUtil {
 	 * @param filePath
 	 * @param printStr
 	 */
-	public static void PrintWriterForFile(String filePath,String printStr,boolean isAppend){
+	public static void PrintWriterToFile(String filePath,String printStr,boolean isAppend){
 		try {
 			FileWriter fileWriter = new FileWriter(new File(filePath),isAppend);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
@@ -340,7 +354,7 @@ public class LoserStarFileUtil {
 	 *
 	 * @param data
 	 */
-	public static void PrintStreamForFile(String printStreamFilePath,String printStr,boolean isAppend){
+	public static void PrintStreamToFile(String printStreamFilePath,String printStr,boolean isAppend){
 		try {
 			OutputStream outputStream = new FileOutputStream(new File(printStreamFilePath),isAppend);
 			PrintStream printStream = new PrintStream(outputStream);

@@ -148,7 +148,7 @@ protected HttpServletResponse response;
 		String fileRealName = file.getName();                   //获得原始文件名
 		LoserStarFileUtil.createDir(uploadDir);//创建上传路径
 		String newFileName = LoserStarFileUtil.generateUUIDFileName(fileRealName);//生成新文件名
-		LoserStarFileUtil.WriteInputStreamForFilePath(file.getInputStream(),uploadDir+newFileName, false);//输出文件
+		LoserStarFileUtil.WriteInputStreamToFilePath(file.getInputStream(),uploadDir+newFileName, false);//输出文件
 		return newFileName;
 	}
 	/**
@@ -182,7 +182,7 @@ protected HttpServletResponse response;
 			response.addHeader("Content-Disposition", "attachment;filename=" + new String(java.net.URLEncoder.encode(downName, "UTF-8")));
 			response.addHeader("Content-Length", "" + file.length());
 			response.setContentType("application/octet-stream");
-			LoserStarFileUtil.WriteInputStreamForOutputStream(inputStream, outputStream);
+			LoserStarFileUtil.WriteInputStreamToOutputStream(inputStream, outputStream);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
