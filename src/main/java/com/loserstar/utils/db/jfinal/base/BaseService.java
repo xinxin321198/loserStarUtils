@@ -153,6 +153,17 @@ public  abstract class BaseService {
 	}
 	
 	/**
+	 * 根据条件查询到的列表，获取第一条数据(如果设置过软删除字段自动过滤)
+	 * @param whereHelper
+	 * @return
+	 */
+	public Record getFirstList(WhereHelper whereHelper){
+		addSoftDelField(whereHelper);
+		String sql ="select * from "+getTableName()+CheckWhereHelper(whereHelper);
+		return get(sql);
+	}
+	
+	/**
 	 * 查询列表(分页)的列表数据(如果设置过软删除字段自动过滤)
 	 * @param pageNumber 页码
 	 * @param pageSize 每页多少条
