@@ -203,6 +203,14 @@ public  abstract class BaseService {
 	}
 	
 	/**
+	 * 删除本表的所有数据
+	 * @return
+	 */
+	public int deleteAll() {
+		return Db.delete("DELETE FROM "+getTableName());
+	}
+	
+	/**
 	 * 根据主键id删除一条记录
 	 * @param id
 	 * @return
