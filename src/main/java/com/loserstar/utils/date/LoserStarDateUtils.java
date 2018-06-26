@@ -10,6 +10,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * author: loserStar
@@ -17,8 +19,22 @@ import java.util.Date;
  * remarks: 日期相关工具类
  */
 public class LoserStarDateUtils {
-	public static final String DEFAULT_DATE_FORMAT ="yyyy-MM-dd hh:mm:ss SSS";
-	
+	/**
+	 * 带毫秒显示
+	 */
+	public static final String DISPLAY_MILLISECOND_FORMAT ="yyyy-MM-dd hh:mm:ss SSS";
+	/**
+	 * 带秒显示
+	 */
+	public final static String DISPLAY_SECOND_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	/**
+	 * UTC时间格式
+	 */
+	public final static String DISPLAY_UTC_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	/**
+	 * GMT时间格式
+	 */
+	public final static String DISPLAY_GMT_FORMAT = "EEE MMM dd HH:mm:ss 'GMT' yyyy";
 /*
 
 字母	日期或时间元素	表示	示例
@@ -53,10 +69,44 @@ Z	时区	RFC 822 time zone	-0800
 	 */
 	public static Date fromString(String dateStr,String pattern) throws ParseException {
 		if (pattern==null) {
-			pattern = DEFAULT_DATE_FORMAT;
+			pattern = DISPLAY_SECOND_FORMAT;
 		}
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 		return simpleDateFormat.parse(dateStr);
+	}
+	
+	/**
+	 * 来自于GMT的时间字符串生成日期
+	 * @param dateStr
+	 * @return
+	 * @throws ParseException
+	 */
+	public static Date fromGMTString(String dateStr) throws ParseException {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DISPLAY_GMT_FORMAT,Locale.ENGLISH);
+		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		return simpleDateFormat.parse(dateStr);
+	}
+	
+	/**
+	 * 来自于UTC格式的时间字符串生成日期
+	 * @param dateStr
+	 * @return
+	 * @throws ParseException
+	 */
+	public static Date fromUTCString(String dateStr) throws ParseException {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DISPLAY_UTC_FORMAT);
+		return simpleDateFormat.parse(dateStr);
+	}
+	/**
+	 * 字符串
+	 * @param date
+	 * @param pattern
+	 * @return
+	 * @throws ParseException
+	 */
+	public static Date fromString(String date) throws ParseException {
+		Date d =  fromString(date, DISPLAY_SECOND_FORMAT);
+		return d;
 	}
 	
 	/**
@@ -76,13 +126,27 @@ Z	时区	RFC 822 time zone	-0800
 	 */
 	public static String format(Date date,String pattern) {
 		if (pattern==null) {
-			pattern = DEFAULT_DATE_FORMAT;
+			pattern = DISPLAY_SECOND_FORMAT;
 		}
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 		return simpleDateFormat.format(date);
 	}
 	
-
+	/**
+	 * UTC时间2018-06-19T16:00:00.000Z  格式化为2018-06-19 16:00:00.000 
+	 *
+	 * @param date
+	 * @param mat
+	 * @return
+	 * @throws ParseException 
+	 */
+	public static String formatFromUTCString(String date, String pattern) throws ParseException {
+		if (pattern!=null) {
+			pattern = DISPLAY_SECOND_FORMAT;
+		}
+		Date d = fromUTCString(date);
+		return format(d);
+	}
 	
 	/**
 	 * 加减年
@@ -97,6 +161,8 @@ Z	时区	RFC 822 time zone	-0800
 		return calendar.getTime();
 	}
 	
+
+	
 	/**
 	 * 加减月份
 	 * @param date
@@ -109,6 +175,8 @@ Z	时区	RFC 822 time zone	-0800
 		calendar.add(Calendar.MONTH,month);
 		return calendar.getTime();
 	}
+	
+
 	
 	/**
 	 * 加减星期
@@ -123,6 +191,8 @@ Z	时区	RFC 822 time zone	-0800
 		return calendar.getTime();
 	}
 	
+
+	
 	/**
 	 * 加减天数
 	 * @param date 当前时间
@@ -135,6 +205,8 @@ Z	时区	RFC 822 time zone	-0800
 		calendar.add(Calendar.DAY_OF_MONTH,day);
 		return calendar.getTime();
 	}
+	
+	
 
 	
 	/**
@@ -150,6 +222,8 @@ Z	时区	RFC 822 time zone	-0800
 		return calendar.getTime();
 	}
 	
+	
+	
 	/**
 	 * 加减分钟
 	 * @param date
@@ -162,6 +236,7 @@ Z	时区	RFC 822 time zone	-0800
 		calendar.add(Calendar.MINUTE,minute);
 		return calendar.getTime();
 	}
+
 	
 	/**
 	 * 加减秒
@@ -175,10 +250,151 @@ Z	时区	RFC 822 time zone	-0800
 		calendar.add(Calendar.SECOND,second);
 		return calendar.getTime();
 	}
+
+	/**
+	 * 加减毫秒
+	 * @param date
+	 * @param milliSecond
+	 * @return
+	 */
+	public static Date addMilliSecond(Date date,int milliSecond) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.MILLISECOND, milliSecond);
+		return calendar.getTime();
+	}
+	
+	
+	/**
+	 * 设置年
+	 * @param date
+	 * @param year
+	 * @return
+	 */
+	public static Date setYear(Date date,int year) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.YEAR,year);
+		return calendar.getTime();
+	}
+	/**
+	 * 设置月份
+	 * @param date
+	 * @param month
+	 * @return
+	 */
+	public static Date setMonth(Date date,int month) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.MONTH,month);
+		return calendar.getTime();
+	}
+	/**
+	 * 设置星期
+	 * @param date
+	 * @param week
+	 * @return
+	 */
+	public static Date setWeek(Date date,int week) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.WEEK_OF_MONTH,week);
+		return calendar.getTime();
+	}
+	/**
+	 * 设置天数
+	 * @param date 当前时间
+	 * @param day 天数
+	 * @return
+	 */
+	public static Date setDay(Date date,int day) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.DAY_OF_MONTH,day);
+		return calendar.getTime();
+	}
+	/**
+	 * 设置小时
+	 * @param date
+	 * @param hours
+	 * @return
+	 */
+	public static Date setHours(Date date,int hours) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.HOUR,hours);
+		return calendar.getTime();
+	}
+	/**
+	 * 设置分钟
+	 * @param date
+	 * @param minute
+	 * @return
+	 */
+	public static Date setMinute(Date date,int minute) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.MINUTE,minute);
+		return calendar.getTime();
+	}
+	/**
+	 * 设置秒
+	 * @param date
+	 * @param second
+	 * @return
+	 */
+	public static Date setSecond(Date date,int second) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.SECOND,second);
+		return calendar.getTime();
+	}
+	
+	/**
+	 * 设置毫秒
+	 * @param date
+	 * @param milliSecond
+	 * @return
+	 */
+	public static Date setMilliSecond(Date date,int milliSecond) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.MILLISECOND, milliSecond);
+		return calendar.getTime();
+	}
+	
+	/**
+	 * 设置当天的最大时间
+	 * @param date
+	 * @return
+	 */
+	public static Date setCurrentDayMaxTime(Date date) {
+		date = LoserStarDateUtils.setHours(date, 23);
+		date = LoserStarDateUtils.setMinute(date, 59);
+		date = LoserStarDateUtils.setSecond(date, 59);
+		date = LoserStarDateUtils.setMilliSecond(date, 999);
+		return date;
+	}
+	
+	/**
+	 * 设置当天最小时间
+	 * @param date
+	 * @return
+	 */
+	public static Date setCurrentDayMinTime(Date date) {
+		date = LoserStarDateUtils.setHours(date, 0);
+		date = LoserStarDateUtils.setMinute(date, 0);
+		date = LoserStarDateUtils.setSecond(date, 0);
+		date = LoserStarDateUtils.setMilliSecond(date, 0);
+		return date;
+	}
 	
 	
 	
-	public static void main(String[] args) {
+
+	
+	
+	public static void main(String[] args) throws ParseException {
 		//天数计算
 		Date date = LoserStarDateUtils.addDay(new Date(),2);
 		String formatDate = LoserStarDateUtils.format(date);
@@ -214,5 +430,24 @@ Z	时区	RFC 822 time zone	-0800
 		String formatDat7 = LoserStarDateUtils.format(date7);
 		System.out.println("加星期："+formatDat7);
 		
+		
+		Date date8 = new Date();
+		date8 = LoserStarDateUtils.setMilliSecond(date8, 999);
+		System.out.println("设置毫秒："+LoserStarDateUtils.format(date8,LoserStarDateUtils.DISPLAY_MILLISECOND_FORMAT));
+		
+		
+		String data9str = "Thu Feb 16 07:13:48 GMT 2015";
+		Date date9 = LoserStarDateUtils.fromGMTString(data9str);
+		System.out.println(data9str);
+		System.out.println(date9);
+		System.out.println(LoserStarDateUtils.format(date9));
+		
+		String date10str = "1990-07-28T03:30:30.112Z";
+		Date date10 = LoserStarDateUtils.fromUTCString(date10str);
+		String date10FormatStr = LoserStarDateUtils.formatFromUTCString(date10str,null);
+		System.out.println("date10------------------");
+		System.out.println(date10);
+		System.out.println(date10FormatStr);
+		System.out.println(LoserStarDateUtils.format(date10));
 	}
 }
