@@ -389,10 +389,87 @@ Z	时区	RFC 822 time zone	-0800
 		return date;
 	}
 	
+	/**
+	 * 计算两个时间相差多少秒
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public static double calculateSecondDifference(Date startDate,Date endDate) {
+		long startTime = startDate.getTime();
+		long endTime = endDate.getTime();
+		long diff = endTime-startTime;
+		long conversionRate = 1000;//1秒=1000毫秒
+		double second = diff/conversionRate;
+		return second;
+	}
 	
+	/**
+	 * 计算两个时间相差多少分钟
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public static double calculateMinuteDifference(Date startDate,Date endDate) {
+		long startTime = startDate.getTime();
+		long endTime = endDate.getTime();
+		long diff = endTime-startTime;
+		long conversionRate = 1000*60;//1分钟=60*1000毫秒
+		double second = diff/conversionRate;
+		return second;
+	}
+	/**
+	 * 计算两个时间相差多少小时
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public static double calculateHoursDifference(Date startDate,Date endDate) {
+		long startTime = startDate.getTime();
+		long endTime = endDate.getTime();
+		long diff = endTime-startTime;
+		long conversionRate = 1000*60*60;//1小时=60分钟60秒*1000毫秒
+		double hours = diff/conversionRate;
+		return hours;
+	}
+	/**
+	 * 计算两个时间相差多少天
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public static double calculateDayDifference(Date startDate,Date endDate) {
+		long startTime = startDate.getTime();
+		long endTime = endDate.getTime();
+		long diff = endTime-startTime;
+		long conversionRate = 1000*60*60*24;//1天=24小时*60分钟60秒*1000毫秒
+		double day = diff/conversionRate;
+		return day;
+	}
 	
-
-	
+	/**
+	 * 计算日期的相差时间
+	 * @param endDate
+	 * @param nowDate
+	 * @return
+	 */
+	public static String getDatePoor(Date endDate, Date nowDate) {
+	    long nd = 1000 * 24 * 60 * 60;
+	    long nh = 1000 * 60 * 60;
+	    long nm = 1000 * 60;
+	    long ns = 1000;
+	    // 获得两个时间的毫秒时间差异
+	    long diff = endDate.getTime() - nowDate.getTime();
+	    // 计算差多少天
+	    long day = diff / nd;
+	    // 计算差多少小时
+	    long hour = diff % nd / nh;
+	    // 计算差多少分钟
+	    long min = diff % nd % nh / nm;
+	    // 计算差多少秒//输出结果
+	     long sec = diff % nd % nh % nm / ns;
+	    return day + "天" + hour + "小时" + min + "分钟"+sec+"秒";
+	}
 	
 	public static void main(String[] args) throws ParseException {
 		//天数计算
@@ -449,5 +526,17 @@ Z	时区	RFC 822 time zone	-0800
 		System.out.println(date10);
 		System.out.println(date10FormatStr);
 		System.out.println(LoserStarDateUtils.format(date10));
+		
+		long startDate = System.currentTimeMillis();
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		long  endDate = System.currentTimeMillis();
+		double second = calculateSecondDifference(new Date(startDate), new Date(endDate));
+		double minute  = calculateMinuteDifference(new Date(startDate), new Date(endDate));
+		System.out.println(minute);
 	}
 }

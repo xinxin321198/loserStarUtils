@@ -73,4 +73,19 @@ public class LoserStarArrayUtils {
         newList.addAll(h);
         return newList;
     }
+    
+    /**
+     * 检查souceList中是否包含checkList中的其中一个值
+     * @param sourceList
+     * @param checkList
+     * @return
+     */
+    public static boolean checkIsContain(List<String> sourceList,List<String> checkList) {
+    	boolean flag = false;
+    	for (String string : checkList) {
+			sourceList.contains(string);
+			flag = true;
+		}
+    	return flag;
+    }
 }
