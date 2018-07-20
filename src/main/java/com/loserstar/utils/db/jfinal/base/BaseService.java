@@ -28,7 +28,11 @@ public  abstract class BaseService {
 	/**
 	 * 批量curd时的标记名称
 	 */
-	private static final String EDIT_FLAG = "curd_flag";
+	public static final String EDIT_FLAG = "curd_flag";
+	public static final String EDIT_FLAG_C = "c";
+	public static final String EDIT_FLAG_U = "u";
+	public static final String EDIT_FLAG_R = "r";
+	public static final String EDIT_FLAG_D = "d";
 	/**
 	 * 返回具体表名称
 	 * @return
@@ -152,6 +156,16 @@ public  abstract class BaseService {
 		return Db.find(sql);
 	}
 	
+	public List<Record> getJoinList(JoinHelper joinHelper,WhereHelper whereHelper) {
+		addSoftDelField(whereHelper);
+		String sql = "select * from "+getTableName();
+		if (joinHelper!=null) {
+			sql+=joinHelper.toString();
+		}
+		sql+=CheckWhereHelper(whereHelper);
+		return Db.find(sql);
+	}
+	
 	/**
 	 * 根据条件查询到的列表，获取第一条数据(如果设置过软删除字段自动过滤)
 	 * @param whereHelper
@@ -203,6 +217,24 @@ public  abstract class BaseService {
 	}
 	
 	/**
+	 * 新增
+	 * @param record
+	 * @return
+	 */
+	public boolean insert(Record record) {
+		return Db.save(getTableName(),getPrimaryKey(), record);
+	}
+	
+	/**
+	 * 修改
+	 * @param record
+	 * @return
+	 */
+	public boolean update(Record record) {
+		return Db.update(getTableName(), getPrimaryKey(),record);
+	}
+	
+	/**
 	 * 删除本表的所有数据
 	 * @return
 	 */
@@ -219,6 +251,11 @@ public  abstract class BaseService {
 		return Db.deleteById(getTableName(),getPrimaryKey(), id);
 	}
 	
+	/**
+	 * 根据主键软删除一条记录
+	 * @param id
+	 * @return
+	 */
 	public boolean deleteSoftById(String id) {
 		boolean flag = false;
 		try {
@@ -255,4 +292,26 @@ public  abstract class BaseService {
 		}
 		 return flag;
 	}
+	
+	/**
+	 * 添加一个curd_flag=r的K-V到record对象中
+	 * @param record
+	 * @return
+	 */
+	public static Record setCURDFlag(Record record,String curdValue) {
+		record.set(EDIT_FLAG, curdValue);
+		return record;
+	}
+	/**
+	 * 批量的添加一个curd_flag=r的K-V到record对象中
+	 * @param record
+	 * @return
+	 */
+	public static List<Record> setCURDFlag(List<Record> records,String curdValue) {
+		for (Record record : records) {
+			record.set(EDIT_FLAG, curdValue);
+		}
+		return records;
+	}
+	
 }
