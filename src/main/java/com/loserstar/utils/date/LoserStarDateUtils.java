@@ -385,6 +385,23 @@ Z	时区	RFC 822 time zone	-0800
 	}
 	
 	/**
+	 * 设置当年最大时间
+	 * @param date
+	 * @return
+	 */
+	public static Date setCurrentYearMaxTime(Date date) {
+		date = LoserStarDateUtils.setMonth(date, 12);
+		int month = getMoth(date);
+		int maxDay = getMonthMaxDay(month);
+		date = LoserStarDateUtils.setDay(date, maxDay);
+		date = LoserStarDateUtils.setHours(date, 23);
+		date = LoserStarDateUtils.setMinute(date, 59);
+		date = LoserStarDateUtils.setSecond(date, 59);
+		date = LoserStarDateUtils.setMilliSecond(date, 999);
+		return date;
+	}
+	
+	/**
 	 * 设置当天最小时间
 	 * @param date
 	 * @return
@@ -431,6 +448,7 @@ Z	时区	RFC 822 time zone	-0800
 		return calendar.get(Calendar.DAY_OF_MONTH);
 	}
 	
+
 	/**
 	 * 获取某月中的最大天数(不用传入0，正常的月份数就行)
 	 * @param month
