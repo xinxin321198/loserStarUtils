@@ -10,6 +10,7 @@ package com.loserstar.utils.file;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -507,5 +508,12 @@ public class LoserStarFileUtil {
 	public static boolean isDirectory(String filePath) {
 		File file = new File(filePath);
 		return isDirectory(file);
+	}
+	
+	public static void main(String[] args) throws FileNotFoundException {
+		File file = new File("c://下载地址.txt");
+		File outFile = new File("c://1.txt");
+		WriteInputStreamToOutputStream(new FileInputStream(file), new FileOutputStream(outFile));
+		System.out.println("end");
 	}
 }

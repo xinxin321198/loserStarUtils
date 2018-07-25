@@ -1,21 +1,14 @@
-/**
- * author: loserStar
- * date: 2018年4月10日下午3:28:19
- * email:362527240@qq.com
- * github:https://github.com/xinxin321198
- * remarks:
- */
 package com.loserstar.utils.date;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-
 /**
  * author: loserStar
- * date: 2018年4月10日下午3:28:19
+ * date: 2018年7月25日下午2:44:53
  * remarks: 日期相关工具类
  */
 public class LoserStarDateUtils {
@@ -218,7 +211,7 @@ Z	时区	RFC 822 time zone	-0800
 	public static Date addHours(Date date,int hours) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
-		calendar.add(Calendar.HOUR,hours);
+		calendar.add(Calendar.HOUR_OF_DAY,hours);
 		return calendar.getTime();
 	}
 	
@@ -278,7 +271,7 @@ Z	时区	RFC 822 time zone	-0800
 		return calendar.getTime();
 	}
 	/**
-	 * 设置月份
+	 * 设置月份（不从0计算，一月份传入1）
 	 * @param date
 	 * @param month
 	 * @return
@@ -286,7 +279,7 @@ Z	时区	RFC 822 time zone	-0800
 	public static Date setMonth(Date date,int month) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
-		calendar.set(Calendar.MONTH,month);
+		calendar.set(Calendar.MONTH,month-1);
 		return calendar.getTime();
 	}
 	/**
@@ -322,7 +315,7 @@ Z	时区	RFC 822 time zone	-0800
 	public static Date setHours(Date date,int hours) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
-		calendar.set(Calendar.HOUR,hours);
+		calendar.set(Calendar.HOUR_OF_DAY,hours);
 		return calendar.getTime();
 	}
 	/**
@@ -375,6 +368,21 @@ Z	时区	RFC 822 time zone	-0800
 		date = LoserStarDateUtils.setMilliSecond(date, 999);
 		return date;
 	}
+	/**
+	 * 设置当月最大时间
+	 * @param date
+	 * @return
+	 */
+	public static Date setCurrentMonthMaxTime(Date date) {
+		int month = getMoth(date);
+		int maxDay = getMonthMaxDay(month);
+		date = LoserStarDateUtils.setDay(date, maxDay);
+		date = LoserStarDateUtils.setHours(date, 23);
+		date = LoserStarDateUtils.setMinute(date, 59);
+		date = LoserStarDateUtils.setSecond(date, 59);
+		date = LoserStarDateUtils.setMilliSecond(date, 999);
+		return date;
+	}
 	
 	/**
 	 * 设置当天最小时间
@@ -388,35 +396,109 @@ Z	时区	RFC 822 time zone	-0800
 		date = LoserStarDateUtils.setMilliSecond(date, 0);
 		return date;
 	}
-	
+
 	/**
-	 * 计算两个时间相差多少秒
-	 * @param startDate
-	 * @param endDate
+	 * 得到年份
+	 * @param date
 	 * @return
 	 */
-	public static double calculateSecondDifference(Date startDate,Date endDate) {
-		long startTime = startDate.getTime();
-		long endTime = endDate.getTime();
-		long diff = endTime-startTime;
-		long conversionRate = 1000;//1秒=1000毫秒
-		double second = diff/conversionRate;
-		return second;
+	public static int getYear(Date date) {
+		Calendar calendar =Calendar.getInstance();
+		calendar.setTime(date);
+		return calendar.get(Calendar.YEAR);
+	}
+	
+	
+	/**
+	 * 得到月份数(不从0计算，一月得到的值是1)
+	 * @param date
+	 * @return
+	 */
+	public static int getMoth(Date date) {
+		Calendar calendar =Calendar.getInstance();
+		calendar.setTime(date);
+		return calendar.get(Calendar.MONTH)+1;
+	}
+
+	/**
+	 * 得到天数
+	 * @param date
+	 * @return
+	 */
+	public static int getDay(Date date) {
+		Calendar calendar =Calendar.getInstance();
+		calendar.setTime(date);
+		return calendar.get(Calendar.DAY_OF_MONTH);
 	}
 	
 	/**
-	 * 计算两个时间相差多少分钟
+	 * 获取某月中的最大天数(不用传入0，正常的月份数就行)
+	 * @param month
+	 * @return
+	 */
+	public static int getMonthMaxDay(int month) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.MONTH, month-1);
+		int maxDay = calendar.getActualMaximum(Calendar.DATE);
+		return maxDay;
+	}
+
+	/**
+	 * 得到小时
+	 * @param date
+	 * @return
+	 */
+	public static int getHour(Date date) {
+		Calendar calendar =Calendar.getInstance();
+		calendar.setTime(date);
+		return calendar.get(Calendar.HOUR_OF_DAY);
+	}
+
+	/**
+	 * 得到分钟
+	 * @param date
+	 * @return
+	 */
+	public static int getMinute(Date date) {
+		Calendar calendar =Calendar.getInstance();
+		calendar.setTime(date);
+		return calendar.get(Calendar.MINUTE);
+	}
+	/**
+	 * 得到秒
+	 * @param date
+	 * @return
+	 */
+	public static int getSecond(Date date) {
+		Calendar calendar =Calendar.getInstance();
+		calendar.setTime(date);
+		return calendar.get(Calendar.SECOND);
+	}
+	
+	/**
+	 * 得到毫秒
+	 * @param date
+	 * @return
+	 */
+	public static int getMillisecond(Date date) {
+		Calendar calendar =Calendar.getInstance();
+		calendar.setTime(date);
+		return calendar.get(Calendar.MILLISECOND);
+	}
+	
+	/**
+	 * 计算两个时间相差多少天
 	 * @param startDate
 	 * @param endDate
 	 * @return
 	 */
-	public static double calculateMinuteDifference(Date startDate,Date endDate) {
+	public static double calculateDayDifference(Date startDate,Date endDate) {
 		long startTime = startDate.getTime();
 		long endTime = endDate.getTime();
 		long diff = endTime-startTime;
-		long conversionRate = 1000*60;//1分钟=60*1000毫秒
-		double second = diff/conversionRate;
-		return second;
+		long conversionRate = 1000*60*60*24;//1天=24小时*60分钟60秒*1000毫秒
+		double day = diff/conversionRate;
+		return day;
 	}
 	/**
 	 * 计算两个时间相差多少小时
@@ -432,21 +514,37 @@ Z	时区	RFC 822 time zone	-0800
 		double hours = diff/conversionRate;
 		return hours;
 	}
+
 	/**
-	 * 计算两个时间相差多少天
+	 * 计算两个时间相差多少分钟
 	 * @param startDate
 	 * @param endDate
 	 * @return
 	 */
-	public static double calculateDayDifference(Date startDate,Date endDate) {
+	public static String calculateMinuteDifference(Date startDate,Date endDate) {
 		long startTime = startDate.getTime();
 		long endTime = endDate.getTime();
 		long diff = endTime-startTime;
-		long conversionRate = 1000*60*60*24;//1天=24小时*60分钟60秒*1000毫秒
-		double day = diff/conversionRate;
-		return day;
+		long conversionRate = 1000*60;//1分钟=60*1000毫秒
+		double second = diff/conversionRate;
+		DecimalFormat decimalFormat = new DecimalFormat("0.00000");
+		return decimalFormat.format(second);
 	}
-	
+	/**
+	 * 计算两个时间相差多少秒
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public static double calculateSecondDifference(Date startDate,Date endDate) {
+		long startTime = startDate.getTime();
+		long endTime = endDate.getTime();
+		long diff = endTime-startTime;
+		long conversionRate = 1000;//1秒=1000毫秒
+		double second = diff/conversionRate;
+		return second;
+	}
+
 	/**
 	 * 计算日期的相差时间
 	 * @param endDate
@@ -527,6 +625,7 @@ Z	时区	RFC 822 time zone	-0800
 		System.out.println(date10FormatStr);
 		System.out.println(LoserStarDateUtils.format(date10));
 		
+		System.out.println("计算时差---------------------------------------");
 		long startDate = System.currentTimeMillis();
 		try {
 			Thread.sleep(5000);
@@ -536,7 +635,21 @@ Z	时区	RFC 822 time zone	-0800
 		}
 		long  endDate = System.currentTimeMillis();
 		double second = calculateSecondDifference(new Date(startDate), new Date(endDate));
-		double minute  = calculateMinuteDifference(new Date(startDate), new Date(endDate));
-		System.out.println(minute);
+		System.out.println("相差："+second+"秒");
+		String minute  = calculateMinuteDifference(new Date(startDate), new Date(endDate));
+		System.out.println("相差："+minute+"分钟");
+		System.out.println();
+
+		System.out.println("获取当月最大天数-------------------");
+		System.out.println(LoserStarDateUtils.getMonthMaxDay(7));
+		
+		System.out.println("获得当前时间的月份数-------------");
+		System.out.println(LoserStarDateUtils.getMoth(new Date()));
+		
+		System.out.println("设置当月最大时间-------------------");
+		Date maxMonth = new Date();
+		Date maxMonth2 = LoserStarDateUtils.setCurrentMonthMaxTime(maxMonth);
+		System.out.println(LoserStarDateUtils.format(maxMonth2));
+		
 	}
 }
