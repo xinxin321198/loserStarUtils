@@ -21,11 +21,11 @@ public class LoserStarDateUtils {
 	 */
 	public final static String DISPLAY_SECOND_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	/**
-	 * UTC时间格式
+	 * UTC时间格式(2010-12-31T16:00:00.000Z)
 	 */
 	public final static String DISPLAY_UTC_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	/**
-	 * GMT时间格式
+	 * GMT时间格式(Thu Oct 16 07:13:48 GMT 2014)
 	 */
 	public final static String DISPLAY_GMT_FORMAT = "EEE MMM dd HH:mm:ss 'GMT' yyyy";
 /*
@@ -407,6 +407,34 @@ Z	时区	RFC 822 time zone	-0800
 	 * @return
 	 */
 	public static Date setCurrentDayMinTime(Date date) {
+		date = LoserStarDateUtils.setHours(date, 0);
+		date = LoserStarDateUtils.setMinute(date, 0);
+		date = LoserStarDateUtils.setSecond(date, 0);
+		date = LoserStarDateUtils.setMilliSecond(date, 0);
+		return date;
+	}
+	
+	/**
+	 * 设置当月最小时间
+	 * @param date
+	 * @return
+	 */
+	public static Date setCurrentMonthMinTime(Date date) {
+		date = LoserStarDateUtils.setDay(date, 1);
+		date = LoserStarDateUtils.setHours(date, 0);
+		date = LoserStarDateUtils.setMinute(date, 0);
+		date = LoserStarDateUtils.setSecond(date, 0);
+		date = LoserStarDateUtils.setMilliSecond(date, 0);
+		return date;
+	}
+	/**
+	 * 设置当年最小时间
+	 * @param date
+	 * @return
+	 */
+	public static Date setCurrentYearMinTime(Date date) {
+		date = LoserStarDateUtils.setMonth(date, 1);
+		date = LoserStarDateUtils.setDay(date, 1);
 		date = LoserStarDateUtils.setHours(date, 0);
 		date = LoserStarDateUtils.setMinute(date, 0);
 		date = LoserStarDateUtils.setSecond(date, 0);
