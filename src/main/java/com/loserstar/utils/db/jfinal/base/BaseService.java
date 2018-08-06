@@ -6,7 +6,6 @@ import java.util.UUID;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
-import com.jfinal.plugin.activerecord.SqlPara;
 
 /**
  * 基础service
@@ -185,10 +184,8 @@ public  abstract class BaseService {
 	 * @return
 	 */
 	public Page<Record> getListPage(int pageNumber,int pageSize,WhereHelper whereHelper){
-		SqlPara sqlPara = new SqlPara();
-		addSoftDelField(whereHelper);
-		sqlPara.setSql("select * from "+getTableName()+CheckWhereHelper(whereHelper));
-		return Db.paginate(pageNumber, pageSize, sqlPara);
+		String sqlExceptSelect = "from "+getTableName()+CheckWhereHelper(whereHelper);
+		return Db.paginate(pageNumber, pageSize, "select *",sqlExceptSelect);
 	}
 	
 	/**
@@ -239,7 +236,7 @@ public  abstract class BaseService {
 	 * @return
 	 */
 	public int deleteAll() {
-		return Db.delete("DELETE FROM "+getTableName());
+		return Db.update("DELETE FROM "+getTableName());
 	}
 	
 	/**
