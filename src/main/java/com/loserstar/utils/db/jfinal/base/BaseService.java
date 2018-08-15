@@ -10,8 +10,7 @@ import com.jfinal.plugin.activerecord.Record;
 /**
  * 基础service
  * author: loserStar
- * date: 2018年1月25日下午7:51:13
- * email:362527240@qq.com
+ * date: 2018年8月15日下午5:08:53
  * remarks:
  */
 public  abstract class BaseService {
