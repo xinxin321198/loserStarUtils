@@ -7,7 +7,7 @@ import java.util.Iterator;
 /**
  * 
  * author: loserStar
- * date: 2018年4月10日下午3:36:49
+ * date: 2018年8月15日下午5:23:36
  * remarks:字符串处理
  */
 public class LoserStarStringUtils {
