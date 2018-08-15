@@ -11,12 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.loserstar.utils.string.LoserStarStringUtils;
-
-
 /**
  * 
  * author: loserStar
- * date: 2018年8月15日下午5:19:28
+ * date: 2018年8月15日下午5:40:23
  * remarks:拼接sql的where条件用的工具类
  */
 public class WhereHelper {
@@ -32,6 +30,29 @@ public class WhereHelper {
 	 * 排序的语句
 	 */
 	private String orderStr;
+	
+	
+	/**
+	 * @return the strWhereList
+	 */
+	public List<String> getStrWhereList() {
+		return strWhereList;
+	}
+
+	/**
+	 * @return the inStrList
+	 */
+	public List<InStr> getInStrList() {
+		return inStrList;
+	}
+
+	/**
+	 * @return the orderStr
+	 */
+	public String getOrderStr() {
+		return orderStr;
+	}
+
 	public WhereHelper addStrWhere(String s) {
 		this.strWhereList.add(s);
 		return this;

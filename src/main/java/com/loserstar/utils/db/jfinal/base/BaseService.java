@@ -8,10 +8,10 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 
 /**
- * 基础service
+ * 
  * author: loserStar
- * date: 2018年8月15日下午5:08:53
- * remarks:
+ * date: 2018年8月15日下午5:41:57
+ * remarks:基础service
  */
 public  abstract class BaseService {
 	/**
@@ -68,7 +68,13 @@ public  abstract class BaseService {
 	 * @return
 	 */
 	private String CheckWhereHelper(WhereHelper whereHelper) {
-		return  (whereHelper==null)?"": " where "+whereHelper.toString();
+		String result = "";
+		if(whereHelper!=null) {
+			if (whereHelper.getStrWhereList()!=null&&whereHelper.getStrWhereList().size()>0) {
+				result = " where "+whereHelper.toString();
+			}
+		}
+		return  result;
 	}
 	
 	/**
