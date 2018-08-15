@@ -14,9 +14,10 @@ import com.loserstar.utils.string.LoserStarStringUtils;
 
 
 /**
+ * 
  * author: loserStar
- * date: 2018年4月18日上午11:50:31
- * remarks: 拼接sql的where条件用的工具类
+ * date: 2018年8月15日下午5:19:28
+ * remarks:拼接sql的where条件用的工具类
  */
 public class WhereHelper {
 	/**

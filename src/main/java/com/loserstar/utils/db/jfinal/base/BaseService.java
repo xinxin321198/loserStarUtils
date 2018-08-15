@@ -63,7 +63,7 @@ public  abstract class BaseService {
 		}
 	}
 	/**
-	 * 检查whereHelper是否为null,是旧返回空字符串，不是就toString
+	 * 检查whereHelper是否为null,是旧返回空字符串，不是就加上where 并且toString
 	 * @param whereHelper
 	 * @return
 	 */
