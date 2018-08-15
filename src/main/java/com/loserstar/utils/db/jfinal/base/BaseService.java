@@ -142,6 +142,14 @@ public  abstract class BaseService {
 		}
 		return true;
 	}
+	public boolean updateFieldIsNull(String fieldName,long primaryId) {
+		String sql = "UPDATE "+getTableName()+" SET "+fieldName+" = NULL WHERE "+getPrimaryKey()+"="+primaryId+"";
+		int row = Db.update(sql);
+		if (row<1) {
+			return false;
+		}
+		return true;
+	}
 	
 	
 	/**
@@ -196,9 +204,12 @@ public  abstract class BaseService {
 	public Record getById(String id) {
 		return Db.findById(getTableName(), getPrimaryKey(), id);
 	}
+	public Record getById(long id) {
+		return Db.findById(getTableName(), getPrimaryKey(), id);
+	}
 	
 	/**
-	 * 保存一条记录，根据是否有主键来决定新增还是修改
+	 * 保存一条记录，根据是否有主键来决定新增还是修改(自动生成去横岗的guid)
 	 * @param record
 	 * @return
 	 */
