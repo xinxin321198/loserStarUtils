@@ -12,6 +12,7 @@ import java.util.List;
 
 import com.loserstar.utils.string.LoserStarStringUtils;
 
+
 /**
  * author: loserStar
  * date: 2018年4月18日上午11:50:31
@@ -50,20 +51,17 @@ public class WhereHelper {
 	 */
 	@Override
 	public String toString() {
-		boolean isNeedWhere = false;//是否需要where
 		StringBuffer resultStr = new StringBuffer();//记录最终的sql
 		StringBuffer andStr = new StringBuffer();//记录and条件
 		
 		//遍历in的条件
 		for (int i = 0; i < inStrList.size(); i++) {
-			isNeedWhere = true;
 			InStr inStr = inStrList.get(i);
 			this.strWhereList.add(inStr.toString());
 		}
 		
-		//遍历stirng条件，处理删除每个条件开头的where和and和or关键字，在最后再拼where
+		//遍历stirng条件，处理删除每个条件开头的where和and和or关键字
 		for (int i = 0; i <this.strWhereList.size(); i++) {
-			isNeedWhere = true;
 			String string = this.strWhereList.get(i);
 			if (i==0) {
 				string = string.trim();
@@ -76,12 +74,7 @@ public class WhereHelper {
 			}
 			andStr.append(" "+string);
 		}
-		
-		//拼接where关键字
-		if (isNeedWhere) {
-			resultStr.append(" where "+andStr.toString());
-		}
-		
+		resultStr.append(andStr.toString());
 		//拼接排序
 		if (this.orderStr!=null&&!this.orderStr.equals("")) {
 			resultStr.append(" "+this.orderStr);

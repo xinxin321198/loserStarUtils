@@ -69,7 +69,7 @@ public  abstract class BaseService {
 	 * @return
 	 */
 	private String CheckWhereHelper(WhereHelper whereHelper) {
-		return  (whereHelper==null)?"": whereHelper.toString();
+		return  (whereHelper==null)?"": " where "+whereHelper.toString();
 	}
 	
 	/**
