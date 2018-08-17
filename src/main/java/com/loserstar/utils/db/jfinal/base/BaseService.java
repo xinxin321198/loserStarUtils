@@ -6,12 +6,13 @@ import java.util.UUID;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
+import com.loserstar.utils.idgen.SnowflakeIdWorker;
 
 /**
  * 
  * author: loserStar
- * date: 2018年8月15日下午5:41:57
- * remarks:基础service
+ * date: 2018年8月16日下午3:43:38
+ * remarks: 基础service
  */
 public  abstract class BaseService {
 	/**
@@ -197,6 +198,7 @@ public  abstract class BaseService {
 	 * @return
 	 */
 	public Page<Record> getListPage(int pageNumber,int pageSize,WhereHelper whereHelper){
+		addSoftDelField(whereHelper);
 		String sqlExceptSelect = "from "+getTableName()+CheckWhereHelper(whereHelper);
 		return Db.paginate(pageNumber, pageSize, "select *",sqlExceptSelect);
 	}
@@ -222,6 +224,22 @@ public  abstract class BaseService {
 		boolean flag = false;
 		if (record.getStr(getPrimaryKey())==null||record.getStr(getPrimaryKey()).equals("")) {
 			record.set(getPrimaryKey(), UUID.randomUUID().toString().replaceAll("-", ""));
+			flag = Db.save(getTableName(),getPrimaryKey(), record);
+		}else {
+			flag = Db.update(getTableName(),getPrimaryKey(), record);
+		}
+		return flag;
+	}
+	
+	/**
+	 * 保存一条记录，根据是否有主键来决定新增还是修改(自动生成自增的guid，用作排序)
+	 * @param record
+	 * @return
+	 */
+	public boolean saveLongGuid(Record record) {
+		boolean flag = false;
+		if (record.getStr(getPrimaryKey())==null||record.getStr(getPrimaryKey()).equals("")) {
+			record.set(getPrimaryKey(), SnowflakeIdWorker.FakeGuid());
 			flag = Db.save(getTableName(),getPrimaryKey(), record);
 		}else {
 			flag = Db.update(getTableName(),getPrimaryKey(), record);
@@ -300,7 +318,7 @@ public  abstract class BaseService {
 				flag  =deleteById(id);
 			}else if(recordFlag!=null&&(recordFlag.equals("c")||recordFlag.equals("u"))) {
 				record.remove(EDIT_FLAG);
-				flag = save(record);
+				flag = saveLongGuid(record);
 			}
 		}
 		 return flag;
