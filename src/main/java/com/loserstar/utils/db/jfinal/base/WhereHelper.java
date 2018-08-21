@@ -14,7 +14,7 @@ import com.loserstar.utils.string.LoserStarStringUtils;
 /**
  * 
  * author: loserStar
- * date: 2018年8月15日下午5:40:23
+ * date: 2018年8月21日上午11:31:30
  * remarks:拼接sql的where条件用的工具类
  */
 public class WhereHelper {
@@ -22,10 +22,6 @@ public class WhereHelper {
 	 * 自定义的字符串的where后面的每个条件，直接拼and  id=xx或者or id=xxx
 	 */
 	private List<String> strWhereList = new ArrayList<String>(); 
-	/**
-	 * where后面的每个in方式的条件
-	 */
-	private List<InStr> inStrList = new ArrayList<>();
 	/**
 	 * 排序的语句
 	 */
@@ -39,12 +35,6 @@ public class WhereHelper {
 		return strWhereList;
 	}
 
-	/**
-	 * @return the inStrList
-	 */
-	public List<InStr> getInStrList() {
-		return inStrList;
-	}
 
 	/**
 	 * @return the orderStr
@@ -59,13 +49,30 @@ public class WhereHelper {
 	}
 	
 	public WhereHelper addIn(InStr inStr) {
-		this.inStrList.add(inStr);
+		this.strWhereList.add(inStr.toString());
 		return this;
 	}
+	
 	
 	public WhereHelper addStrOrder(String orderStr) {
 		this.orderStr = orderStr;
 		return this;
+	}
+	
+	/**
+	 * 去除字符串开头的where、and、or关键字
+	 * @param string
+	 * @return
+	 */
+	private String removePrefix(String string) {
+		string = string.trim();
+		string = LoserStarStringUtils.cutPrefix(string, "where");
+		string = LoserStarStringUtils.cutPrefix(string, "WHERE");
+		string = LoserStarStringUtils.cutPrefix(string, "and");
+		string = LoserStarStringUtils.cutPrefix(string, "AND");
+		string = LoserStarStringUtils.cutPrefix(string, "or");
+		string = LoserStarStringUtils.cutPrefix(string, "OR");
+		return string;
 	}
 	
 	/**
@@ -75,24 +82,12 @@ public class WhereHelper {
 	public String toString() {
 		StringBuffer resultStr = new StringBuffer();//记录最终的sql
 		StringBuffer andStr = new StringBuffer();//记录and条件
-		
-		//遍历in的条件
-		for (int i = 0; i < inStrList.size(); i++) {
-			InStr inStr = inStrList.get(i);
-			this.strWhereList.add(inStr.toString());
-		}
-		
 		//遍历stirng条件，处理删除每个条件开头的where和and和or关键字
 		for (int i = 0; i <this.strWhereList.size(); i++) {
 			String string = this.strWhereList.get(i);
 			if (i==0) {
-				string = string.trim();
-				string = LoserStarStringUtils.cutPrefix(string.trim(), "where");
-				string = LoserStarStringUtils.cutPrefix(string.trim(), "WHERE");
-				string = LoserStarStringUtils.cutPrefix(string.trim(), "and");
-				string = LoserStarStringUtils.cutPrefix(string.trim(), "AND");
-				string = LoserStarStringUtils.cutPrefix(string.trim(), "or");
-				string = LoserStarStringUtils.cutPrefix(string.trim(), "OR");
+				//去除字符串开头的where、and、or关键字
+				string = removePrefix(string);
 			}
 			andStr.append(" "+string);
 		}

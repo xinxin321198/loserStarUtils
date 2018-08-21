@@ -19,7 +19,9 @@ import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.dialect.AnsiSqlDialect;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.loserstar.utils.db.config.DBConfig;
+import com.loserstar.utils.db.jfinal.base.InStr;
 import com.loserstar.utils.db.jfinal.base.WhereHelper;
+import com.loserstar.utils.db.jfinal.base.InStr.AndOr;
 import com.loserstar.utils.db.jfinal.service.UserService;
 import com.loserstar.utils.idgen.IdGen;
 import com.loserstar.utils.json.LoserStarJsonUtil;
@@ -46,14 +48,21 @@ public class LoserStarJfinalDBMain {
 
 	public static void main(String[] args) {
 		startPlugin();
+		
 		UserService userService = new UserService();
 //		List<Record> userList = Db.find("select * from sys_users");
 		WhereHelper whereHelper = new WhereHelper();
+		List<String> list = new ArrayList<>();
+		list.add("aaa");
+		list.add("bbb");
+		list.add("c");
+		list.add("dd");
+		whereHelper.addIn(new InStr(AndOr.AND, "user_name", list));
 		whereHelper.addStrWhere(" and user_name like '%名%'");
 		whereHelper.addStrOrder(" order by user_name desc");
 		Page<Record> pageList = userService.getListPage(2, 6, whereHelper);
 		System.out.println(LoserStarJsonUtil.toJsonDeep(pageList));
-		userService.deleteAll();
+//		userService.deleteAll();
 		System.out.println("delete all");
 	}
 }
