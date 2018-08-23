@@ -5,7 +5,7 @@
  * github:https://github.com/xinxin321198
  * remarks:
  */
-package com.loserstar.utils.db.jfinal.base;
+package com.loserstar.utils.db.jfinal.base.imp;
 
 import java.util.Arrays;
 import java.util.List;

@@ -7,7 +7,7 @@ import java.util.Iterator;
 /**
  * 
  * author: loserStar
- * date: 2018年8月15日下午5:23:36
+ * date: 2018年8月23日下午5:23:36
  * remarks:字符串处理
  */
 public class LoserStarStringUtils {
@@ -55,6 +55,21 @@ public class LoserStarStringUtils {
 		}
 		return string;
 	}
+	
+	/**
+	 * 去除字符串中结尾的某个字符串
+	 * @param string
+	 * @param suffix
+	 * @return
+	 */
+	public static String cutSuffix(String string,String suffix) {
+		if (string.endsWith(suffix)) {
+			string = string.substring(0, string.length()-suffix.length());
+		}
+		return string;
+	}
+	
+	
 	/**
 	 * 把一个集合以某个字符串分割输出，并且每一项添加个前缀和后缀
 	 * form jodd StringUtil.join

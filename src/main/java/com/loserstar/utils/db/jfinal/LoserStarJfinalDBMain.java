@@ -13,17 +13,21 @@ import java.util.UUID;
 
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.activerecord.CaseInsensitiveContainerFactory;
-import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.dialect.AnsiSqlDialect;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.loserstar.utils.db.config.DBConfig;
-import com.loserstar.utils.db.jfinal.base.InStr;
-import com.loserstar.utils.db.jfinal.base.WhereHelper;
-import com.loserstar.utils.db.jfinal.base.InStr.AndOr;
+import com.loserstar.utils.db.jfinal.base.IDBUtils;
+import com.loserstar.utils.db.jfinal.base.imp.InStr;
+import com.loserstar.utils.db.jfinal.base.imp.JoinHelper;
+import com.loserstar.utils.db.jfinal.base.imp.JoinTable;
+import com.loserstar.utils.db.jfinal.base.imp.WhereHelper;
+import com.loserstar.utils.db.jfinal.base.imp.InStr.AndOr;
+import com.loserstar.utils.db.jfinal.base.imp.JoinTable.JoinType;
+import com.loserstar.utils.db.jfinal.base.imp.MySqlDBUtils;
+import com.loserstar.utils.db.jfinal.service.AccountService;
 import com.loserstar.utils.db.jfinal.service.UserService;
-import com.loserstar.utils.idgen.IdGen;
 import com.loserstar.utils.json.LoserStarJsonUtil;
 
 /**
@@ -49,6 +53,8 @@ public class LoserStarJfinalDBMain {
 	public static void main(String[] args) {
 		startPlugin();
 		
+
+		
 		UserService userService = new UserService();
 //		List<Record> userList = Db.find("select * from sys_users");
 		WhereHelper whereHelper = new WhereHelper();
@@ -57,12 +63,16 @@ public class LoserStarJfinalDBMain {
 		list.add("bbb");
 		list.add("c");
 		list.add("dd");
-		whereHelper.addIn(new InStr(AndOr.AND, "user_name", list));
-		whereHelper.addStrWhere(" and user_name like '%名%'");
+//		whereHelper.addIn(new InStr(AndOr.AND, "user_name", list));
+//		whereHelper.addStrWhere(" and user_name like '%名%'");
 		whereHelper.addStrOrder(" order by user_name desc");
-		Page<Record> pageList = userService.getListPage(2, 6, whereHelper);
+		JoinHelper joinHelper = new JoinHelper();
+		joinHelper.addLeftJoin(new JoinTable(JoinType.left, AccountService.TABLE_NAME ,"user_id", UserService.TABLE_NAME,UserService.PRIMARY_KEY));
+		IDBUtils dbUtils = new MySqlDBUtils();
+		String selectFiled = dbUtils.toSelectFiledStr("dataagg", joinHelper);
+		List<Record> pageList = userService.getJoinList(selectFiled,joinHelper, whereHelper);
 		System.out.println(LoserStarJsonUtil.toJsonDeep(pageList));
 //		userService.deleteAll();
-		System.out.println("delete all");
+//		System.out.println("delete all");
 	}
 }

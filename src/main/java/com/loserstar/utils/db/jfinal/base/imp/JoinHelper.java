@@ -5,7 +5,7 @@
  * github:https://github.com/xinxin321198
  * remarks:
  */
-package com.loserstar.utils.db.jfinal.base;
+package com.loserstar.utils.db.jfinal.base.imp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,16 +16,29 @@ import java.util.List;
  * remarks:
  */
 public class JoinHelper {
-	private List<JoinTable> leftJoinTable = new ArrayList<>();
+	private List<JoinTable> joinTableList = new ArrayList<>();
 	
 	public void addLeftJoin(JoinTable joinTable) {
-		leftJoinTable.add(joinTable);
+		joinTableList.add(joinTable);
 	}
+	
+
+
+	/**
+	 * @return the joinTableList
+	 */
+	public List<JoinTable> getJoinTableList() {
+		return joinTableList;
+	}
+
+
+
+
 
 	@Override
 	public String toString() {
 		String result =" ";
-		for (JoinTable joinTable : leftJoinTable) {
+		for (JoinTable joinTable : joinTableList) {
 			result+=joinTable.getJoinType()+" join "+joinTable.getJoinTableName()+" on "+joinTable.getJoinTableName()+"."+joinTable.getJoinTableField()+"="+joinTable.getSouceTableName()+"."+joinTable.getSouceTableField();
 		}
 		return result;

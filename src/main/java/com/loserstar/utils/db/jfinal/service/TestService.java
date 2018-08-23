@@ -8,7 +8,7 @@
 package com.loserstar.utils.db.jfinal.service;
 
 
-import com.loserstar.utils.db.jfinal.base.BaseService;
+import com.loserstar.utils.db.jfinal.base.imp.BaseService;
 
 /**
  * author: loserStar

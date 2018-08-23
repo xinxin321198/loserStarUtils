@@ -5,7 +5,7 @@
  * github:https://github.com/xinxin321198
  * remarks:
  */
-package com.loserstar.utils.db.jfinal.base;
+package com.loserstar.utils.db.jfinal.base.imp;
 
 /**
  * author: loserStar
@@ -17,7 +17,7 @@ public class JoinTable {
 	 * 连接方式，内连接，左连接，右连接，全连接
 	 */
 	public static  enum JoinType {
-	    INNER, LEFT,RIGTH,ALL
+	    inner, left,rigth,all
 	} 
 	
 	/**

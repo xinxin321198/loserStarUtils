@@ -1,6 +1,6 @@
 /**
  * author: loserStar
- * date: 2018年8月6日下午6:15:05
+ * date: 2018年8月22日下午4:41:38
  * email:362527240@qq.com
  * github:https://github.com/xinxin321198
  * remarks:
@@ -11,25 +11,26 @@ import com.loserstar.utils.db.jfinal.base.imp.BaseService;
 
 /**
  * author: loserStar
- * date: 2018年8月6日下午6:15:05
+ * date: 2018年8月22日下午4:41:38
  * remarks:
  */
-public class UserService extends BaseService{
-	public static final String TABLE_NAME = "sys_users";
+public class AccountService extends BaseService {
+	public static final String TABLE_NAME = "da_account";
 	public static final String PRIMARY_KEY = "id";
 	public static final String SOFT_DEL_FIELD= "";
 	@Override
 	protected String getTableName() {
-		return TABLE_NAME;
+		return null;
 	}
 
 	@Override
 	protected String getPrimaryKey() {
-		return PRIMARY_KEY;
+		return null;
 	}
 
 	@Override
 	protected String getSoftDelField() {
-		return SOFT_DEL_FIELD;
+		return null;
 	}
+
 }

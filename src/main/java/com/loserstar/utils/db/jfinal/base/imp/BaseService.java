@@ -1,4 +1,4 @@
-package com.loserstar.utils.db.jfinal.base;
+package com.loserstar.utils.db.jfinal.base.imp;
 
 import java.util.List;
 import java.util.UUID;
@@ -169,9 +169,29 @@ public  abstract class BaseService {
 		return Db.find(sql);
 	}
 	
+	/**
+	 * 多表连接查询，默认查询出的字段使用*（此方法会造成如果两张表有相同名称的字段，会显示不全）
+	 * @param joinHelper
+	 * @param whereHelper
+	 * @return
+	 */
 	public List<Record> getJoinList(JoinHelper joinHelper,WhereHelper whereHelper) {
+		return getJoinList(null, joinHelper, whereHelper);
+	}
+	
+	/**
+	 * 多表连接查询，并且指定查询出的字段名称
+	 * @param selectFiled
+	 * @param joinHelper
+	 * @param whereHelper
+	 * @return
+	 */
+	public List<Record> getJoinList(String selectFiled,JoinHelper joinHelper,WhereHelper whereHelper) {
 		addSoftDelField(whereHelper);
-		String sql = "select * from "+getTableName();
+		if (selectFiled==null||selectFiled.equals("")) {
+			selectFiled = " * ";
+		}
+		String sql = "select "+selectFiled+" from "+getTableName();
 		if (joinHelper!=null) {
 			sql+=joinHelper.toString();
 		}
