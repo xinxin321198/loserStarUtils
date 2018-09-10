@@ -9,11 +9,16 @@ package com.loserstar.utils.file;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
@@ -26,6 +31,8 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.UUID;
+
+import com.alibaba.druid.sql.visitor.functions.Char;
 
 /**
  * author: loserStar
@@ -653,15 +660,65 @@ public class LoserStarFileUtil {
         }
         return charset;
     }
+    
+    public static byte[] conveterToByteArray(Object object) throws Exception {
+    	byte[] data = null;
+    	ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    	DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream);
+    	if(object instanceof Double) {
+    		dataOutputStream.writeDouble((double)object);
+    	}else if (object instanceof Integer) {
+			dataOutputStream.writeInt((int)object);
+		} else if (object instanceof Long) {
+			dataOutputStream.writeLong((long)object);
+		}else if (object instanceof Boolean) {
+			dataOutputStream.writeBoolean((boolean)object);
+		}else if (object instanceof String) {
+			dataOutputStream.writeUTF((String)object);
+		}else if (object instanceof Char) {
+			dataOutputStream.writeChar((char)object);
+		}else if (object instanceof Float) {
+			dataOutputStream.writeFloat((float)object);
+		}else {
+			throw new Exception("不能识别的数据类型！");
+		}
+    	dataOutputStream.flush();
+    	data = byteArrayOutputStream.toByteArray();
+    	dataOutputStream.close();
+    	return data;
+    }
+    
+    
+/*    public static String convert(byte[] data) throws IOException {
+    	DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(data));
+    	char c = null;
+    	dataInputStream.readChar();
+    	dataInputStream.close();
+    	return new string;
+    }*/
 	
 	public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
-		File file = new File("c://下载地址.txt");
-		File outFile = new File("c://1.txt");
+//		File file = new File("c://下载地址.txt");
+//		File outFile = new File("c://1.txt");
 //		byte[] fileStrArray = ReadByteByFile(file);
-		String fileStr = ReadReaderByFile(file);
+//		String fileStr = ReadReaderByFile(file);
 //		System.out.println(fileStr);
-		WriteStringToFile(fileStr,outFile,false,"utf8");
+//		WriteStringToFile(fileStr,outFile,false,"utf8");
 //		WriteInputStreamToOutputStream(new FileInputStream(file), new FileOutputStream(outFile));
-		System.out.println("end");
+//		System.out.println("end");
+		
+		double d = 123123.34234;
+		String s = "loserStar";
+		try {
+			byte[] byte1 = conveterToByteArray( s);
+			byte[] byte2 = s.getBytes();
+			System.out.println(new String(byte1,"UTF-8"));
+			System.out.println(new String(byte2));
+//			System.out.println(convert(byte1));
+//			System.out.println(convert(byte2));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 }
