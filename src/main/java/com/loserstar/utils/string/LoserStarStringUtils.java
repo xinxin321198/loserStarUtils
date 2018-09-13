@@ -2,12 +2,10 @@ package com.loserstar.utils.string;
 
 import java.util.Collection;
 import java.util.Iterator;
-
-
 /**
  * 
  * author: loserStar
- * date: 2018年8月23日下午5:23:36
+ * date: 2018年9月13日下午4:07:41
  * remarks:字符串处理
  */
 public class LoserStarStringUtils {
@@ -120,5 +118,13 @@ public class LoserStarStringUtils {
 			stringBuffer.append(perfix+strings[i]+suffix);
 		}
 		return stringBuffer.toString();
+	}
+	
+	public static Double toDouble(String s) {
+		if (s==null||s.equals("")) {
+			return 0d;
+		}else {
+			return Double.parseDouble(s);
+		}
 	}
 }
