@@ -14,7 +14,7 @@ import com.loserstar.utils.string.LoserStarStringUtils;
 /**
  * 
  * author: loserStar
- * date: 2018年8月21日上午11:31:30
+ * date: 2018年9月12日上午11:48:23
  * remarks:拼接sql的where条件用的工具类
  */
 public class WhereHelper {
@@ -66,12 +66,12 @@ public class WhereHelper {
 	 */
 	private String removePrefix(String string) {
 		string = string.trim();
-		string = LoserStarStringUtils.cutPrefix(string, "where");
-		string = LoserStarStringUtils.cutPrefix(string, "WHERE");
-		string = LoserStarStringUtils.cutPrefix(string, "and");
-		string = LoserStarStringUtils.cutPrefix(string, "AND");
-		string = LoserStarStringUtils.cutPrefix(string, "or");
-		string = LoserStarStringUtils.cutPrefix(string, "OR");
+		string = LoserStarStringUtils.cutPrefix(string, "where ");
+		string = LoserStarStringUtils.cutPrefix(string, "WHERE ");
+		string = LoserStarStringUtils.cutPrefix(string, "and ");
+		string = LoserStarStringUtils.cutPrefix(string, "AND ");
+		string = LoserStarStringUtils.cutPrefix(string, "or ");
+		string = LoserStarStringUtils.cutPrefix(string, "OR ");
 		return string;
 	}
 	

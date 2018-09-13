@@ -79,7 +79,7 @@ public class LoserStarStringUtils {
 	 * @param suffix 每一项的后缀
 	 * @return
 	 */
-	public static String join(final Collection collection,String separator,String perfix,String suffix) {
+	public static String join(final Collection<?> collection,String separator,String perfix,String suffix) {
 		if (collection == null) {
 			return null;
 		}
@@ -88,7 +88,7 @@ public class LoserStarStringUtils {
 			return "";
 		}
 		final StringBuilder sb = new StringBuilder(collection.size() * 16);
-		final Iterator it = collection.iterator();
+		final Iterator<?> it = collection.iterator();
 
 		for (int i = 0; i < collection.size(); i++) {
 			if (i > 0) {
