@@ -11,8 +11,8 @@ import com.loserstar.utils.idgen.SnowflakeIdWorker;
 /**
  * 
  * author: loserStar
- * date: 2018年8月16日下午3:43:38
- * remarks: 基础service
+ * date: 2018年9月19日下午9:23:36
+ * remarks:基础service
  */
 public  abstract class BaseService {
 	/**
@@ -206,7 +206,7 @@ public  abstract class BaseService {
 	 */
 	public Record getFirstList(WhereHelper whereHelper){
 		addSoftDelField(whereHelper);
-		String sql ="select * from "+getTableName()+CheckWhereHelper(whereHelper);
+		String sql ="select * from "+getTableName()+CheckWhereHelper(whereHelper)+" FETCH FIRST 1 ROWS ONLY";
 		return get(sql);
 	}
 	

@@ -29,7 +29,6 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.UUID;
 
-import com.alibaba.druid.sql.visitor.functions.Char;
 
 /**
  * author: loserStar
@@ -672,7 +671,7 @@ public class LoserStarFileUtil {
 			dataOutputStream.writeBoolean((boolean)object);
 		}else if (object instanceof String) {
 			dataOutputStream.writeUTF((String)object);
-		}else if (object instanceof Char) {
+		}else if (object instanceof Character) {
 			dataOutputStream.writeChar((char)object);
 		}else if (object instanceof Float) {
 			dataOutputStream.writeFloat((float)object);
