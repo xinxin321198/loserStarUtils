@@ -11,8 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 
  * author: loserStar
- * date: 2018年7月17日上午9:54:14
+ * date: 2018年10月23日下午5:10:16
  * remarks:
  */
 public class JoinHelper {
@@ -39,7 +40,7 @@ public class JoinHelper {
 	public String toString() {
 		String result =" ";
 		for (JoinTable joinTable : joinTableList) {
-			result+=joinTable.getJoinType()+" join "+joinTable.getJoinTableName()+" on "+joinTable.getJoinTableName()+"."+joinTable.getJoinTableField()+"="+joinTable.getSouceTableName()+"."+joinTable.getSouceTableField();
+			result+=joinTable.getJoinType()+" join "+joinTable.getJoinTableName()+" on "+joinTable.getJoinTableName()+"."+joinTable.getJoinTableField()+"="+joinTable.getSouceTableName()+"."+joinTable.getSouceTableField()+" ";
 		}
 		return result;
 	}
