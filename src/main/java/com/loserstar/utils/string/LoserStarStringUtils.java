@@ -5,7 +5,7 @@ import java.util.Iterator;
 /**
  * 
  * author: loserStar
- * date: 2018年9月13日下午4:07:41
+ * date: 2018年10月24日下午9:35:23
  * remarks:字符串处理
  */
 public class LoserStarStringUtils {
@@ -15,7 +15,16 @@ public class LoserStarStringUtils {
 	 * @return
 	 */
 	public static String empty(String s) {
-		return s==null?"":s;
+		return (null==s)?"":s;
+	}
+	
+	/**
+	 * 转换字符串
+	 * @param object
+	 * @return
+	 */
+	public static String toString(Object object) {
+		return (null==object)?"":object.toString();
 	}
 	
 	/**
