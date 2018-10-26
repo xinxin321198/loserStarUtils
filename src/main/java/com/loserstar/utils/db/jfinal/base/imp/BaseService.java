@@ -11,7 +11,7 @@ import com.loserstar.utils.idgen.SnowflakeIdWorker;
 /**
  * 
  * author: loserStar
- * date: 2018年10月26日下午12:00:40
+ * date: 2018年10月26日下午3:27:48
  * remarks:基础service
  */
 public  abstract class BaseService {
@@ -177,6 +177,15 @@ public  abstract class BaseService {
 	 */
 	public List<Record> getList(WhereHelper whereHelper){
 		addSoftDelField(whereHelper);
+		return getList_notSoftDel(whereHelper);
+	}
+	
+	/**
+	 * 查询列表(不自动添加软删除过滤)
+	 * @param whereHelper
+	 * @return
+	 */
+	public List<Record> getList_notSoftDel(WhereHelper whereHelper){
 		String sql ="select * from "+getTableName()+CheckWhereHelper(whereHelper);
 		return Db.find(sql);
 	}
@@ -192,9 +201,7 @@ public  abstract class BaseService {
 	}
 	
 	/**
-	 * 多表连接查询，并且指定查询出的字段名称
-	 * 	new一个whereHelper参数：如果设置过软删除字段自动过滤
-	 * null:直接不添加软删除过滤
+	 * 多表连接查询，并且指定查询出的字段名称(不自动添加软删除过滤)
 	 * @param selectFiled
 	 * @param joinHelper
 	 * @param whereHelper
@@ -202,6 +209,17 @@ public  abstract class BaseService {
 	 */
 	public List<Record> getJoinList(String selectFiled,JoinHelper joinHelper,WhereHelper whereHelper) {
 		addSoftDelField(whereHelper);
+		return getJoinList_notSoftDel(selectFiled,joinHelper,whereHelper);
+	}
+	
+	/**
+	 *  多表连接查询，并且指定查询出的字段名称
+	 * @param selectFiled
+	 * @param joinHelper
+	 * @param whereHelper
+	 * @return
+	 */
+	public List<Record> getJoinList_notSoftDel(String selectFiled,JoinHelper joinHelper,WhereHelper whereHelper) {
 		if (selectFiled==null||selectFiled.equals("")) {
 			selectFiled = " * ";
 		}
@@ -222,6 +240,15 @@ public  abstract class BaseService {
 	 */
 	public Record getFirstList(WhereHelper whereHelper){
 		addSoftDelField(whereHelper);
+		return getFirstList_notSoftDel(whereHelper);
+	}
+	
+	/**
+	 * 根据条件查询到的列表，获取第一条数据(不自动添加软删除字段过滤)
+	 * @param whereHelper
+	 * @return
+	 */
+	public Record getFirstList_notSoftDel(WhereHelper whereHelper){
 		String sql ="select * from "+getTableName()+CheckWhereHelper(whereHelper)+" FETCH FIRST 1 ROWS ONLY";
 		return get(sql);
 	}
@@ -237,6 +264,17 @@ public  abstract class BaseService {
 	 */
 	public Page<Record> getListPage(int pageNumber,int pageSize,WhereHelper whereHelper){
 		addSoftDelField(whereHelper);
+		return getListPage_notSoftDel(pageNumber, pageSize, whereHelper);
+	}
+	
+	/**
+	 * 查询列表(分页)的列表数据(不自动添加软删除字段过滤)
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param whereHelper
+	 * @return
+	 */
+	public Page<Record> getListPage_notSoftDel(int pageNumber,int pageSize,WhereHelper whereHelper){
 		String sqlExceptSelect = "from "+getTableName()+CheckWhereHelper(whereHelper);
 		return Db.paginate(pageNumber, pageSize, "select *",sqlExceptSelect);
 	}
