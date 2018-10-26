@@ -11,7 +11,7 @@ import com.loserstar.utils.idgen.SnowflakeIdWorker;
 /**
  * 
  * author: loserStar
- * date: 2018年10月26日下午3:27:48
+ * date: 2018年10月26日下午4:14:15
  * remarks:基础service
  */
 public  abstract class BaseService {
@@ -73,6 +73,8 @@ public  abstract class BaseService {
 		if(whereHelper!=null) {
 			if (whereHelper.getStrWhereList()!=null&&whereHelper.getStrWhereList().size()>0) {
 				result = " where "+whereHelper.toString();
+			}else {
+				result+=" "+whereHelper.getOrderStr();
 			}
 		}
 		return  result;
