@@ -11,7 +11,7 @@ import com.loserstar.utils.idgen.SnowflakeIdWorker;
 /**
  * 
  * author: loserStar
- * date: 2018年9月19日下午9:23:36
+ * date: 2018年10月26日下午12:00:40
  * remarks:基础service
  */
 public  abstract class BaseService {
@@ -134,6 +134,16 @@ public  abstract class BaseService {
 	}
 	
 	/**
+	 * 统计数量
+	 * @param whereHelper
+	 * @return
+	 */
+	public int getCount(WhereHelper whereHelper) {
+		String sql ="select COUNT("+getPrimaryKey()+") count from "+getTableName()+CheckWhereHelper(whereHelper);
+		return get(sql).getInt("count");
+	}
+	
+	/**
 	 * 设置某条记录的某个字段为null值
 	 * @param tableName 表名
 	 * @param fieldName 要设为null的字段名
@@ -159,7 +169,9 @@ public  abstract class BaseService {
 	
 	
 	/**
-	 * 查询列表(如果设置过软删除字段自动过滤)
+	 * 查询列表
+	 * new一个whereHelper参数：如果设置过软删除字段自动过滤
+	 * null:直接不添加软删除过滤
 	 * @param whereHelper 查询条件
 	 * @return
 	 */
@@ -181,6 +193,8 @@ public  abstract class BaseService {
 	
 	/**
 	 * 多表连接查询，并且指定查询出的字段名称
+	 * 	new一个whereHelper参数：如果设置过软删除字段自动过滤
+	 * null:直接不添加软删除过滤
 	 * @param selectFiled
 	 * @param joinHelper
 	 * @param whereHelper
@@ -200,7 +214,9 @@ public  abstract class BaseService {
 	}
 	
 	/**
-	 * 根据条件查询到的列表，获取第一条数据(如果设置过软删除字段自动过滤)
+	 * 根据条件查询到的列表，获取第一条数据
+	 * 	new一个whereHelper参数：如果设置过软删除字段自动过滤
+	 * null:直接不添加软删除过滤
 	 * @param whereHelper
 	 * @return
 	 */
@@ -211,7 +227,9 @@ public  abstract class BaseService {
 	}
 	
 	/**
-	 * 查询列表(分页)的列表数据(如果设置过软删除字段自动过滤)
+	 * 查询列表(分页)的列表数据
+	 * 	new一个whereHelper参数：如果设置过软删除字段自动过滤
+	 * null:直接不添加软删除过滤
 	 * @param pageNumber 页码
 	 * @param pageSize 每页多少条
 	 * @param whereHelper 查询条件
