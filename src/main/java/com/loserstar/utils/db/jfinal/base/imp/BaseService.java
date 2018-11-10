@@ -11,7 +11,7 @@ import com.loserstar.utils.idgen.SnowflakeIdWorker;
 /**
  * 
  * author: loserStar
- * date: 2018年10月26日下午4:14:15
+ * date: 2018年11月10日下午6:03:16
  * remarks:基础service
  */
 public  abstract class BaseService {
@@ -348,7 +348,16 @@ public  abstract class BaseService {
 	 * @return
 	 */
 	public int deleteAll() {
-		return Db.update("DELETE FROM "+getTableName());
+		return Db.delete("DELETE FROM "+getTableName());
+	}
+	
+	/**
+	 * 根据条件删除数据
+	 * @param whereHelper
+	 * @return
+	 */
+	public int deleteByWhere(WhereHelper whereHelper) {
+		return Db.delete("DELETE FROM "+getTableName()+CheckWhereHelper(whereHelper));
 	}
 	
 	/**
