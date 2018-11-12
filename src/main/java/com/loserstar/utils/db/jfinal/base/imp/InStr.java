@@ -8,14 +8,15 @@
 package com.loserstar.utils.db.jfinal.base.imp;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 
 import com.loserstar.utils.string.LoserStarStringUtils;
 
 /**
+ * 
  * author: loserStar
- * date: 2018年4月18日下午3:09:02
- * remarks: 拼接sql中in条件的工具类
+ * date: 2018年11月12日下午9:10:58
+ * remarks:拼接sql中in条件的工具类
  */
 public class InStr {
 	public static  enum AndOr {
@@ -32,16 +33,13 @@ public class InStr {
 	/**
 	 * 值的集合，支持原生数组和容器类List
 	 */
-	private List<String> valueList;
-	/**
-	 * @param filedName
-	 * @param valueList
-	 */
-	public InStr(AndOr mode,String filedName, List<String> valueList) {
+	private Collection<?> valueList;
+	
+	public InStr(AndOr mode,String filedName, Collection<String> collection) {
 		super();
 		this.mode = mode;
 		this.filedName = filedName;
-		this.valueList = valueList;
+		this.valueList = collection;
 	}
 	
 	public InStr(AndOr mode,String filedName, String[] valueList) {
@@ -50,7 +48,6 @@ public class InStr {
 		this.filedName = filedName;
 		this.valueList = Arrays.asList(valueList);
 	}
-
 
 	/**
 	 * @return the mode
@@ -84,19 +81,21 @@ public class InStr {
 	public void setFiledName(String filedName) {
 		this.filedName = filedName;
 	}
+
+
 	/**
 	 * @return the valueList
 	 */
-	public List<String> getValueList() {
+	public Collection<?> getValueList() {
 		return valueList;
 	}
+
 	/**
 	 * @param valueList the valueList to set
 	 */
-	public void setValueList(List<String> valueList) {
+	public void setValueList(Collection<?> valueList) {
 		this.valueList = valueList;
 	}
-
 
 	@Override
 	public String toString() {
