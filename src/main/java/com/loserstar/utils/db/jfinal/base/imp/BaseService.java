@@ -11,7 +11,7 @@ import com.loserstar.utils.idgen.SnowflakeIdWorker;
 /**
  * 
  * author: loserStar
- * date: 2018年11月10日下午6:03:16
+ * date: 2018年11月13日下午4:48:48
  * remarks:基础service
  */
 public  abstract class BaseService {
@@ -282,13 +282,19 @@ public  abstract class BaseService {
 	}
 	
 	/**
-	 * 根据主键id得到一条记录
+	 * 根据字符串主键id得到一条记录
 	 * @param id
 	 * @return
 	 */
 	public Record getById(String id) {
 		return Db.findById(getTableName(), getPrimaryKey(), id);
 	}
+	
+	/**
+	 * 根据long形的主键id得到一条记录
+	 * @param id
+	 * @return
+	 */
 	public Record getById(long id) {
 		return Db.findById(getTableName(), getPrimaryKey(), id);
 	}
@@ -390,6 +396,23 @@ public  abstract class BaseService {
 		return flag;
 	}
 	
+	/**
+	 * 批量新增
+	 * @param list
+	 * @return 返回每条sql影响的行数
+	 */
+	public int[] batchInsert(List<Record> list) {
+		return Db.batchSave(getTableName(), list, list.size());
+	}
+	
+	/**
+	 * 批量修改
+	 * @param list
+	 * @return 返回每条sql影响的行数
+	 */
+	public int[] batchUpdate(List<Record> list) {
+		return Db.batchUpdate(getTableName(), list, list.size());
+	}
 	/**
 	 * 批量保存，根据flag标记来判断删除还是新增修改(c新增u修改r读取d删除)u在无id的情况下为新增
 	 * @param kpiList
