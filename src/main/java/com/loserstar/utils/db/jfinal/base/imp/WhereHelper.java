@@ -14,7 +14,7 @@ import com.loserstar.utils.string.LoserStarStringUtils;
 /**
  * 
  * author: loserStar
- * date: 2018年9月12日上午11:48:23
+ * date: 2018年11月14日下午4:49:11
  * remarks:拼接sql的where条件用的工具类
  */
 public class WhereHelper {
@@ -49,7 +49,9 @@ public class WhereHelper {
 	}
 	
 	public WhereHelper addIn(InStr inStr) {
-		this.strWhereList.add(inStr.toString());
+		if (inStr!=null&&inStr.toString()!=null) {
+			this.strWhereList.add(inStr.toString());
+		}
 		return this;
 	}
 	

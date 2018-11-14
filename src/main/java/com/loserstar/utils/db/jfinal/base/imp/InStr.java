@@ -15,7 +15,7 @@ import com.loserstar.utils.string.LoserStarStringUtils;
 /**
  * 
  * author: loserStar
- * date: 2018年11月12日下午9:10:58
+ * date: 2018年11月14日下午4:48:53
  * remarks:拼接sql中in条件的工具类
  */
 public class InStr {
@@ -100,14 +100,18 @@ public class InStr {
 	@Override
 	public String toString() {
 		String in = "";
-		if (mode==AndOr.AND) {
-			in+=" and ";
+		if(this.valueList.size()>0) {
+			if (mode==AndOr.AND) {
+				in+=" and ";
+			}else {
+				in+=" or ";
+			}
+			in += " "+filedName;
+			in += " in ("+LoserStarStringUtils.join(valueList, ",","'","'")+") ";
+			return in;
 		}else {
-			in+=" or ";
+			return null;
 		}
-		in += " "+filedName;
-		in += " in ("+LoserStarStringUtils.join(valueList, ",","'","'")+") ";
-		return in;
 	}
 	
 	
