@@ -11,10 +11,13 @@ import com.loserstar.utils.idgen.SnowflakeIdWorker;
 /**
  * 
  * author: loserStar
- * date: 2018年11月13日下午4:48:48
- * remarks:基础service
+ * date: 2018年11月15日下午10:19:06
+ * remarks:基础server，加入获取单挑数据，数据库的判断
  */
 public  abstract class BaseService {
+	public enum DBType{
+		mysql,db2,oracle,sqlserver
+	}
 	/**
 	 * 删除
 	 */
@@ -240,9 +243,9 @@ public  abstract class BaseService {
 	 * @param whereHelper
 	 * @return
 	 */
-	public Record getFirstList(WhereHelper whereHelper){
+	public Record getFirstList(WhereHelper whereHelper,DBType dbType){
 		addSoftDelField(whereHelper);
-		return getFirstList_notSoftDel(whereHelper);
+		return getFirstList_notSoftDel(whereHelper,dbType);
 	}
 	
 	/**
@@ -250,8 +253,17 @@ public  abstract class BaseService {
 	 * @param whereHelper
 	 * @return
 	 */
-	public Record getFirstList_notSoftDel(WhereHelper whereHelper){
-		String sql ="select * from "+getTableName()+CheckWhereHelper(whereHelper)+" FETCH FIRST 1 ROWS ONLY";
+	public Record getFirstList_notSoftDel(WhereHelper whereHelper,DBType dbType){
+		String sql ="";
+		if(dbType.equals(DBType.db2)) {
+			sql = "select * from "+getTableName()+CheckWhereHelper(whereHelper)+" FETCH FIRST 1 ROWS ONLY";
+		}else if(dbType.equals(DBType.mysql)) {
+			sql = "select * from "+getTableName()+CheckWhereHelper(whereHelper)+" LIMIT 1";
+		}else if(dbType.equals(DBType.oracle)) {
+			sql = "select * from "+getTableName()+CheckWhereHelper(whereHelper)+" ROWNUM <= 1";
+		}else if(dbType.equals(DBType.sqlserver)) {
+			sql = "select TOP number|percent column_name(s) from "+getTableName()+CheckWhereHelper(whereHelper);
+		}
 		return get(sql);
 	}
 	
