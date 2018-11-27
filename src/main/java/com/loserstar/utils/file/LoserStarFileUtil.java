@@ -10,12 +10,14 @@ package com.loserstar.utils.file;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
@@ -38,14 +40,28 @@ import java.util.UUID;
  * remarks:
  */
 public class LoserStarFileUtil {
-	public static final boolean isLog = true;
-	public static String sysLog(String string) {
+	public static final boolean isLog = false;
+	private static String sysLog(String string) {
 		if (isLog) {
 			System.out.println(string);
 			return string;
 		}
 		else {
 			return "未开启log开关";
+		}
+	}
+	
+	/**
+	 * 关闭流
+	 * @param closeable
+	 */
+	private static void close(Closeable closeable) {
+		if (closeable!=null) {
+			try {
+				closeable.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	/**
@@ -56,17 +72,19 @@ public class LoserStarFileUtil {
 	 */
 	public static String ReadReaderByFile(File file,String charsetName){
 		StringBuffer stringBuffer = new StringBuffer();
+		BufferedReader bufferedReader = null;
 		try {
 			InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file), charsetName);
-			BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+			bufferedReader = new BufferedReader(inputStreamReader);
 			String line = null;
 			while ((line = bufferedReader.readLine())!=null) {
 				stringBuffer.append(line);
 			}
-			bufferedReader.close();
 			sysLog("com.loserstar.utils.file.LoserStarFileUtil.ReadReaderByFile(File, String) end");
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			close(bufferedReader);
 		}
 		return stringBuffer.toString();
 	}
@@ -114,16 +132,20 @@ public class LoserStarFileUtil {
 	 * @return
 	 */
 	public static <T> T ReadObjectByFilePath(String objectFilePath,Class<T> class1){
+		InputStream inputStream = null;
+		ObjectInputStream objectInputStream = null;
 		try {
-			InputStream inputStream = new FileInputStream(new File(objectFilePath));
-			ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+			inputStream = new FileInputStream(new File(objectFilePath));
+			objectInputStream = new ObjectInputStream(inputStream);
 			@SuppressWarnings("unchecked")
 			T resultObject = (T)objectInputStream.readObject();
-			objectInputStream.close();
 			sysLog("com.loserstar.utils.file.LoserStarFileUtil.ReadObjectByFilePath(String, Class<T>) end");
 			return resultObject;
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			close(objectInputStream);
+			close(inputStream);
 		}
 		return null;
 	}
@@ -133,37 +155,67 @@ public class LoserStarFileUtil {
 	
 	
 	/**
-	 * 以字节的方式读取一个流中的内容（只读一次，传入读取的大小）
+	 * 以字节的方式读取一个流中的内容
 	 * @param inputStream 输入流
-	 * @param length 读取的大小
+	 * @param length 每次读取的大小
 	 * @return
 	 */
 	public static byte[] ReadByteByInputStream(InputStream inputStream,int length){
+		/*附上API：
+	　　　　public int read(byte[] b) throws IOException　　　　
+	　　从输入流中读取一定数量的字节，并将其存储在缓冲区数组 b 中。以整数形式返回实际读取的字节数。
+	　　在输入数据可用、检测到文件末尾或者抛出异常前，此方法一直阻塞。
+	　　如果 b 的长度为 0，则不读取任何字节并返回 0；否则，尝试读取至少一个字节。如果因为流位于文件末尾而没有可用的字节，则返回值 -1；否则，至少读取一个字节并将其存储在 b 中。
+			注意这段话：将读取的第一个字节存储在元素 b[0] 中，下一个存储在 b[1] 中，依次类推。读取的字节数最多等于 b 的长度。设 k 为实际读取的字节数；这些字节将存储在 b[0] 到 b[k-1] 的元素中，不影响 b[k] 到 b[b.length-1] 的元素。 */
+		ByteArrayOutputStream byteArrayOutputStream = null;
 		try {
-			//利用字节流读取文件
-			byte[] buf = new byte[length];
-			inputStream.read(buf);
-			inputStream.close();
+			byte[] buf = new byte[length];//每次读取的字节大小缓冲区（实际没太大用）
+			byteArrayOutputStream = new ByteArrayOutputStream();//用字节数组流来存储多次读取后的内容
+			int len = 0;
+		
+			while ((len = inputStream.read(buf))!=-1) {
+				byteArrayOutputStream.write(buf,0,len);//此方法是读取到多长len长度的byte就写入多少，所以文件大小不会超出
+//				System.out.println("此次读取到的byte大小："+len);
+				/**
+				 * 1.此地方不能使用byteArrayOutputStream.write(buf);方法
+				 * 2.因为网络传输有延迟，每次使用read读取到的buf的大小都不一样，此方法每次循环都把buf整个length长度都输出到outputstream中，并且API上明确说明不会清空缓冲区，导致最终字节数超出原文件很多；
+				 * 3.debug时候看似正常，原因是断点暂停的那段时间让网络延迟能完整的获取到buf最大长度的字节码，所以最终只会在输出最后的byte时候，文件末尾超出那么一点点字节
+				 */
+			}
+			byteArrayOutputStream.flush();
+			byte[] resultBuf = byteArrayOutputStream.toByteArray();//读完之后输出所有的字节
 			sysLog("com.loserstar.utils.file.LoserStarFileUtil.ReadByteByInputStream(InputStream, int) end");
-			return buf;
+			return resultBuf;
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			close(byteArrayOutputStream);
+			close(inputStream);
 		}
 		return null;
 	}
 	
+
+	
 	/**
-	 * 以字节的方式读取一个流中的内容（只读一次，大小以inputStream.available()的值来决定）
+	 * 以字节的方式读取一个流中的内容（每次读取的大小以inputStream.available()的值来决定，本地一次可以得到完整的流的大小，网络的是分批次传送，会读读多次）
 	 * @param inputStream 输入流
 	 * @return
 	 */
 	public static byte[] ReadByteByInputStream(InputStream inputStream){
 		try {
-			byte[] buf = ReadByteByInputStream(inputStream, inputStream.available());
+			//在进行网络操作时往往出错，因为你调用available()方法时，对发发送的数据可能还没有到达，你得到的count是0，所以等待到有数据出现
+			int count = 0;
+			while (count == 0) { 
+				   count = inputStream.available(); //获取到用于每次读取的byte大小
+			  } 
+			byte[] buf = ReadByteByInputStream(inputStream, count);
 			sysLog("com.loserstar.utils.file.LoserStarFileUtil.ReadByteByInputStream(InputStream) end");
 			return buf;
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			close(inputStream);
 		}
 		return null;
 	}
@@ -207,16 +259,20 @@ public class LoserStarFileUtil {
 	 * @param object 对象
 	 */
 	public static void WriteObjectToFilePath(String objectFilePath,Object object){
+		OutputStream outputStream = null;
+		ObjectOutputStream objectOutputStream = null;
 		try {
 			
-			OutputStream outputStream = new FileOutputStream(new File(objectFilePath));
-			ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+			outputStream = new FileOutputStream(new File(objectFilePath));
+			objectOutputStream = new ObjectOutputStream(outputStream);
 			objectOutputStream.writeObject(object);
 			objectOutputStream.flush();
-			objectOutputStream.close();
 			sysLog("com.loserstar.utils.file.LoserStarFileUtil.WriteObjectToFilePath(String, Object) end");
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			close(objectOutputStream);
+			close(outputStream);
 		}
 	}
 	
@@ -296,10 +352,11 @@ public class LoserStarFileUtil {
 		try {
 			writer.write(string);
 			writer.flush();
-			writer.close();
 			sysLog("com.loserstar.utils.file.LoserStarFileUtil.WriteStringToWriter(String, Writer) end");
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			close(writer);
 		}
 	}
 	
@@ -326,14 +383,16 @@ public class LoserStarFileUtil {
 	 * @param isAppend 是否追加内容
 	 */
 	public static void WriteBytesToFile(byte[] bytes,File file,boolean isAppend){
+		FileOutputStream fileOutputStream = null;
 		try {
-			FileOutputStream fileOutputStream = new FileOutputStream(file,isAppend);
+			fileOutputStream = new FileOutputStream(file,isAppend);
 			fileOutputStream.write(bytes);
 			fileOutputStream.flush();
-			fileOutputStream.close();
 			sysLog("com.loserstar.utils.file.LoserStarFileUtil.WriteBytesToFile(byte[], File, boolean) end");
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			close(fileOutputStream);
 		}
 	}
 	
@@ -342,13 +401,15 @@ public class LoserStarFileUtil {
 	 * @param bytes  字节数组
 	 * @param outputStream 输出流对象
 	 */
-	public static void WriteByteToOutputStream(byte[] bytes,OutputStream outputStream) {
+	public static void WriteBytesToOutputStream(byte[] bytes,OutputStream outputStream) {
 		try {
 			outputStream.write(bytes);
-			outputStream.close();
+			outputStream.flush();
 			sysLog("com.loserstar.utils.file.LoserStarFileUtil.WriteByteToOutputStream(byte[], OutputStream) end");
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			close(outputStream);
 		}
 	}
 	
@@ -365,6 +426,8 @@ public class LoserStarFileUtil {
 			sysLog("com.loserstar.utils.file.LoserStarFileUtil.WriteInputStreamToFilePath(InputStream, String, boolean) end");
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			close(inputStream);
 		}
 	}
 	/**
@@ -375,14 +438,13 @@ public class LoserStarFileUtil {
 	 */
 	public static void WriteInputStreamToFile(InputStream inputStream,File file,boolean isAppend) {
 		try {
-			byte[] buf = new byte[inputStream.available()];
-			//利用字节流读取文件
-			inputStream.read(buf);
-			inputStream.close();
-			WriteBytesToFile(buf,file, isAppend);
+			byte[] buf = ReadByteByInputStream(inputStream);//从input流读取字节
+			WriteBytesToFile(buf,file, isAppend);//把字节写入文件
 			sysLog("com.loserstar.utils.file.LoserStarFileUtil.WriteInputStreamToFile(InputStream, File, boolean) end");
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			close(inputStream);
 		}
 	}
 	
@@ -393,15 +455,14 @@ public class LoserStarFileUtil {
 	 */
 	public static void WriteInputStreamToOutputStream(InputStream inputStream,OutputStream outputStream) {
 		try {
-			//在内存中开辟一个byte数组
-			byte[] buf = new byte[inputStream.available()];
-			//利用字节流读取文件
-			inputStream.read(buf);
-			inputStream.close();
-			WriteByteToOutputStream(buf, outputStream);
+			byte[] buf = ReadByteByInputStream(inputStream);//从input流读取字节
+			WriteBytesToOutputStream(buf, outputStream);//把字节写入outputStream
 			sysLog("com.loserstar.utils.file.LoserStarFileUtil.WriteInputStreamToOutputStream(InputStream, OutputStream) end");
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			close(inputStream);
+			close(outputStream);
 		}
 	}
 	
@@ -417,15 +478,19 @@ public class LoserStarFileUtil {
 	 * @param printStr 输出的字符串
 	 */
 	public static void PrintWriterToFile(String filePath,String printStr,boolean isAppend){
+		FileWriter fileWriter = null;
+		PrintWriter printWriter = null;
 		try {
-			FileWriter fileWriter = new FileWriter(new File(filePath),isAppend);
-			PrintWriter printWriter = new PrintWriter(fileWriter);
+			fileWriter = new FileWriter(new File(filePath),isAppend);
+			printWriter = new PrintWriter(fileWriter);
 			printWriter.print(printStr);
 			printWriter.flush();
-			printWriter.close();
 			sysLog("com.loserstar.utils.file.LoserStarFileUtil.PrintWriterToFile(String, String, boolean) end");
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			close(printWriter);
+			close(fileWriter);
 		}
 	}
 	
@@ -436,15 +501,20 @@ public class LoserStarFileUtil {
 	 * @param isAppend
 	 */
 	public static void PrintStreamToFile(String printStreamFilePath,String printStr,boolean isAppend){
+		OutputStream outputStream = null;
+				PrintStream printStream = null;
 		try {
-			OutputStream outputStream = new FileOutputStream(new File(printStreamFilePath),isAppend);
-			PrintStream printStream = new PrintStream(outputStream);
+			outputStream = new FileOutputStream(new File(printStreamFilePath),isAppend);
+			printStream = new PrintStream(outputStream);
 			printStream.print(printStr);
 			printStream.flush();
 			printStream.close();
 			sysLog("com.loserstar.utils.file.LoserStarFileUtil.PrintStreamToFile(String, String, boolean) end");
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			close(printStream);
+			close(outputStream);
 		}
 	}
 	
@@ -657,6 +727,12 @@ public class LoserStarFileUtil {
         return charset;
     }
     
+    /**
+     * 把object对象转为字节数组
+     * @param object
+     * @return
+     * @throws Exception
+     */
     public static byte[] conveterToByteArray(Object object) throws Exception {
     	byte[] data = null;
     	ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
