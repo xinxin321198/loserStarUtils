@@ -11,17 +11,10 @@ import org.apache.commons.beanutils.PropertyUtilsBean;
 
 
 /**
- * author: lxx
- * version: 2016年5月9日下午4:54:17
- * email:362527240@qq.com
- * remarks:
- */
-/**
- * @Description 对象属性操作工具类
- * @Package com.viathink.msswms.sample.utils.PropertiesUtils.java
- * @author LiuJunGuang
- * @date 2012-5-11 下午1:54:08
- * @version V1.0
+ * 
+ * author: loserStar
+ * date: 2018年12月7日上午9:53:22
+ * remarks:对象map转换工具类
  */
 public class LoserStarObjMapConvertUtil {
 
@@ -105,14 +98,16 @@ public class LoserStarObjMapConvertUtil {
 	 */
 	public static <T> List<Map<String, T>> ConvertListToMapList(List<T> list) throws Exception{
 		List<Map<String, T>> resultList = new ArrayList<Map<String,T>>();
-		for (T t: list) {
+		resultList = (List<Map<String, T>>) list;
+		//遍历转换貌似慢着一些，直接整个强制转换应该稍快点（猜测的，没具体考究过）
+/*		for (T t: list) {
 			resultList.add(ConvertToMap(t));
-		}
+		}*/
 		return resultList;
 	}
 	
 	/**
-	 * 某个List的父或子对象转为List
+	 * 某个List的父或子对象转为List（返回值的泛型基于形参的实际类型，调用时就可明确知道返回值类型）
 	 * @param t
 	 * @return
 	 * @throws Exception
@@ -121,6 +116,20 @@ public class LoserStarObjMapConvertUtil {
 	public static <T> List<T> ConvertToList(T t) throws Exception{
 		if (t instanceof List) {
 			return (List<T>)t;
+		}else {
+			throw new Exception("对象非List类型，不能转换");
+		}
+	}
+	
+	/**
+	 * 某个List的父或子对象转为List（返回值的泛型基于返回值实际类型，所以该方法并不知道返回值类型，调用时需强制转换）
+	 * @param object
+	 * @return
+	 * @throws Exception
+	 */
+	public static List<?> ConvertObjectToList(Object object) throws Exception {
+		if (object instanceof List) {
+			return (List<?>)object;
 		}else {
 			throw new Exception("对象非List类型，不能转换");
 		}
