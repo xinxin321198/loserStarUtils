@@ -7,9 +7,10 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 /**
+ * 
  * author: loserStar
- * date: 2018年7月25日下午2:44:53
- * remarks: 日期相关工具类
+ * date: 2018年12月12日下午7:04:18
+ * remarks:日期相关工具类
  */
 public class LoserStarDateUtils {
 	/**
@@ -598,10 +599,10 @@ Z	时区	RFC 822 time zone	-0800
 	 * @return
 	 */
 	public static String getDatePoor(Date endDate, Date nowDate) {
-	    long nd = 1000 * 24 * 60 * 60;
-	    long nh = 1000 * 60 * 60;
-	    long nm = 1000 * 60;
-	    long ns = 1000;
+	    long nd = 1000 * 24 * 60 * 60;//一天的毫秒数
+	    long nh = 1000 * 60 * 60;//一个小时的毫秒数
+	    long nm = 1000 * 60;//一分钟的毫秒数
+	    long ns = 1000;//一秒的毫秒数
 	    // 获得两个时间的毫秒时间差异
 	    long diff = endDate.getTime() - nowDate.getTime();
 	    // 计算差多少天
@@ -610,9 +611,11 @@ Z	时区	RFC 822 time zone	-0800
 	    long hour = diff % nd / nh;
 	    // 计算差多少分钟
 	    long min = diff % nd % nh / nm;
-	    // 计算差多少秒//输出结果
+	    // 计算差多少秒
 	     long sec = diff % nd % nh % nm / ns;
-	    return day + "天" + hour + "小时" + min + "分钟"+sec+"秒";
+	     //计算相差多少毫秒
+	     long millisecond = diff % nd % nh % nm % ns;
+	    return day + "天" + hour + "小时" + min + "分钟"+sec+"秒"+millisecond+"毫秒";
 	}
 	
 	public static void main(String[] args) throws ParseException {

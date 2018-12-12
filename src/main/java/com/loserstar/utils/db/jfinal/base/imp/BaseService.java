@@ -11,8 +11,8 @@ import com.loserstar.utils.idgen.SnowflakeIdWorker;
 /**
  * 
  * author: loserStar
- * date: 2018年11月19日下午12:07:26
- * remarks:基础server，加入多数据源的判断
+ * date: 2018年12月12日下午7:03:53
+ * remarks:基础service
  */
 public  abstract class BaseService {
 	public enum DBType{
@@ -93,7 +93,7 @@ public  abstract class BaseService {
 			if (whereHelper.getStrWhereList()!=null&&whereHelper.getStrWhereList().size()>0) {
 				result = " where "+whereHelper.toString();
 			}else {
-				result+=" "+whereHelper.getOrderStr();
+				 result+=" "+(whereHelper.getOrderStr()==null?"":whereHelper.getOrderStr());
 			}
 		}
 		return  result;
@@ -269,9 +269,38 @@ public  abstract class BaseService {
 	 * 根据条件查询到的列表，获取第一条数据
 	 * 	new一个whereHelper参数：如果设置过软删除字段自动过滤
 	 * null:直接不添加软删除过滤
+	 * ps:看了jfinal源码，测试后发现jfinal是先取出所有数据，然后取第一条，效率不行，请参考使用数据库方言的方式
+	 * @see com.loserstar.utils.db.jfinal.base.imp.BaseService.getFirstList(WhereHelper, DBType)
 	 * @param whereHelper
 	 * @return
 	 */
+	@Deprecated
+	public Record getFirstList(WhereHelper whereHelper) {
+		addSoftDelField(whereHelper);
+		return getFirstList_notSoftDel(whereHelper);
+	}
+	
+	/**
+	 * 根据条件查询到的列表，获取第一条数据(不自动添加软删除字段过滤)
+	 * ps:看了jfinal源码，测试后发现jfinal是先取出所有数据，然后取第一条，效率不行，请参考使用数据库方言的方式
+	 * @see com.loserstar.utils.db.jfinal.base.imp.BaseService.getFirstList_notSoftDel(WhereHelper, DBType)
+	 * @param whereHelper
+	 * @return
+	 */
+	@Deprecated
+	public Record getFirstList_notSoftDel(WhereHelper whereHelper) {
+		String sql ="select * from "+getTableName()+CheckWhereHelper(whereHelper);
+		return Db.findFirst(sql);
+	}
+	
+	/**
+	 * 根据条件查询到的列表，获取第一条数据
+	 * 	new一个whereHelper参数：如果设置过软删除字段自动过滤
+	 * null:直接不添加软删除过滤
+	 * @param whereHelper
+	 * @return
+	 */
+
 	public Record getFirstList(WhereHelper whereHelper,DBType dbType){
 		addSoftDelField(whereHelper);
 		return getFirstList_notSoftDel(whereHelper,dbType);
