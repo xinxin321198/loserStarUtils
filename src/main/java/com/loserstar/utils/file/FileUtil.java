@@ -14,7 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.loserstar.utils.idgen.IdGen;
+import com.loserstar.utils.idgen.LoserStarIdGenUtil;
 
 /**
  * author: loserStar
@@ -31,7 +31,7 @@ public class FileUtil {
 	 */
 	public static String generateFileName(String sourceFileName){
 //		long time = System.currentTimeMillis();
-		String newFileName = IdGen.uuid() + getFileNameSuffix(sourceFileName);// 构成新文件名。
+		String newFileName = LoserStarIdGenUtil.uuid() + getFileNameSuffix(sourceFileName);// 构成新文件名。
 		return newFileName;
 	}
 	

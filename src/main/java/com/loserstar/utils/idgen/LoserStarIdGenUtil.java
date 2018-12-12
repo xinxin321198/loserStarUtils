@@ -13,7 +13,7 @@ import com.loserstar.utils.encodes.Encodes;
  * @author ThinkGem
  * @version 2013-01-15
  */
-public class IdGen {
+public class LoserStarIdGenUtil {
 
 	private static SecureRandom random = new SecureRandom();
 	
@@ -42,10 +42,10 @@ public class IdGen {
 	
 	
 	public static void main(String[] args) {
-		System.out.println(IdGen.uuid());
-		System.out.println(IdGen.uuid().length());
+		System.out.println(LoserStarIdGenUtil.uuid());
+		System.out.println(LoserStarIdGenUtil.uuid().length());
 		for (int i=0; i<1000; i++){
-			System.out.println(IdGen.randomLong() + "  " + IdGen.randomBase62(5));
+			System.out.println(LoserStarIdGenUtil.randomLong() + "  " + LoserStarIdGenUtil.randomBase62(5));
 		}
 	}
 
