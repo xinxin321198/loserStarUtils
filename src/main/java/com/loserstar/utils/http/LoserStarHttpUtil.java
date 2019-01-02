@@ -94,15 +94,6 @@ public class LoserStarHttpUtil {
 		HttpURLConnection conn  = null;//可能是http可能是https
 		if (url.getProtocol().equals("http")) {
 			 conn  =(HttpURLConnection) url.openConnection();
-			conn.setRequestMethod(method);   //设置本次请求的方式 ， 默认是GET方式， 参数要求都是大写字母
-			conn.setConnectTimeout(5000);//设置连接超时
-			conn.setDoInput(true);//是否打开输入流 ， 此方法默认为true(post 请求是以流的方式隐式的传递参数)
-			conn.setDoOutput(true);//是否打开输出流， 此方法默认为false
-			// post请求缓存设为false
-			conn.setUseCaches(false);
-			// 设置该HttpURLConnection实例是否自动执行重定向
-			conn.setInstanceFollowRedirects(true);
-			
 		}else if(url.getProtocol().equals("https")) {
 			//创建SSLContext对象，并使用我们指定的信任管理器初始化
 			TrustManager[] tm = {new MyX509TrustManager ()};
@@ -117,6 +108,14 @@ public class LoserStarHttpUtil {
 			httpsConn.setSSLSocketFactory(ssf);
 			conn = httpsConn;
 		}
+		conn.setRequestMethod(method);   //设置本次请求的方式 ， 默认是GET方式， 参数要求都是大写字母
+		conn.setConnectTimeout(5000);//设置连接超时
+		conn.setDoInput(true);//是否打开输入流 ， 此方法默认为true(post 请求是以流的方式隐式的传递参数)
+		conn.setDoOutput(true);//是否打开输出流， 此方法默认为false
+		// post请求缓存设为false
+		conn.setUseCaches(false);
+		// 设置该HttpURLConnection实例是否自动执行重定向
+		conn.setInstanceFollowRedirects(true);
         return conn;
 	}
 	
@@ -207,9 +206,11 @@ public class LoserStarHttpUtil {
 			connection.connect();
 			// 创建输入输出流,用于往连接里面输出携带的参数,(输出内容为?后面的内容)
 			DataOutputStream dataout = new DataOutputStream(connection.getOutputStream());
-			//URLEncoder.encode("32", "utf-8"); // URLEncoder.encode()方法  为字符串进行编码
+//			URLEncoder.encode("32", "utf-8"); // URLEncoder.encode()方法  为字符串进行编码
 			// 将参数输出到连接
-			dataout.writeBytes(parm);
+//			dataout.writeBytes(parm);//这好像会乱码
+			dataout.write(parm.getBytes("UTF-8"));
+			
 			// 输出完成后刷新并关闭流
 			dataout.flush();
 			dataout.close(); // 重要且易忽略步骤 (关闭流,切记!)

@@ -21,7 +21,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
  * @author calvin
  * @version 2013-01-15
  */
-public class Encodes {
+public class LoserStarEncodes {
 
 	private static final String DEFAULT_URL_ENCODING = "UTF-8";
 	private static final char[] BASE62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();

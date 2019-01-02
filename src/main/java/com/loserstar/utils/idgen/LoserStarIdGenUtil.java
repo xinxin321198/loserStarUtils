@@ -6,7 +6,7 @@ package com.loserstar.utils.idgen;
 import java.security.SecureRandom;
 import java.util.UUID;
 
-import com.loserstar.utils.encodes.Encodes;
+import com.loserstar.utils.encodes.LoserStarEncodes;
 
 /**
  * 封装各种生成唯一性ID算法的工具类.
@@ -37,7 +37,7 @@ public class LoserStarIdGenUtil {
 	public static String randomBase62(int length) {
 		byte[] randomBytes = new byte[length];
 		random.nextBytes(randomBytes);
-		return Encodes.encodeBase62(randomBytes);
+		return LoserStarEncodes.encodeBase62(randomBytes);
 	}
 	
 	
