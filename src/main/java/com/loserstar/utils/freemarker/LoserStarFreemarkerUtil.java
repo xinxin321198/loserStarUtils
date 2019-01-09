@@ -41,12 +41,26 @@ public class LoserStarFreemarkerUtil {
 	configuration.setServletContextForTemplateLoading(request.getSession().getServletContext(), "/template");
 	configuration.getTemplate("framemaker.ftl"); //framemaker.ftl为要装载的模板
 */
-	
+	/**
+	 * 类内部自用的填充模板方法
+	 * @param temp
+	 * @param data
+	 * @return
+	 * @throws TemplateException
+	 * @throws IOException
+	 */
+	private static String runTemplate(Template temp,Object data) throws TemplateException, IOException {
+		StringWriter stringWriter = new StringWriter();
+		temp.process(data,stringWriter);
+		String reusltStr = stringWriter.toString();
+		return reusltStr;
+	}
+
 	/**
 	 * 执行模板，输出运行后的字符串
 	 * web环境下执行使用的方法
 	 * @param request 请求对象
-	 * @param templateDir 模板所在路径（传入web工程根目录下的相对路径，不带文件名的，文件名要单独传,路径前后要有斜杠）
+	 * @param templateDir 模板所在路径（传入web工程根目录下的相对路径，不带文件名的，文件名要单独传）
 	 * @param templateName 模板文件名
 	 * @param data 填充的数据
 	 * @return
@@ -57,14 +71,11 @@ public class LoserStarFreemarkerUtil {
 	 * @throws TemplateException
 	 */
 	public static String runForWeb(HttpServletRequest request,String templateDir,String templateName,Object data) throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException, TemplateException {
-		Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);//测试下来jdk1.7可以使用的版本
+		Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 		cfg.setDefaultEncoding("UTF-8");
 		cfg.setServletContextForTemplateLoading(request.getSession().getServletContext(),templateDir );
 		Template temp = cfg.getTemplate(templateName); 
-		StringWriter stringWriter = new StringWriter();
-		temp.process(data,stringWriter);
-		String reusltStr = stringWriter.toString();
-		return reusltStr;
+		return runTemplate(temp, data);
 	}
 	
 	/**
@@ -85,11 +96,9 @@ public class LoserStarFreemarkerUtil {
 		cfg.setDefaultEncoding("UTF-8");
 		cfg.setDirectoryForTemplateLoading(new File(templateDir));
 		Template temp = cfg.getTemplate(templateName); 
-		StringWriter stringWriter = new StringWriter();
-		temp.process(data,stringWriter);
-		String reusltStr = stringWriter.toString();
-		return reusltStr;
+		return runTemplate(temp, data);
 	}
+	
 
 
 	public static void main(String[] args) throws Exception {
