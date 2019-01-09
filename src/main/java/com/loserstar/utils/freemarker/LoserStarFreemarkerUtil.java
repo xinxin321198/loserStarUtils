@@ -1,5 +1,6 @@
 package com.loserstar.utils.freemarker;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
@@ -19,8 +20,8 @@ import freemarker.template.TemplateNotFoundException;
 /**
  * 
  * author: loserStar
- * date: 2018年10月29日下午7:12:59
- * remarks: freemarker工具类
+ * date: 2019年1月9日下午6:11:54
+ * remarks:freemarker工具类
  */
 public class LoserStarFreemarkerUtil {
 /*	Freemarker提供了3种加载模板目录的方法。 它使用Configuration类加载模板。
@@ -59,6 +60,30 @@ public class LoserStarFreemarkerUtil {
 		Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);//测试下来jdk1.7可以使用的版本
 		cfg.setDefaultEncoding("UTF-8");
 		cfg.setServletContextForTemplateLoading(request.getSession().getServletContext(),templateDir );
+		Template temp = cfg.getTemplate(templateName); 
+		StringWriter stringWriter = new StringWriter();
+		temp.process(data,stringWriter);
+		String reusltStr = stringWriter.toString();
+		return reusltStr;
+	}
+	
+	/**
+	 * 执行模板，输出运行后的字符串
+	 * 基于文件系统的方法
+	 * @param templateDir 模板所在路径（传入绝对路径目录）
+	 * @param templateName 模板文件名
+	 * @param data 填充的数据
+	 * @return
+	 * @throws TemplateNotFoundException
+	 * @throws MalformedTemplateNameException
+	 * @throws ParseException
+	 * @throws IOException
+	 * @throws TemplateException
+	 */
+	public static String runForFileSystem(String templateDir,String templateName,Object data) throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException, TemplateException {
+		Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
+		cfg.setDefaultEncoding("UTF-8");
+		cfg.setDirectoryForTemplateLoading(new File(templateDir));
 		Template temp = cfg.getTemplate(templateName); 
 		StringWriter stringWriter = new StringWriter();
 		temp.process(data,stringWriter);
