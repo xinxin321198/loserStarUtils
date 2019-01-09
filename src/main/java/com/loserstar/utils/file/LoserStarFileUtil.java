@@ -1,10 +1,3 @@
-/**
- * author: loserStar
- * date: 2018年3月13日下午2:24:54
- * email:362527240@qq.com
- * github:https://github.com/xinxin321198
- * remarks:
- */
 package com.loserstar.utils.file;
 
 import java.io.BufferedInputStream;
@@ -33,11 +26,10 @@ import java.util.UUID;
 
 
 /**
+ * 
  * author: loserStar
- * date: 2018年3月13日下午2:24:54
- * email:362527240@qq.com
- * github:https://github.com/xinxin321198
- * remarks:
+ * date: 2019年1月9日上午11:00:56
+ * remarks:IO操作
  */
 public class LoserStarFileUtil {
 	public static final boolean isLog = false;
@@ -585,6 +577,24 @@ public class LoserStarFileUtil {
 	}
 	
 	/**
+	 * 提取目录，以路径的最后一个斜杠或反斜杠为判断依据，斜杠之前的都是目录
+	 * @param pathStr
+	 * @return
+	 */
+	public static String getDir(String pathStr) {
+		int i1 = pathStr.lastIndexOf("\\");
+		int i2 = pathStr.lastIndexOf("/");
+		int index = 0;
+		if (i1>i2) {
+			index = i1;
+		}else{
+			index = i2;
+		}
+		String dir = pathStr.substring(0, index+1);
+		return dir;
+	}
+	
+	/**
 	 * 生成一个以uuid命名的新文件名，保留原后缀
 	 * test.doc   ->    uuid.doc
 	 * test    ->    uud
@@ -606,15 +616,7 @@ public class LoserStarFileUtil {
 	 */
 	public static boolean createDir(String pathStr) {
 		boolean flag = true;
-		int i1 = pathStr.lastIndexOf("\\");
-		int i2 = pathStr.lastIndexOf("/");
-		int index = 0;
-		if (i1>i2) {
-			index = i1;
-		}else{
-			index = i2;
-		}
-		String dir = pathStr.substring(0, index+1);
+		String dir = getDir(pathStr);
 		File dirFile = new File(dir);
 		if (!dirFile.exists()) {
 			flag = dirFile.mkdirs();
