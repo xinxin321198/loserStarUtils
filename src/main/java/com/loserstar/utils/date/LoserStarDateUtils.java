@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import com.mysql.fabric.xmlrpc.base.Data;
 /**
  * 
  * author: loserStar
@@ -619,7 +621,7 @@ Z	时区	RFC 822 time zone	-0800
 	}
 	
 	public static void main(String[] args) throws ParseException {
-		//天数计算
+	/*	//天数计算
 		Date date = LoserStarDateUtils.addDay(new Date(),2);
 		String formatDate = LoserStarDateUtils.format(date);
 		System.out.println("加天数："+formatDate);
@@ -699,6 +701,14 @@ Z	时区	RFC 822 time zone	-0800
 		Date maxMonth = new Date();
 		Date maxMonth2 = LoserStarDateUtils.setCurrentMonthMaxTime(maxMonth);
 		System.out.println(LoserStarDateUtils.format(maxMonth2));
-		
+		*/
+		String ssString = "01-Jun-2019";
+		//英文格式化
+		SimpleDateFormat us_format = new SimpleDateFormat("dd-MMM-yyyy",Locale.US);
+//		//转成时间类型
+		Date datass = us_format.parse(ssString);
+//		//输出成想要的格式
+		SimpleDateFormat fomat = new SimpleDateFormat("yyyy-MM-dd");
+		System.out.println(fomat.format(datass));
 	}
 }
