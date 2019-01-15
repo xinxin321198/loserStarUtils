@@ -10,9 +10,16 @@ package com.loserstar.utils.array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeSet;
 
+import com.jfinal.template.stat.ast.Set;
+import com.loserstar.utils.date.LoserStarDateUtils;
 import com.loserstar.utils.json.LoserStarJsonUtil;
+import com.loserstar.utils.string.LoserStarStringUtils;
 
 /**
  * author: loserStar
@@ -51,7 +58,7 @@ public class LoserStarArrayAppliactionMain {
 		System.out.println(LoserStarArrayUtils.removeDuplicate(list));
 		
 		//自定义比较器排序
-	       List<Students> students = new ArrayList<Students>();  
+	       List<Students> students = new ArrayList<Students>();
 	        students.add(new Students(23, 100)); 
 	        students.add(new Students(27, 98));  
 	        students.add(new Students(29, 99));  
@@ -70,5 +77,40 @@ public class LoserStarArrayAppliactionMain {
 			}
 		});
 		System.out.println(LoserStarJsonUtil.toJsonSimple(students));
+		
+		//测试插入时间
+		final int count = 100000;
+		//看是否存在某对象
+		long start1 = System.currentTimeMillis();
+		List<String> stringList = new ArrayList<>();
+		for(int i = 0;i<count;i++) {
+			stringList.add(LoserStarStringUtils.toString(i));
+		}
+		long end1 = System.currentTimeMillis();
+		System.out.println(LoserStarDateUtils.getDatePoor(new Date(start1), new Date(end1)));
+		
+		long start2 = System.currentTimeMillis();
+		List<String> stringList2 = new LinkedList<>();
+		for(int i = 0;i<count;i++) {
+			stringList2.add(LoserStarStringUtils.toString(i));
+		}
+		long end2 = System.currentTimeMillis();
+		System.out.println(LoserStarDateUtils.getDatePoor(new Date(start2), new Date(end2)));
+		
+		
+		//
+	TreeSet ts=new TreeSet();
+	   ts.add("orange");
+	   ts.add("apple");
+	   ts.add("banana");
+	   ts.add("grape");
+	 
+       Iterator it=ts.iterator();
+       while(it.hasNext())
+       {
+           String fruit=(String)it.next();
+           System.out.println(fruit);
+       }
+	       
 	}
 }

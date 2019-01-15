@@ -6,9 +6,8 @@ import jodd.json.JsonSerializer;
 /**
  * 基于jodd的json类
  * author: loserStar
- * date: 2018年1月31日下午4:20:05
- * email:362527240@qq.com
- * remarks:
+ * date: 2019年1月15日下午5:35:04
+ * remarks:json工具类，增加反序列化时候的空字符串判断
  */
 public class LoserStarJsonUtil {
 	private static JsonSerializer jsonSerializer = new JsonSerializer();
@@ -54,6 +53,9 @@ public class LoserStarJsonUtil {
 	 * @return
 	 */
 	public static <T> T toModel(String json,Class<T> class1) {
+		if (json==null||json.equals("")) {
+			return null;
+		}
 		return jsonParser.parse(json, class1);
 	}
 }
