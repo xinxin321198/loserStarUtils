@@ -6,12 +6,12 @@ import jodd.json.JsonSerializer;
 /**
  * 基于jodd的json类
  * author: loserStar
- * date: 2019年1月15日下午5:35:04
- * remarks:json工具类，增加反序列化时候的空字符串判断
+ * date: 2019年1月16日上午10:36:01
+ * remarks:json工具类,反序列化使用松散模式
  */
 public class LoserStarJsonUtil {
 	private static JsonSerializer jsonSerializer = new JsonSerializer();
-	private static JsonParser jsonParser = new JsonParser();
+	private static JsonParser jsonParser = new JsonParser().looseMode(true);//松散模式，不容易报错
 	
 	/**
 	 * 简单序列化（不包含集合）
