@@ -36,11 +36,10 @@ import com.loserstar.utils.file.LoserStarFileUtil;
 
 
 /**
+ * 
  * author: loserStar
- * date: 2018年3月16日上午9:13:41
- * email:362527240@qq.com
- * github:https://github.com/xinxin321198
- * remarks:
+ * date: 2019年1月29日下午8:33:28
+ * remarks:从input流读数据时候使用UTF-8，否则乱码
  */
 public class LoserStarHttpUtil {
 	/**
@@ -136,20 +135,20 @@ public class LoserStarHttpUtil {
 					byte[] buf = LoserStarFileUtil.ReadByteByInputStream(gZIPInputStream);
 					stringBuffer.append(new String(buf));
 				}else {
-				inputStreamReader = new InputStreamReader(inputStream);
-				BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-				//整行读,手动加上换行
-				String result = null;
-				while ((result =bufferedReader.readLine())!=null) {
-					result+="\n";
-					stringBuffer.append(result);
-				}
-				//单个字符读取
-/*				int result = 0;
-				bufferedReader.readLine();
-				while ((result =bufferedReader.read())!=-1) {
-					stringBuffer.append((char)result);
-				}*/
+					inputStreamReader = new InputStreamReader(inputStream,"UTF-8");
+					BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+					//整行读,手动加上换行
+					String result = null;
+					while ((result =bufferedReader.readLine())!=null) {
+						result+="\n";
+						stringBuffer.append(result);
+					}
+					//单个字符读取
+	/*				int result = 0;
+					bufferedReader.readLine();
+					while ((result =bufferedReader.read())!=-1) {
+						stringBuffer.append((char)result);
+					}*/
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
