@@ -102,7 +102,7 @@ public class LoserStarFreemarkerUtil {
 
 
 	public static void main(String[] args) throws Exception {
-		Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
+		Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 		cfg.setDefaultEncoding("UTF-8");
 		/**
 		 * https://www.cnblogs.com/yasepix/p/6283726.html
