@@ -11,8 +11,8 @@ import com.loserstar.utils.idgen.SnowflakeIdWorker;
 /**
  * 
  * author: loserStar
- * date: 2018年12月12日下午7:03:53
- * remarks:基础service
+ * date: 2019年2月27日下午4:37:29
+ * remarks:基础service，修复BUG，软删除条件del字段假如数据库是字符类型，这边因为没加单引号导致sql错误
  */
 public  abstract class BaseService {
 	public enum DBType{
@@ -132,7 +132,7 @@ public  abstract class BaseService {
 			if (whereHelper==null) {
 				whereHelper = new WhereHelper();
 			}
-			whereHelper.addStrWhere(" and "+getSoftDelField()+"= "+NOT_DEL+"");
+			whereHelper.addStrWhere(" and ("+getSoftDelField()+"= '"+NOT_DEL+"' or "+getSoftDelField()+" is null)");
 		}
 		return whereHelper;
 	}
