@@ -28,7 +28,7 @@ import java.util.UUID;
 /**
  * 
  * author: loserStar
- * date: 2019年1月9日上午11:00:56
+ * date: 2019年3月7日下午3:11:50
  * remarks:IO操作
  */
 public class LoserStarFileUtil {
@@ -254,7 +254,7 @@ public class LoserStarFileUtil {
 		OutputStream outputStream = null;
 		ObjectOutputStream objectOutputStream = null;
 		try {
-			
+			if (!createDir(objectFilePath)) {throw new Exception("目录创建失败："+getDir(objectFilePath));}
 			outputStream = new FileOutputStream(new File(objectFilePath));
 			objectOutputStream = new ObjectOutputStream(outputStream);
 			objectOutputStream.writeObject(object);
@@ -279,6 +279,7 @@ public class LoserStarFileUtil {
 	 */
 	public static void WriteStringToFilePath(String string,String filePath,boolean isAppend,String charsetName){
 		try {
+			if (!createDir(filePath)) {throw new Exception("目录创建失败："+getDir(filePath));}
 			WriteStringToFile(string,new File(filePath),isAppend,charsetName);
 			sysLog("com.loserstar.utils.file.LoserStarFileUtil.WriteStringToFilePath(String, String, boolean) end");
 		} catch (Exception e) {
@@ -294,6 +295,7 @@ public class LoserStarFileUtil {
 	 */
 	public static void WriteStringToFilePath(String string,String filePath,boolean isAppend){
 		try {
+			if (!createDir(filePath)) {throw new Exception("目录创建失败："+getDir(filePath));}
 			WriteStringToFile(string,new File(filePath),isAppend,null);
 			sysLog("com.loserstar.utils.file.LoserStarFileUtil.WriteStringToFilePath(String, String, boolean) end");
 		} catch (Exception e) {
@@ -310,6 +312,7 @@ public class LoserStarFileUtil {
 	 */
 	public static void WriteStringToFile(String string,File file,boolean isAppend,String charsetName){
 		try {
+			if (!createDir(file.getPath())) {throw new Exception("目录创建失败："+getDir(file.getPath()));}
 			if (charsetName==null||charsetName.equals("")) {
 				charsetName = Charset.defaultCharset().name();
 			}
@@ -328,6 +331,7 @@ public class LoserStarFileUtil {
 	 */
 	public static void WriteStringToFile(String string,File file,boolean isAppend){
 		try {
+			if (!createDir(file.getPath())) {throw new Exception("目录创建失败："+getDir(file.getPath()));}
 			WriteStringToFile(string,file,isAppend,null);
 			sysLog("com.loserstar.utils.file.LoserStarFileUtil.WriteStringToFile(String, File, boolean) end");
 		} catch (Exception e) {
@@ -360,8 +364,8 @@ public class LoserStarFileUtil {
 	 */
 	public static void WriteBytesToFilePath(byte[] bytes,String filePath,boolean isAppend){
 		try {
-			File file = new File(filePath);
-			WriteBytesToFile(bytes, file, isAppend);
+			if (!createDir(filePath)) {throw new Exception("目录创建失败："+getDir(filePath));}
+			WriteBytesToFile(bytes, new File(filePath), isAppend);
 			sysLog("com.loserstar.utils.file.LoserStarFileUtil.WriteBytesToFilePath(byte[], String, boolean) end");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -377,6 +381,7 @@ public class LoserStarFileUtil {
 	public static void WriteBytesToFile(byte[] bytes,File file,boolean isAppend){
 		FileOutputStream fileOutputStream = null;
 		try {
+			if (!createDir(file.getPath())) {throw new Exception("目录创建失败："+getDir(file.getPath()));}
 			fileOutputStream = new FileOutputStream(file,isAppend);
 			fileOutputStream.write(bytes);
 			fileOutputStream.flush();
@@ -413,8 +418,8 @@ public class LoserStarFileUtil {
 	 */
 	public static void WriteInputStreamToFilePath(InputStream inputStream,String filePath,boolean isAppend) {
 		try {
-			File file = new File(filePath);
-			WriteInputStreamToFile(inputStream, file, isAppend);
+			if (!createDir(filePath)) {throw new Exception("目录创建失败："+getDir(filePath));}
+			WriteInputStreamToFile(inputStream, new File(filePath), isAppend);
 			sysLog("com.loserstar.utils.file.LoserStarFileUtil.WriteInputStreamToFilePath(InputStream, String, boolean) end");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -430,6 +435,7 @@ public class LoserStarFileUtil {
 	 */
 	public static void WriteInputStreamToFile(InputStream inputStream,File file,boolean isAppend) {
 		try {
+			if (!createDir(file.getPath())) {throw new Exception("目录创建失败："+getDir(file.getPath()));}
 			byte[] buf = ReadByteByInputStream(inputStream);//从input流读取字节
 			WriteBytesToFile(buf,file, isAppend);//把字节写入文件
 			sysLog("com.loserstar.utils.file.LoserStarFileUtil.WriteInputStreamToFile(InputStream, File, boolean) end");
@@ -473,6 +479,7 @@ public class LoserStarFileUtil {
 		FileWriter fileWriter = null;
 		PrintWriter printWriter = null;
 		try {
+			if (!createDir(filePath)) {throw new Exception("目录创建失败："+getDir(filePath));}
 			fileWriter = new FileWriter(new File(filePath),isAppend);
 			printWriter = new PrintWriter(fileWriter);
 			printWriter.print(printStr);
@@ -496,6 +503,7 @@ public class LoserStarFileUtil {
 		OutputStream outputStream = null;
 				PrintStream printStream = null;
 		try {
+			if (!createDir(printStreamFilePath)) {throw new Exception("目录创建失败："+getDir(printStreamFilePath));}
 			outputStream = new FileOutputStream(new File(printStreamFilePath),isAppend);
 			printStream = new PrintStream(outputStream);
 			printStream.print(printStr);
@@ -612,7 +620,7 @@ public class LoserStarFileUtil {
 	 * 以路径的最后一个斜杠或反斜杠为判断依据，斜杠之前的都是目录
 	 * 斜杠之后的认为是文件（无后缀名的文件）
 	 * @param pathStr
-	 * @return
+	 * @return 目录存在或创建成功返回true，目录不存在并且创建失败范围false
 	 */
 	public static boolean createDir(String pathStr) {
 		boolean flag = true;
@@ -781,7 +789,7 @@ public class LoserStarFileUtil {
 //		WriteInputStreamToOutputStream(new FileInputStream(file), new FileOutputStream(outFile));
 //		System.out.println("end");
 		
-		double d = 123123.34234;
+/*		double d = 123123.34234;
 		String s = "loserStar";
 		try {
 			byte[] byte1 = conveterToByteArray( s);
@@ -792,7 +800,33 @@ public class LoserStarFileUtil {
 //			System.out.println(convert(byte2));
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
+		
+/*		String path = "c://testUpload/"+UUID.randomUUID().toString()+"/1.txt";
+		File file = new File(path);
+		String path2 = "c://testUpload/"+UUID.randomUUID().toString()+"/";
+		File file2 = new File(path2);
+//		WriteStringToFilePath(RandomUtils.getRandomCarNo()+RandomUtils.getRandomStartAddr(), path, false);
+		WriteStringToFile(RandomUtils.getRandomCarNo()+RandomUtils.getRandomStartAddr(), file, false);
+		WriteStringToFile(RandomUtils.getRandomCarNo()+RandomUtils.getRandomStartAddr(), file2, false);*/
+/*		String path = "c://testUpload//0c125b27-8625-4dbd-8ced-ba786b4d90c0//";
+		File file = new File(path);
+		System.out.println(file.getAbsolutePath());
+		System.out.println(file.getPath());
+		System.out.println(file.getParent());
+		System.out.println(file.getName());
+		System.out.println(file.getParentFile());
+		System.out.println("-----------------------分割线--------------------");
+		String path2 = "c://testUpload//0c125b27-8625-4dbd-8ced-ba786b4d90c0//1.txt";
+		File file2 = new File(path2);
+		System.out.println(file2.getAbsolutePath());
+		System.out.println(file2.getPath());
+		System.out.println(file2.getParent());
+		System.out.println(file2.getName());
+		System.out.println(file2.getParentFile());
+		
+		
+		System.out.println(getDir(file.getPath()));*/
 		
 	}
 }
