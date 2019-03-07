@@ -7,13 +7,15 @@
 package com.loserstar.utils.random;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import com.loserstar.utils.date.DateUtils;
+import com.loserstar.utils.date.LoserStarDateUtils;
+
 
 
 public class RandomUtils {
@@ -90,8 +92,9 @@ public class RandomUtils {
 	 * @param date 年月日部分的参数传进来
 	 * @param count 要获取几个时间
 	 * @return
+	 * @throws ParseException 
 	 */
-	public static List<Date> getSortRandomTimeList(Date date,int count){
+	public static List<Date> getSortRandomTimeList(Date date,int count) throws ParseException{
 		List<Date> timeList = new ArrayList<Date>();
 		for (int i = 0; i < count; i++) {
 			timeList.add(getRandomTime(date));
@@ -104,9 +107,10 @@ public class RandomUtils {
 	 * 得到某一年月日的时间，时分秒随机
 	 * @param date
 	 * @return
+	 * @throws ParseException 
 	 */
-	public static Date getRandomTime(Date date){
+	public static Date getRandomTime(Date date) throws ParseException{
 		DecimalFormat df = new DecimalFormat("00");
-		return DateUtils.parseDate(DateUtils.formatDate(date, "yyyy-MM-dd")+" "+df.format(r.nextInt(24))+":"+df.format(r.nextInt(60))+":"+df.format(r.nextInt(60)));
+		return LoserStarDateUtils.fromString(LoserStarDateUtils.format(date, "yyyy-MM-dd")+" "+df.format(r.nextInt(24))+":"+df.format(r.nextInt(60))+":"+df.format(r.nextInt(60)),LoserStarDateUtils.DISPLAY_SECOND_FORMAT);
 	}
 }
