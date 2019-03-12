@@ -28,7 +28,7 @@ import java.util.UUID;
 /**
  * 
  * author: loserStar
- * date: 2019年3月7日下午3:11:50
+ * date: 2019年3月12日下午6:04:13
  * remarks:IO操作
  */
 public class LoserStarFileUtil {
@@ -770,6 +770,22 @@ public class LoserStarFileUtil {
     	return data;
     }
     
+    /**
+     * 对附件的url根据系统编码重新编码
+     * @param url
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    public static String encodeFileUrl(String url) throws UnsupportedEncodingException {
+    	String os = System.getProperty("os.name");
+		String sourceEncode = "utf-8";
+		String targetEncode = System.getProperty("file.encoding");
+		if (os.equalsIgnoreCase("AIX")) {
+			sourceEncode = "GBK";
+		}
+		url = new String(url.getBytes(sourceEncode), targetEncode);
+		return url;
+    }
     
 /*    public static String convert(byte[] data) throws IOException {
     	DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(data));
