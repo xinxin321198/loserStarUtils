@@ -9,11 +9,13 @@ package com.loserstar.utils.excel;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -26,6 +28,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.loserstar.utils.ObjectMapConvert.LoserStarObjMapConvertUtil;
+import com.loserstar.utils.file.LoserStarFileUtil;
 import com.loserstar.utils.json.LoserStarJsonUtil;
 
 /**
@@ -104,6 +107,62 @@ public class LoserStarExcelUtils {
 		return LoserStarJsonUtil.toJsonDeep(excelMap);
 	}
 	
+	/**
+	 * 把一个List<Map<String,String>>写到excel里(重复写时候有BUG，抽空再调)
+	 * @param sheetName 要写的sheet名称，如果不传就使用默认的第一个
+	 * @param list 数据
+	 * @param inFilePath 要写的excel文件
+	 * @param outFilePath 输出的excel文件
+	 * @throws IOException
+	 */
+	public static void writeListMapToExcel(String sheetName,List<Map<String, String>> list,String filePath) throws IOException {
+		Workbook workbook = null;
+		Sheet sheet = null;
+		String suffix = LoserStarFileUtil.getFileNameSuffix(filePath);
+		//判断文件存不存在，存在就读取出来写了覆盖，不存在就创建新的，根据后缀判断是新版还是旧版的excel
+		File excel = new File(filePath);
+		if (excel.exists()&&false) {
+			//存在
+			if (suffix.equals(".xlsx")) {
+				workbook = new XSSFWorkbook(filePath);
+			} else if (suffix.equals(".xls")) {
+				workbook = new HSSFWorkbook(new FileInputStream(filePath));
+			}
+			sheet = workbook.getSheet(sheetName);
+			if (sheet == null) {
+				sheet = workbook.createSheet(sheetName);
+			}
+		}else {
+			//不存在，创建新的
+			excel.createNewFile();
+			if (suffix.equals(".xlsx")) {
+				workbook = new XSSFWorkbook();
+			} else if (suffix.equals(".xls")) {
+				workbook = new HSSFWorkbook();
+			}
+			sheet = workbook.createSheet();
+		}
+		
+		for (int i =0; i < list.size(); i++) {//遍历行
+			Row row = sheet.createRow(i);//从第几行开始写
+			Map<String, String> map = list.get(i);
+			int j=0;
+			for (Entry<String, String> entry : map.entrySet()) { 
+				String key = entry.getKey();
+				String value = entry.getValue();
+				Cell cell = row.createCell(j);
+				cell.setCellValue(value);
+				j++;
+			}
+		}
+		
+		//遍历完，输出
+		FileOutputStream fos = new FileOutputStream(filePath);
+		workbook.write(fos);
+		fos.flush();
+		fos.close();
+	}
+	
 	public static void main(String[] args) {
 		try {
 			File file = new File("C:\\excelTest.xls");
@@ -119,4 +178,6 @@ public class LoserStarExcelUtils {
 			e.printStackTrace();
 		}
 	}
+
+
 }
