@@ -132,7 +132,7 @@ public  abstract class BaseService {
 			if (whereHelper==null) {
 				whereHelper = new WhereHelper();
 			}
-			whereHelper.addStrWhere(" and ("+getSoftDelField()+"= '"+NOT_DEL+"' or "+getSoftDelField()+" is null)");
+			whereHelper.addStrWhere(" and ("+getSoftDelField()+"= '"+NOT_DEL+"' or "+getSoftDelField()+" is null or "+getSoftDelField()+" = 0)");
 		}
 		return whereHelper;
 	}
