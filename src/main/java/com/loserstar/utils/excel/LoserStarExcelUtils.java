@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,16 +46,28 @@ public class LoserStarExcelUtils {
 	 * @return
 	 * @throws IOException
 	 */
-	public static String readExceltoJson(File file, int hideRowIndex, int startRowIndex)
+	public static Map<String, List<Map<String, String>>> readExcelToMap(File file, int hideRowIndex, int startRowIndex)
 			throws IOException {
-		Map<String, List> excelMap = new HashMap<String, List>();
+		if (file.getName().endsWith("xlsx")) {
+			return readExcelToMap(new FileInputStream(file),"xlsx",hideRowIndex,startRowIndex);
+		} else if (file.getName().endsWith("xls")) {
+			return readExcelToMap(new FileInputStream(file),"xlsx",hideRowIndex,startRowIndex);
+		} else {
+			new Exception("上传文件必须后缀必须为xls或xlsx！");
+		}
+		return null;
+	}
+	
+	public static Map<String, List<Map<String, String>>> readExcelToMap(InputStream in,String fileName, int hideRowIndex, int startRowIndex)
+			throws IOException {
+		Map<String, List<Map<String, String>>> excelMap= new HashMap<String, List<Map<String, String>>>();
 		POIFSFileSystem fs = null;
 		CellStyle cellStyle = null;
 		Workbook workbook = null;
-		if (file.getName().endsWith("xlsx")) {
-			workbook = new XSSFWorkbook(new FileInputStream(file));
-		} else if (file.getName().endsWith("xls")) {
-			fs = new POIFSFileSystem(new FileInputStream(file));
+		if (fileName.endsWith("xlsx")) {
+			workbook = new XSSFWorkbook(in);
+		} else if (fileName.endsWith("xls")) {
+			fs = new POIFSFileSystem(in);
 			workbook = new HSSFWorkbook(fs);
 		} else {
 			new Exception("上传文件必须后缀必须为xls或xlsx！");
@@ -83,7 +96,7 @@ public class LoserStarExcelUtils {
 				cellNames[m] = cell.getStringCellValue();
 			}
 
-			int rowNum = sheet.getLastRowNum();
+			int rowNum = sheet.getLastRowNum();	
 			for (int j = startRowIndex; j <= rowNum; j++) {
 				// 一行数据对于一个Map
 				Map<String, String> rowMap = new HashMap<String, String>();
@@ -104,9 +117,14 @@ public class LoserStarExcelUtils {
 			// 将该sheet表的表名为key，List转为json后的字符串为Value进行存储
 			excelMap.put(sheet.getSheetName(), list);
 		}
-		return LoserStarJsonUtil.toJsonDeep(excelMap);
+		return excelMap;
 	}
 	
+	
+	public static String readExcelToJson(File file, int hideRowIndex, int startRowIndex) throws IOException {
+		Map<String, List<Map<String, String>>>  excelMap = readExcelToMap(file, hideRowIndex, startRowIndex);
+		return LoserStarJsonUtil.toJsonDeep(excelMap);
+	}
 	/**
 	 * 把一个List<Map<String,String>>写到excel里(重复写时候有BUG，抽空再调)
 	 * @param sheetName 要写的sheet名称，如果不传就使用默认的第一个
@@ -166,7 +184,7 @@ public class LoserStarExcelUtils {
 	public static void main(String[] args) {
 		try {
 			File file = new File("C:\\excelTest.xls");
-			String json = readExceltoJson(file, 1, 2);
+			String json = readExcelToJson(file, 1, 2);
 //			System.out.println(json);
 			Map<String, Object> map = LoserStarJsonUtil.toModel(json, Map.class);
 			List<Object> list = LoserStarObjMapConvertUtil.ConvertToList(map.get("部门绩效指标"));

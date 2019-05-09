@@ -483,6 +483,24 @@ public  abstract class BaseService {
 	public int[] batchUpdate(List<Record> list) {
 		return CheckDataSourceName()?Db.use(this.dataSourceName).batchUpdate(getTableName(), list, list.size()):Db.batchUpdate(getTableName(), list, list.size());
 	}
+	
+	/**
+	 * 批量保存，根据主键是否存在来决定是insert还是update
+	 * @param list
+	 * @return 执行成功的条数
+	 */
+	public int batchSave(List<Record> list) {
+		int count = 0;
+		for (Record record : list) {
+			boolean flag = save(record);
+			if (flag) {
+				count++;
+			}
+		}
+		return count;
+	}
+	
+	
 	/**
 	 * 批量保存，根据flag标记来判断删除还是新增修改(c新增u修改r读取d删除)u在无id的情况下为新增
 	 * @param kpiList
