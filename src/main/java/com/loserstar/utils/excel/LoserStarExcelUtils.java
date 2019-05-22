@@ -12,7 +12,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +32,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.loserstar.utils.ObjectMapConvert.LoserStarObjMapConvertUtil;
 import com.loserstar.utils.file.LoserStarFileUtil;
 import com.loserstar.utils.json.LoserStarJsonUtil;
 
@@ -108,8 +111,10 @@ public class LoserStarExcelUtils {
 					Cell cell = row.getCell(k);
 					cell.setCellStyle(cellStyle);
 					// 保存该单元格的数据到该行中
+					String cellValue = "";
 					cell.setCellType(CellType.STRING);
-					rowMap.put(cellNames[k], cell.getStringCellValue());
+					cellValue = cell.getStringCellValue();
+					rowMap.put(cellNames[k], cellValue);
 				}
 				// 保存该行的数据到该表的List中
 				list.add(rowMap);
@@ -181,17 +186,34 @@ public class LoserStarExcelUtils {
 		fos.close();
 	}
 	
+	
+	/**
+	 * poi读取excel中date类型的处理办法，如果日期读出来是一些数字，这个数字是什么呢？是以1900年为原点，到你的这个日期，之间经过的天数，所以用1900年的日期+天数就得到实际的日期
+	 * poi3.15中的CellType只支持number和string两种类型，根本区分不出date，所以只能人工判断去转换了
+	 * @param dateNumber excel中拿到的数字
+	 * @return
+	 */
+	public static Date dateNumberToDate(int dateNumber) {
+
+		//原始方式
+		Calendar calendar = new GregorianCalendar(1900,0,-1);
+		calendar.add(Calendar.DAY_OF_MONTH,dateNumber);
+		//自己封装的方式
+//		Date date1900 = LoserStarDateUtils.fromString("1900-01--1", "yyyy-MM-dd");
+//		Date date = LoserStarDateUtils.addDay(date1900, newsdate);
+		
+		return calendar.getTime();
+	}
+	
 	public static void main(String[] args) {
 		try {
-			File file = new File("C:\\excelTest.xls");
-			String json = readExcelToJson(file, 1, 2);
+			File file = new File("C:\\export.xlsx");
+//			String json = readExcelToJson(file, 1, 2);
 //			System.out.println(json);
-			Map<String, Object> map = LoserStarJsonUtil.toModel(json, Map.class);
-			List<Object> list = LoserStarObjMapConvertUtil.ConvertToList(map.get("部门绩效指标"));
-			for (Object object : list) {
-				Map<String, Object> objMap = LoserStarObjMapConvertUtil.ConvertToMap(object);
-				System.out.println(LoserStarJsonUtil.toJsonDeep(objMap));
-			}
+			Map<String, List<Map<String, String>>> map = readExcelToMap(file, 0, 1);
+			System.out.println(LoserStarJsonUtil.toJsonDeep(map));
+			Date newsdate = dateNumberToDate(Integer.valueOf(map.get("Sheet1").get(0).get("NEWSDATE")));
+			System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(newsdate));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
