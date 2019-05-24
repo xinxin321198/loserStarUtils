@@ -129,6 +129,20 @@ public class LoserStarStringUtils {
 		return stringBuffer.toString();
 	}
 	
+	public static String join(final int[] strings,String separator,String perfix,String suffix) {
+		if (strings.length==0) {
+			return "";
+		}
+		StringBuffer stringBuffer = new StringBuffer();
+		for (int i = 0; i < strings.length; i++) {
+			if (i>0) {
+				stringBuffer.append(separator);
+			}
+			stringBuffer.append(perfix+strings[i]+suffix);
+		}
+		return stringBuffer.toString();
+	}
+	
 	public static Double toDouble(String s) {
 		if (s==null||s.equals("")) {
 			return 0d;

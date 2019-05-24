@@ -10,8 +10,6 @@ import jodd.json.JsonSerializer;
  * remarks:json工具类,反序列化使用松散模式
  */
 public class LoserStarJsonUtil {
-	private static JsonSerializer jsonSerializer = new JsonSerializer();
-	private static JsonParser jsonParser = new JsonParser().looseMode(true);//松散模式，不容易报错
 	
 	/**
 	 * 简单序列化（不包含集合）
@@ -42,7 +40,7 @@ public class LoserStarJsonUtil {
 	 * @return
 	 */
 	public static String toJson(Object object,boolean isDeep){
-		String json = jsonSerializer.deep(isDeep).serialize(object);
+		String json = new JsonSerializer().deep(isDeep).serialize(object);
 		return json;
 	}
 	
@@ -56,6 +54,6 @@ public class LoserStarJsonUtil {
 		if (json==null||json.equals("")) {
 			return null;
 		}
-		return jsonParser.parse(json, class1);
+		return new JsonParser().looseMode(true).parse(json, class1);//松散模式，不容易报错
 	}
 }
