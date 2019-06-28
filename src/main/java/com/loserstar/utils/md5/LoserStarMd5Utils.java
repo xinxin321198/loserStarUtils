@@ -23,16 +23,17 @@ public class LoserStarMd5Utils {
 	 * @return 密文
 	 * @throws Exception
 	 */
-	public static String md5(String text, String key) throws Exception {
+	public static String md5(String text) throws Exception {
 		// 加密后的字符串
-		String encodeStr = DigestUtils.md5Hex(text + key);
-		System.out.println("MD5加密后的字符串为:encodeStr=" + encodeStr);
+		String encodeStr = DigestUtils.md5Hex(text);
+		System.out.println("MD5加密前的字符串为:" + text);
+		System.out.println("MD5加密后的字符串为:" + encodeStr);
 		return encodeStr;
 	}
 
 	public static void main(String[] args) {
 		try {
-			md5("admin", "");
+			md5("admin");
 		} catch (Exception e) {
 		}
 	}

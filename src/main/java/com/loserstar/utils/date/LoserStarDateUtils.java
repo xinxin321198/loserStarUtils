@@ -619,11 +619,13 @@ Z	时区	RFC 822 time zone	-0800
 	}
 	
 	public static void main(String[] args) throws ParseException {
-	/*	//天数计算
-		Date date = LoserStarDateUtils.addDay(new Date(),2);
+		//天数计算
+		Date addDate = new Date();
+		Date date = LoserStarDateUtils.addDay(addDate,2);
 		String formatDate = LoserStarDateUtils.format(date);
 		System.out.println("加天数："+formatDate);
-		
+		System.out.println(LoserStarDateUtils.format(addDate));
+		/*
 		//月份计算
 		Date date2 = LoserStarDateUtils.addMonth(new Date(),2);
 		String formatDat2 = LoserStarDateUtils.format(date2);
@@ -700,13 +702,13 @@ Z	时区	RFC 822 time zone	-0800
 		Date maxMonth2 = LoserStarDateUtils.setCurrentMonthMaxTime(maxMonth);
 		System.out.println(LoserStarDateUtils.format(maxMonth2));
 		*/
-		String ssString = "01-Jun-2019";
+/*		String ssString = "01-Jun-2019";
 		//英文格式化
 		SimpleDateFormat us_format = new SimpleDateFormat("dd-MMM-yyyy",Locale.US);
 //		//转成时间类型
 		Date datass = us_format.parse(ssString);
 //		//输出成想要的格式
 		SimpleDateFormat fomat = new SimpleDateFormat("yyyy-MM-dd");
-		System.out.println(fomat.format(datass));
+		System.out.println(fomat.format(datass));*/
 	}
 }

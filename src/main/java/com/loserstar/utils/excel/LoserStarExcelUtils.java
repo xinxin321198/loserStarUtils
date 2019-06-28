@@ -93,7 +93,6 @@ public class LoserStarExcelUtils {
 			for (int m = 0; m < curCellNum; m++) {
 				Cell cell = fisrtRow.getCell(m);
 				// 设置该列的样式是字符串
-				cell.setCellStyle(cellStyle);
 				cell.setCellType(CellType.STRING);
 				// 取得该列的字符串值
 				cellNames[m] = cell.getStringCellValue();
@@ -107,13 +106,17 @@ public class LoserStarExcelUtils {
 				Row row = sheet.getRow(j);
 				int cellNum = row.getLastCellNum();
 				// 遍历每一列
+				System.out.println("------row:"+j);
 				for (int k = 0; k < cellNum; k++) {
+					System.out.println("-------col:"+k);
 					Cell cell = row.getCell(k);
-					cell.setCellStyle(cellStyle);
 					// 保存该单元格的数据到该行中
 					String cellValue = "";
-					cell.setCellType(CellType.STRING);
-					cellValue = cell.getStringCellValue();
+					if (cell!=null) {
+						cell.setCellStyle(cellStyle);
+						cell.setCellType(CellType.STRING);
+						cellValue = cell.getStringCellValue();
+					}
 					rowMap.put(cellNames[k], cellValue);
 				}
 				// 保存该行的数据到该表的List中

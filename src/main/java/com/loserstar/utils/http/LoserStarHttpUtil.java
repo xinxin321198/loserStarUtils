@@ -96,7 +96,7 @@ public class LoserStarHttpUtil {
 		}else if(url.getProtocol().equals("https")) {
 			//创建SSLContext对象，并使用我们指定的信任管理器初始化
 			TrustManager[] tm = {new MyX509TrustManager ()};
-			SSLContext sslContext = SSLContext.getInstance("SSL","SunJSSE");
+			SSLContext sslContext = SSLContext.getInstance("SSL");
 			sslContext.init(null, tm, new java.security.SecureRandom());
 
 			//从上述SSLContext对象中得到SSLSocketFactory对象
@@ -234,7 +234,24 @@ public class LoserStarHttpUtil {
 	 */
 	public static void downloadRemoteFile(String fileUrl,String localPath) {
 		try {
+			File file = new File(localPath);
+			if (!file.exists()) {
+				if (!LoserStarFileUtil.createDir(localPath)) {throw new Exception("目录创建失败："+LoserStarFileUtil.getDir(localPath));}
+			}
 			OutputStream outputStream = new FileOutputStream(new File(localPath));
+			downloadRemoteFileToOutputStream(fileUrl,outputStream);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 下载一个远程文件输出到某个outputstream输出流中
+	 * @param fileUrl 远程文件url
+	 * @param outputStream 输出流
+	 */
+	public static void downloadRemoteFileToOutputStream(String fileUrl,OutputStream outputStream) {
+		try {
 			HttpURLConnection httpURLConnection = createHttpUrlConnection(fileUrl, "GET");
 			InputStream inputStream = httpURLConnection.getInputStream();//打开URLConnection的输入流
 			LoserStarFileUtil.WriteInputStreamToOutputStream(inputStream, outputStream);//把这个流的数据写到文件输出流中
@@ -250,14 +267,17 @@ public class LoserStarHttpUtil {
 			
 		//下载http文件
 //		downloadRemoteFile("http://127.0.0.1:8080/EP/img/emule0.50a-Xtreme8.1.7z","c://test.7z");
-		downloadRemoteFile("http://xiazai.xiazaiba.com/Soft/N/NetTraffic_1.49.0_XiaZaiBa.zip","c://NetTraffic.zip");
+//		downloadRemoteFile("http://xiazai.xiazaiba.com/Soft/N/NetTraffic_1.49.0_XiaZaiBa.zip","c://NetTraffic.zip");
 		
 		//请求https不受信任的页面
-		String url = "https://bpmtst:9443/BPMHelp/index.jsp";
-		String result = get(url, null);
-		System.out.println(result);
+//		String url = "https://bpmtst:9443/BPMHelp/index.jsp";
+//		String result = get(url, null);
+//		System.out.println(result);
 		
 		//下载https不受信任的文件
-		downloadRemoteFile("https://bpmtst:9443/BPMHelp/ver362.3/advanced/images/e_contents_view.gif", "c://e_contents_view.gif");
+//		downloadRemoteFile("https://bpmtst:9443/BPMHelp/ver362.3/advanced/images/e_contents_view.gif", "c://e_contents_view.gif");
+//		LoserStarHttpUtil.downloadRemoteFile("https://xiazai.xiazaiba.com/Soft/P/P2PSearcher_6.4.8.exe", "c://P2PSearcher_6.4.8.exe");
+//		System.out.println("1111111111111111");
+		LoserStarHttpUtil.downloadRemoteFile("http://c1ep1vm14.hongta.com/ContractProjectV2/contract/downloadFileUrl.do?coNum=Test-HTZT-2019-0114", "c:\\contractFile\\Test-HTZT-2019-0114\\1.doxc");
 	}
 }
