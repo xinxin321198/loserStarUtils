@@ -9,6 +9,7 @@ package com.loserstar.utils.collection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.jfinal.plugin.activerecord.Record;
 import com.loserstar.utils.string.LoserStarStringUtils;
@@ -51,5 +52,21 @@ public class LoserStarJfinalRecordUtils extends LoserStarMapUtils{
 			}
 		}
 		return childrenList;
+	}
+	
+	/**
+	 * 剔除值为null或空的key，便于保存不报错
+	 * @param record
+	 * @return
+	 */
+	public static Record removeIsNullKey(Record record) {
+		Record newRecord = new Record();
+		Map<String, Object> map = record.getColumns();
+		for (Map.Entry<String, Object> entry : map.entrySet()) { 
+			if (entry.getValue()!=null&&!entry.getValue().equals("")) {
+				newRecord.set(entry.getKey(), entry.getValue());
+			}
+		}
+		return newRecord;
 	}
 }
