@@ -9,8 +9,8 @@ import java.util.TimeZone;
 /**
  * 
  * author: loserStar
- * date: 2018年12月12日下午7:04:18
- * remarks:日期相关工具类
+ * date: 2019年7月3日下午6:26:26
+ * remarks:日期相关工具类（fix计算时差的精度问题）
  */
 public class LoserStarDateUtils {
 	/**
@@ -544,7 +544,7 @@ Z	时区	RFC 822 time zone	-0800
 		long endTime = endDate.getTime();
 		long diff = endTime-startTime;
 		long conversionRate = 1000*60*60*24;//1天=24小时*60分钟60秒*1000毫秒
-		double day = diff/conversionRate;
+		double day = (double)diff/(double)conversionRate;
 		return day;
 	}
 	/**
@@ -558,7 +558,7 @@ Z	时区	RFC 822 time zone	-0800
 		long endTime = endDate.getTime();
 		long diff = endTime-startTime;
 		long conversionRate = 1000*60*60;//1小时=60分钟60秒*1000毫秒
-		double hours = diff/conversionRate;
+		double hours = (double)diff/(double)conversionRate;
 		return hours;
 	}
 
@@ -573,7 +573,7 @@ Z	时区	RFC 822 time zone	-0800
 		long endTime = endDate.getTime();
 		long diff = endTime-startTime;
 		long conversionRate = 1000*60;//1分钟=60*1000毫秒
-		double second = diff/conversionRate;
+		double second = (double)diff/(double)conversionRate;
 		DecimalFormat decimalFormat = new DecimalFormat("0.00000");
 		return decimalFormat.format(second);
 	}
@@ -588,7 +588,7 @@ Z	时区	RFC 822 time zone	-0800
 		long endTime = endDate.getTime();
 		long diff = endTime-startTime;
 		long conversionRate = 1000;//1秒=1000毫秒
-		double second = diff/conversionRate;
+		double second = (double)diff/(double)conversionRate;
 		return second;
 	}
 
@@ -620,12 +620,10 @@ Z	时区	RFC 822 time zone	-0800
 	
 	public static void main(String[] args) throws ParseException {
 		//天数计算
-		Date addDate = new Date();
-		Date date = LoserStarDateUtils.addDay(addDate,2);
+		Date date = LoserStarDateUtils.addDay(new Date(),2);
 		String formatDate = LoserStarDateUtils.format(date);
 		System.out.println("加天数："+formatDate);
-		System.out.println(LoserStarDateUtils.format(addDate));
-		/*
+		
 		//月份计算
 		Date date2 = LoserStarDateUtils.addMonth(new Date(),2);
 		String formatDat2 = LoserStarDateUtils.format(date2);
@@ -679,7 +677,7 @@ Z	时区	RFC 822 time zone	-0800
 		System.out.println("计算时差---------------------------------------");
 		long startDate = System.currentTimeMillis();
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(6785);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -687,7 +685,7 @@ Z	时区	RFC 822 time zone	-0800
 		long  endDate = System.currentTimeMillis();
 		double second = calculateSecondDifference(new Date(startDate), new Date(endDate));
 		System.out.println("相差："+second+"秒");
-		String minute  = calculateMinuteDifference(new Date(startDate), new Date(endDate));
+		String minute  = calculateMinuteDifference( new Date(endDate),new Date(startDate));
 		System.out.println("相差："+minute+"分钟");
 		System.out.println();
 
@@ -701,14 +699,6 @@ Z	时区	RFC 822 time zone	-0800
 		Date maxMonth = new Date();
 		Date maxMonth2 = LoserStarDateUtils.setCurrentMonthMaxTime(maxMonth);
 		System.out.println(LoserStarDateUtils.format(maxMonth2));
-		*/
-/*		String ssString = "01-Jun-2019";
-		//英文格式化
-		SimpleDateFormat us_format = new SimpleDateFormat("dd-MMM-yyyy",Locale.US);
-//		//转成时间类型
-		Date datass = us_format.parse(ssString);
-//		//输出成想要的格式
-		SimpleDateFormat fomat = new SimpleDateFormat("yyyy-MM-dd");
-		System.out.println(fomat.format(datass));*/
+		
 	}
 }
