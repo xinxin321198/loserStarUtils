@@ -115,7 +115,7 @@ public class LoserStarFreemarkerUtil {
 		cfg.setClassForTemplateLoading(LoserStarFreemarkerUtil.class, "/com/loserstar/utils/freemarker");
 		System.out.println(LoserStarFreemarkerUtil.class.getResource("/"));
 //		cfg.setDirectoryForTemplateLoading(new File("E:\\loserStarWorkSpace\\loserStarUtils\\src\\main\\java\\com\\loserstar\\utils\\freemarker"));
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			Template temp =cfg.getTemplate("test.ftl");
 			map.put("data", "loserStar freemakrer!!!!!");

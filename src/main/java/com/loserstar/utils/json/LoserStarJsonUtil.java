@@ -1,5 +1,8 @@
 package com.loserstar.utils.json;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jodd.json.JsonParser;
 import jodd.json.JsonSerializer;
 
@@ -7,7 +10,8 @@ import jodd.json.JsonSerializer;
  * 基于jodd的json类
  * author: loserStar
  * date: 2019年1月16日上午10:36:01
- * remarks:json工具类,反序列化使用松散模式
+ * remarks:支持json序列化和反序列化
+ * (对jdk6的支持，最高到jodd3.6.6)
  */
 public class LoserStarJsonUtil {
 	
@@ -54,6 +58,13 @@ public class LoserStarJsonUtil {
 		if (json==null||json.equals("")) {
 			return null;
 		}
-		return new JsonParser().looseMode(true).parse(json, class1);//松散模式，不容易报错
+		return new JsonParser().parse(json, class1);//松散模式，不容易报错
+	}
+	
+	public static void main(String[] args) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("lxx", "loserStar");
+		map.put("age", 28);
+		System.out.println(toJsonDeep(map));
 	}
 }

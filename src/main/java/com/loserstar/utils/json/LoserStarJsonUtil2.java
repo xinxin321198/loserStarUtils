@@ -28,7 +28,7 @@ public class LoserStarJsonUtil2 {
 	}
 	
 	public static void main(String[] args) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("luoxinxin", "123");
 		map.put("wangping", "456");
 		map.put("loserStar", "999999");

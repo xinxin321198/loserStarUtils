@@ -123,7 +123,7 @@ public class FileUtil {
 			{
 				bo.write(b, 0, len);
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw e ;
 		}finally{
 			bo.flush();

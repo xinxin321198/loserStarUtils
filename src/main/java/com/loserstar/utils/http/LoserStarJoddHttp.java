@@ -77,7 +77,7 @@ public class LoserStarJoddHttp {
 	
 	public static void main(String[] args) {
 //	    HttpResponse response = HttpRequest.get("http://www.cts-yn.com/plus/view.php?aid=118").send();
-	    HttpResponse response = HttpRequest.get("http://www.cts-yn.com/plus/view.php").query("aid", new HashMap<>()).send();
+	    HttpResponse response = HttpRequest.get("http://www.cts-yn.com/plus/view.php").query("aid", new Object()).send();
 //	    System.out.println(response.body());//通常是ISO-8859-1编码格式的基本报文内容。
 //	    System.out.println(response.charset());//设置编码
 //	    System.out.println(response.bodyText());//根据报文头"Content-Type"属性值的编码格式编译的报文。

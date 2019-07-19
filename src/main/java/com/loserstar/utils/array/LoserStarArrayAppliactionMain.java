@@ -82,7 +82,7 @@ public class LoserStarArrayAppliactionMain {
 		final int count = 100000;
 		//看是否存在某对象
 		long start1 = System.currentTimeMillis();
-		List<String> stringList = new ArrayList<>();
+		List<String> stringList = new ArrayList<String>();
 		for(int i = 0;i<count;i++) {
 			stringList.add(LoserStarStringUtils.toString(i));
 		}
@@ -90,7 +90,7 @@ public class LoserStarArrayAppliactionMain {
 		System.out.println(LoserStarDateUtils.getDatePoor(new Date(start1), new Date(end1)));
 		
 		long start2 = System.currentTimeMillis();
-		List<String> stringList2 = new LinkedList<>();
+		List<String> stringList2 = new LinkedList<String>();
 		for(int i = 0;i<count;i++) {
 			stringList2.add(LoserStarStringUtils.toString(i));
 		}

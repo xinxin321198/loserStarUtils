@@ -58,7 +58,7 @@ public class LoserStarJfinalDBMain {
 		UserService userService = new UserService();
 //		List<Record> userList = Db.find("select * from sys_users");
 		WhereHelper whereHelper = new WhereHelper();
-		List<String> list = new ArrayList<>();
+		List<String> list = new ArrayList<String>();
 		list.add("aaa");
 		list.add("bbb");
 		list.add("c");

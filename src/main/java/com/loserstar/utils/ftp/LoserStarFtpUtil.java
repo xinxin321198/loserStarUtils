@@ -283,7 +283,7 @@ public class LoserStarFtpUtil {
 	 * @param remotePath
 	 */
 	public List<FTPFile> listRemoteAllFiles(String remotePath) {
-		List<FTPFile> ftpFiles = new ArrayList<>();
+		List<FTPFile> ftpFiles = new ArrayList<FTPFile>();
 		try {
 			FTPFile[] files = ftpClient.listFiles(remotePath);
 			for(int i = 0; i < files.length; i++) {

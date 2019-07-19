@@ -748,19 +748,19 @@ public class LoserStarFileUtil {
     	ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     	DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream);
     	if(object instanceof Double) {
-    		dataOutputStream.writeDouble((double)object);
+    		dataOutputStream.writeDouble((Double)object);
     	}else if (object instanceof Integer) {
-			dataOutputStream.writeInt((int)object);
+			dataOutputStream.writeInt((Integer)object);
 		} else if (object instanceof Long) {
-			dataOutputStream.writeLong((long)object);
+			dataOutputStream.writeLong((Long)object);
 		}else if (object instanceof Boolean) {
-			dataOutputStream.writeBoolean((boolean)object);
+			dataOutputStream.writeBoolean((Boolean)object);
 		}else if (object instanceof String) {
 			dataOutputStream.writeUTF((String)object);
 		}else if (object instanceof Character) {
-			dataOutputStream.writeChar((char)object);
+			dataOutputStream.writeChar((Character)object);
 		}else if (object instanceof Float) {
-			dataOutputStream.writeFloat((float)object);
+			dataOutputStream.writeFloat((Float)object);
 		}else {
 			throw new Exception("不能识别的数据类型！");
 		}

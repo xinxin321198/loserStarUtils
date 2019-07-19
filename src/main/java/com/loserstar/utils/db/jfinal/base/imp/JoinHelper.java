@@ -17,7 +17,7 @@ import java.util.List;
  * remarks:
  */
 public class JoinHelper {
-	private List<JoinTable> joinTableList = new ArrayList<>();
+	private List<JoinTable> joinTableList = new ArrayList<JoinTable>();
 	
 	public void addLeftJoin(JoinTable joinTable) {
 		joinTableList.add(joinTable);
