@@ -227,19 +227,28 @@ public class LoserStarHttpUtil {
 		return stringBuffer.toString();
 	}
 
+	
 	/**
-	 * 下载一个远程的文件
+	 * 下载一个远程的文件(没有自定义请求头)
 	 * @param url 远程文件url
 	 * @param localPath 本地存储路径（必须带文件名及后缀名）
 	 */
 	public static void downloadRemoteFile(String fileUrl,String localPath) {
+		downloadRemoteFile(fileUrl,localPath,null);
+	}
+	/**
+	 * 下载一个远程的文件（可以自定义请求头信息）
+	 * @param url 远程文件url
+	 * @param localPath 本地存储路径（必须带文件名及后缀名）
+	 */
+	public static void downloadRemoteFile(String fileUrl,String localPath,Map<String, String> requestHeaderMap) {
 		try {
 			File file = new File(localPath);
 			if (!file.exists()) {
 				if (!LoserStarFileUtil.createDir(localPath)) {throw new Exception("目录创建失败："+LoserStarFileUtil.getDir(localPath));}
 			}
 			OutputStream outputStream = new FileOutputStream(new File(localPath));
-			downloadRemoteFileToOutputStream(fileUrl,outputStream);
+			downloadRemoteFileToOutputStream(fileUrl,outputStream,requestHeaderMap);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -250,9 +259,10 @@ public class LoserStarHttpUtil {
 	 * @param fileUrl 远程文件url
 	 * @param outputStream 输出流
 	 */
-	public static void downloadRemoteFileToOutputStream(String fileUrl,OutputStream outputStream) {
+	public static void downloadRemoteFileToOutputStream(String fileUrl,OutputStream outputStream,Map<String, String> requestHeaderMap) {
 		try {
 			HttpURLConnection httpURLConnection = createHttpUrlConnection(fileUrl, "GET");
+			setRequestHeader(httpURLConnection, requestHeaderMap);
 			InputStream inputStream = httpURLConnection.getInputStream();//打开URLConnection的输入流
 			LoserStarFileUtil.WriteInputStreamToOutputStream(inputStream, outputStream);//把这个流的数据写到文件输出流中
 		} catch (Exception e) {
