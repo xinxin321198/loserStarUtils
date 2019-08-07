@@ -1,4 +1,4 @@
-package com.loserstar.utils.codeCounter;
+package com.loserstar.utils.file;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,6 +6,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+/**
+ * 
+ * author: loserStar
+ * date: 2019年8月7日下午3:37:29
+ * remarks:统计代码行数
+ */
 public class CodeCounter {
 	
 	static long normalLines = 0;//有效行
