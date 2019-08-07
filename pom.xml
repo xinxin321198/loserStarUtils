@@ -76,12 +76,7 @@
 		</dependency>
 
 
-		<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
-<!-- 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>2.5</version>
-		</dependency> -->
+		<!-- jdk1.6 只能用2.5-->
 		<!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
 		<dependency>
 		    <groupId>javax.servlet</groupId>
@@ -232,13 +227,14 @@
 		    <version>1.3.3</version>
 		</dependency>
 		
-		<!--发送邮件的依赖  -->
-				<!-- https://mvnrepository.com/artifact/com.sun.mail/javax.mail -->
+		<!--发送邮件的依赖  1.6jdk 只能用1.5.6-->
+		<!-- https://mvnrepository.com/artifact/com.sun.mail/javax.mail -->
 		<dependency>
 		    <groupId>com.sun.mail</groupId>
 		    <artifactId>javax.mail</artifactId>
-		    <version>1.6.2</version>
+		    <version>1.5.6</version>
 		</dependency>
+
 		
 		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
 		<dependency>
