@@ -229,6 +229,7 @@ public class ExcelUtils {
      * @param lastCol 结束列索引
      * @throws Exception 
      */
+    @Deprecated
     public void mergerCell(HSSFWorkbook workbook,String sheetName,int firstRow, int lastRow, int firstCol, int lastCol) throws Exception{
     	HSSFSheet sheet =  workbook.getSheet(sheetName);
     	if (null==sheet) {
@@ -238,13 +239,13 @@ public class ExcelUtils {
 		List<CellRangeAddress> mergedRegionList =  sheet.getMergedRegions();
 		boolean flag = false;//默认没有单元格包含这些坐标
 		for (CellRangeAddress cellRangeAddress : mergedRegionList) {
-			if (cellRangeAddress.containsRow(firstRow)&&
+/*			if (cellRangeAddress.containsRow(firstRow)&&
 					cellRangeAddress.containsRow(lastRow)&&
 					cellRangeAddress.containsColumn(firstCol)&&
 					cellRangeAddress.containsColumn(lastCol)
 					) {
 				flag = true;
-			}
+			}*/
 		}
 		//如果没有单元格包含了要合并的这些坐标，那么菜可以合并，否则就会报错
 		if(!flag){

@@ -26,7 +26,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -34,6 +33,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.loserstar.utils.file.LoserStarFileUtil;
 import com.loserstar.utils.json.LoserStarJsonUtil;
+import com.microsoft.schemas.office.visio.x2012.main.CellType;
 
 /**
  * author: loserStar 
@@ -93,7 +93,7 @@ public class LoserStarExcelUtils {
 			for (int m = 0; m < curCellNum; m++) {
 				Cell cell = fisrtRow.getCell(m);
 				// 设置该列的样式是字符串
-				cell.setCellType(CellType.STRING);
+//				cell.setCellType(CellType.STRING);
 				// 取得该列的字符串值
 				cellNames[m] = cell.getStringCellValue();
 			}
@@ -114,7 +114,7 @@ public class LoserStarExcelUtils {
 					String cellValue = "";
 					if (cell!=null) {
 						cell.setCellStyle(cellStyle);
-						cell.setCellType(CellType.STRING);
+//						cell.setCellType(CellType.STRING);
 						cellValue = cell.getStringCellValue();
 					}
 					rowMap.put(cellNames[k], cellValue);
