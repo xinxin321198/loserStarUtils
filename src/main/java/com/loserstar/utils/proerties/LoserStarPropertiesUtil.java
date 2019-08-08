@@ -10,7 +10,9 @@ package com.loserstar.utils.proerties;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * author: loserStar
@@ -19,6 +21,11 @@ import java.util.Properties;
  */
 public class LoserStarPropertiesUtil {
 
+	/**
+	 * 读取配置
+	 * @param path
+	 * @return
+	 */
 	public static Properties getProperties(String path) {
 		Properties properties = new Properties(); 
 		try {
@@ -29,5 +36,16 @@ public class LoserStarPropertiesUtil {
 			e.printStackTrace();
 		}
 		return properties;
+	}
+	
+	
+	/**
+	 * 打印配置
+	 */
+	public static void printPropertiesInfo(Properties properties) {
+		 Set<Map.Entry<Object,Object>> entrySet = properties.entrySet();
+		 for (Map.Entry<Object, Object> entry : entrySet) {
+			System.out.println(entry.getKey()+":"+entry.getValue());
+		}
 	}
 }
