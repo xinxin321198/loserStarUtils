@@ -9,6 +9,9 @@ import java.util.Iterator;
  * remarks:字符串处理
  */
 public class LoserStarStringUtils {
+
+	
+	
 	/**
 	 * 判断字符串为null的话返回空字符串
 	 * @param s
@@ -150,4 +153,7 @@ public class LoserStarStringUtils {
 			return Double.parseDouble(s);
 		}
 	}
+	
+	
+	
 }
