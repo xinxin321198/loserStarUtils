@@ -14,6 +14,7 @@ import java.util.Map;
 import com.jfinal.plugin.activerecord.Record;
 import com.loserstar.utils.string.LoserStarStringUtils;
 
+
 /**
  * author: loserStar
  * date: 2019年5月13日上午11:29:05
@@ -68,5 +69,18 @@ public class LoserStarJfinalRecordUtils extends LoserStarMapUtils{
 			}
 		}
 		return newRecord;
+	}
+	
+	/**
+	 * 得到List<Record>里某个字段的值的集合
+	 * @param list
+	 * @return
+	 */
+	public static List<String> getFieldValueList(List<Record> list,String fieldName){
+		List<String> resultList = new ArrayList<String>();
+		for (Record record : list) {
+			resultList.add(record.getStr(fieldName));
+		}
+		return resultList;
 	}
 }

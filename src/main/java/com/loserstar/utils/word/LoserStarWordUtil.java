@@ -42,6 +42,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 
 import com.jfinal.plugin.activerecord.Record;
 import com.loserstar.utils.file.LoserStarFileUtil;
+import com.loserstar.utils.json.LoserStarJsonUtil;
 
 /**
  * author: loserStar
@@ -174,73 +175,54 @@ public class LoserStarWordUtil {
 	public static void main(String[] args) throws Exception {
 		String sourceFilePath = "c://1.docx";
 		String targetFilePath = "c://2.docx";
-/*		List<String> list = readWordFile(filePath);
-		for (String string : list) {
-			System.out.println(string);
-		}*/
-//		readWordFileTable(filePath);
-		
-//		write2Docx();
-		
-		
 		//获取文档
 		XWPFDocument document = getDocument(sourceFilePath);
-		
-		//处理各种处理文档
-		
-		//添加前言
-		List<String> newTextList = new ArrayList<String>();
-		newTextList.add("本标准按照GB 1.1《标准化工作导则 第1部分：标准的结构和编写》给出的规则起草。");
-		newTextList.add("本标准附录A、附录B、附录C和附录D为规范性附录。");
-		newTextList.add("本标准由红塔烟草（集团）有限责任公司提出。");
-		newTextList.add("本标准由红塔烟草（集团）有限责任公司的宣传策划部归口。");
-		newTextList.add("本标准起草部门：宣传策划部。");
-		newTextList.add("本标准主要起草人： 杨启成。");
-		newTextList.add("签发人：王勇。");
-//		processDocumentReplaceTextWithText(document, "${preface}", newTextList);//替换段落里的文本
-		processDocumentReplaceTextWithParagraph(document, "${preface}", newTextList,0,null,null);//替换段落
-		
-		//添加岗位基本信息
-		List<List<String>> staionBaseInfoTable = new ArrayList<List<String>>();
-		List<String> title = new ArrayList<String>();
-		title.add("序号");
-		title.add("项目");
-		title.add("信息");
-		staionBaseInfoTable.add(title);
-		List<String> row1 = new ArrayList<String>();
-		row1.add("序号1");
-		row1.add("项目1");
-		row1.add("信息1");
-		staionBaseInfoTable.add(row1);
-		List<String> row2 = new ArrayList<String>();
-		row2.add("序号2");
-		row2.add("项目2");
-		row2.add("信息2");
-		staionBaseInfoTable.add(row2);
-		List<String> row3 = new ArrayList<String>();
-		row3.add("序号3");
-		row3.add("项目3");
-		row3.add("信息3");
-		staionBaseInfoTable.add(row3);
-		
-		//列宽
-		List<Double> cellWidthList = new ArrayList<Double>();
-		cellWidthList.add(3.71);
-		cellWidthList.add(6.67);
-		cellWidthList.add(6.5);
-		
-		//合并行所用的范围类
-		List<MergeRange> rowMergeRangeList = new ArrayList<MergeRange>();
-		rowMergeRangeList.add(MergeRange.createInstance(0, staionBaseInfoTable.size()-1, 0,0));
-		
-		//合并列所用的范围类
-		List<MergeRange> colMergeRangeList = new ArrayList<MergeRange>();
-		colMergeRangeList.add(MergeRange.createInstance(1,1 , 1,2));
-		
-		processDocumentReplaceTextWithTable(document, "${stationBaseInfo}", staionBaseInfoTable,cellWidthList,rowMergeRangeList,colMergeRangeList);
-		//输出文档
-		writeDocx(document, targetFilePath);
-		System.out.println("执行完毕》。。。。。");
+		List<String> textList = readParagraph(document);
+		System.out.println(LoserStarJsonUtil.toJsonDeep(textList));
+	}
+	
+	/**
+	 * 读取Word的段落
+	 * @param document
+	 * @return
+	 * @throws IOException
+	 */
+	public static List<String> readParagraph(XWPFDocument document) throws IOException{
+		List<String> textList = new ArrayList<String>();
+		List<XWPFParagraph> paragraphList = document.getParagraphs();
+        for (XWPFParagraph paragraph : paragraphList) {
+        	textList.add(paragraph.getParagraphText());
+			}
+        document.close();
+		return textList;
+	}
+	
+	public static List<List<List<String>>> readTable(XWPFDocument document) throws IOException{
+		List<List<List<String>>> tableList = new ArrayList<List<List<String>>>(); 
+         Iterator<XWPFTable> it = document.getTablesIterator();//得到word中的表格
+			// 设置需要读取的表格  set是设置需要读取的第几个表格，total是文件中表格的总数
+			while(it.hasNext()){
+				XWPFTable table = it.next();  
+				List<List<String>> tempTable = new ArrayList<List<String>>();
+				List<XWPFTableRow> rows = table.getRows(); 
+				//读取每一行数据
+				for (int i = 0; i < rows.size(); i++) {
+					XWPFTableRow  row = rows.get(i);
+					List<String> tempRow = new ArrayList<String>();
+					//读取每一列数据
+					List<XWPFTableCell> cells = row.getTableCells(); 
+					for (int j = 0; j < cells.size(); j++) {
+						//获取单元格
+						XWPFTableCell cell = cells.get(j);
+						String tempCell = cell.getText();
+						tempRow.add(tempCell);
+					}
+					tempTable.add(tempRow);
+				}
+				tableList.add(tempTable);
+			}
+         document.close();
+		return tableList;
 	}
 	
 	/**
