@@ -9,9 +9,6 @@ import java.util.Iterator;
  * remarks:字符串处理
  */
 public class LoserStarStringUtils {
-
-	
-	
 	/**
 	 * 判断字符串为null的话返回空字符串
 	 * @param s
@@ -40,7 +37,7 @@ public class LoserStarStringUtils {
 	}
 	
 	/**
-	 * 把字符串中指定的字符剔除
+	 * 把字符串中指定的字符串剔除
 	 * @param sourceStr 原字符串
 	 * @param removeStr 需要剔除的字符串
 	 * @return 剔除之后的最终结果
@@ -52,6 +49,48 @@ public class LoserStarStringUtils {
 		}else {
 			return "";
 		}
+	}
+	
+	/**
+	 * 把字符串中指定的字符剔除
+	 * @param sourceStr 原字符串
+	 * @param checkCharArray 需要剔除的字符数组
+	 * @return 剔除之后的最终结果
+	 */
+	public static String removeCharArray(String sourceStr,char ...checkCharArray) {
+		String resultStr = "";
+		if (sourceStr!=null) {
+			if (null==checkCharArray||checkCharArray.length<=0) {
+				resultStr =  sourceStr;
+			}else {
+				char[] sourceCharArray = sourceStr.toCharArray();
+				StringBuffer newText = new StringBuffer();
+				for (int i = 0; i < sourceCharArray.length; i++) {
+					char sourceChar = sourceCharArray[i];
+					for (char checkChar : checkCharArray) {
+						if (sourceChar!=checkChar) {
+							newText.append(sourceChar);
+						}
+					}
+				}
+				resultStr = newText.toString();
+			}
+		}
+		return resultStr;
+	}
+	
+	/**
+	 * 把字符串中指定的字符剔除
+	 * @param sourceStr 原字符串
+	 * @param checkCharArray 需要剔除的字符数组
+	 * @return 剔除之后的最终结果
+	 */
+	public static String removeCharArray(String sourceStr,int ...checkCharArray) {
+		char[] checkCharArray_c = new char[checkCharArray.length];
+		for (int i = 0; i < checkCharArray.length; i++) {
+			checkCharArray_c[i] = (char)checkCharArray[i];
+		}
+		return removeCharArray(sourceStr,checkCharArray_c);
 	}
 	
 	/**
@@ -145,7 +184,6 @@ public class LoserStarStringUtils {
 		}
 		return stringBuffer.toString();
 	}
-	
 	public static Double toDouble(String s) {
 		if (s==null||s.equals("")) {
 			return 0d;
@@ -153,7 +191,11 @@ public class LoserStarStringUtils {
 			return Double.parseDouble(s);
 		}
 	}
-	
-	
-	
+	public static Integer toInteger(String s) {
+		if (s==null||s.equals("")) {
+			return 0;
+		}else {
+			return Integer.parseInt(s);
+		}
+	}
 }

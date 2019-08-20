@@ -13,10 +13,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import com.loserstar.utils.string.LoserStarStringUtils;
+
 /**
  * 数组相关工具类
  * author: loserStar
- * date: 2018年4月17日下午5:03:25
+ * date: 2019年8月20日上午9:07:44
  * remarks:
  */
 public class LoserStarArrayUtils {
@@ -87,5 +89,84 @@ public class LoserStarArrayUtils {
 			flag = true;
 		}
     	return flag;
+    }
+    
+    /**
+	 * 根据一个开始的文本和结束文本，从list中按顺序把List中间的文本取出来
+	 * @param list
+	 * @param startString
+	 * @param endString
+	 * @return
+	 */
+    public static List<String> getRangeText(List<String> allList,String startString,String endString){
+		List<String> newList = new ArrayList<String>();
+		boolean isRead = false;
+		for (String string : allList) {
+			if (isRead) {
+				if (string.equals(endString)) {
+					isRead = false;
+					break;
+				}else {
+					newList.add(string);
+				}
+			}
+			if (string.equals(startString)) {
+				isRead = true;
+			}
+		}
+		return newList;
+	}
+    
+    /**
+     * 清除每一个元素的两边的空格
+     * @param list
+     * @return
+     */
+    public static List<String> trim(List<String> list){
+    	List<String> newList = new ArrayList<String>();
+    	for (String string : list) {
+    		newList.add(string.trim());
+		}
+		return newList;
+    }
+    
+    /**
+     * 替换每一个元素的所有空格
+     * @param list
+     * @return
+     */
+    public static List<String> trimAll(List<String> list){
+    	List<String> newList = new ArrayList<String>();
+    	for (String string : list) {
+    		newList.add(LoserStarStringUtils.removeSpecifiedString(string, " "));
+		}
+		return newList;
+    }
+    
+    /**
+     * 清理list中每一个元素的特殊字符
+     * @param list
+     * @param c
+     * @return
+     */
+    public static List<String> removeChar(List<String> list,char ...cArray){
+    	List<String> newList = new ArrayList<String>();
+    	for (String string : list) {
+    		newList.add(LoserStarStringUtils.removeCharArray(string, cArray));
+		}
+		return newList;
+    }
+    /**
+     * 清理list中每一个元素的特殊字符
+     * @param list
+     * @param c
+     * @return
+     */
+    public static List<String> removeChar(List<String> list,int ...cArray){
+    	List<String> newList = new ArrayList<String>();
+    	for (String string : list) {
+    		newList.add(LoserStarStringUtils.removeCharArray(string, cArray));
+    	}
+    	return newList;
     }
 }
