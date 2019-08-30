@@ -219,6 +219,12 @@ public class LoserStarExcelUtils {
 		return LoserStarJsonUtil.toJsonDeep(excelMap);
 	}
 	
+	/**
+	 * 得到poi的excel的workbook对象
+	 * @param filePath 文件路径
+	 * @return
+	 * @throws IOException
+	 */
 	public static Workbook getWorkbook(String filePath) throws IOException {
 		if (filePath.endsWith("xlsx")) {
 			return getWorkbook(new File(filePath));
@@ -229,6 +235,12 @@ public class LoserStarExcelUtils {
 		}
 		return null;
 	}
+	/**
+	 * 得到poi的excel的workbook对象
+	 * @param file 文件对象
+	 * @return
+	 * @throws IOException
+	 */
 	public static Workbook getWorkbook(File file) throws IOException {
 		if (file.getAbsolutePath().endsWith("xlsx")) {
 			return getWorkbook(new FileInputStream(file), "xlsx");
@@ -239,6 +251,13 @@ public class LoserStarExcelUtils {
 		}
 		return null;
 	}
+	/**
+	 * 得到poi的excel的workbook对象
+	 * @param in 输入流对象
+	 * @param fileName
+	 * @return
+	 * @throws IOException
+	 */
 	public static Workbook getWorkbook(InputStream in,String fileName) throws IOException {
 		POIFSFileSystem fs = null;
 		Workbook workbook = null;
@@ -253,49 +272,58 @@ public class LoserStarExcelUtils {
 		return workbook;
 	}
 	
-	
-	
 	/**
-	 * 把一个List<LinkedHashMap<String,Object>>写到excel里
-	 * @param sheetName
-	 * @param list
-	 * @param filePath
+	 * 把一个poi的excel的workbook对象输出
+	 * @param workbook excel对象
+	 * @param outputStream 输出流
 	 * @throws Exception 
 	 */
-/*	public static void writeListMapToExcel(String sheetName,List<LinkedHashMap<String, Object>> list,String filePath) throws Exception{
-		writeListMapToExcel(sheetName,list,new File(filePath));
+	public static void writeWorkbook(Workbook workbook,OutputStream outputStream) throws Exception {
+		if (outputStream==null) {
+			throw new Exception("outputStream不能为null");
+		}
+		workbook.write(outputStream);
+		outputStream.flush();
+		outputStream.close();
+	}
+	/**
+	 * 把一个poi的excel的workbook对象输出
+	 * @param workbook excel对象
+	 * @param file 文件对象
+	 * @throws Exception
+	 */
+	public static void writeWorkbook(Workbook workbook,File file) throws Exception {
+		if (file==null) {
+			throw new Exception("file不能为null");
+		}
+		writeWorkbook(workbook, new FileOutputStream(file));
+	}
+	/**
+	 * 把一个poi的excel的workbook对象输出
+	 * @param workbook excel对象
+	 * @param filePath 文件路径
+	 * @throws Exception
+	 */
+	public static void writeWorkbook(Workbook workbook,String filePath) throws Exception {
+		if (filePath==null||filePath.equals("")) {
+			throw new Exception("filePath不能为空");
+		}
+		writeWorkbook(workbook, new File(filePath));
 	}
 	
-	*//**
-	 * 把一个List<LinkedHashMap<String,Object>>写到excel里
-	 * @param sheetName
-	 * @param list
-	 * @param filePath
-	 * @throws Exception 
-	 *//*
-	public static void writeListMapToExcel(String sheetName,List<LinkedHashMap<String, Object>> list,File excel) throws Exception{
-		Workbook workbook = null;
-		Sheet sheet = null;
-		String suffix = LoserStarFileUtil.getFileNameSuffix( excel.getAbsolutePath());
-		excel.createNewFile();
-		if (suffix.equals(".xlsx")) {
-			workbook = new XSSFWorkbook();
-		} else if (suffix.equals(".xls")) {
-			workbook = new HSSFWorkbook();
-		}
-		sheet = workbook.createSheet(sheetName);
-		writeListMapToExcel(workbook,sheet,list,new FileOutputStream(excel));
-	}*/
-	
 	/**
-	 * 把一个List<LinkedHashMap<String,Object>>写到excel里
-	 * @param sheetName 要写的sheet名称，如果不传就使用默认的第一个
-	 * @param list 数据
-	 * @param inFilePath 要写的excel文件
-	 * @param outFilePath 输出的excel文件
-	 * @throws Exception 
+	 * 把一个List<LinkedHashMap<String, Object>>对象写入到一个excel的对象中
+	 * @param sourceFile 源文件对象（模板文件对象，如果有就会以这个模板文件为基础覆盖里面的内容生成一个新的workbook）
+	 * @param sourceFileSheetName 源文件对象的sheet
+	 * @param fileName 生成的文件的格式（根据后缀名是xls还是xlsx判断以97-03格式生成还是以07格式生成）
+	 * @param newFileSheetName 新生成的excel的sheet名
+	 * @param list 要写入的数据
+	 * @param startRowIndex 写入的起始行索引，第一行为0
+	 * @param startColumnIndex 写入的起始列索引，第一列为0
+	 * @return poi的workbook对象
+	 * @throws Exception
 	 */
-	public static void writeListMapToExcel(File sourceFile,String sourceFileSheetName ,File newFile,String newFileSheetName,List<LinkedHashMap<String, Object>> list,int startRowIndex,int startColumnIndex) throws Exception {
+	public static Workbook writeListMapToExcel(File sourceFile,String sourceFileSheetName ,String fileName,String newFileSheetName,List<LinkedHashMap<String, Object>> list,int startRowIndex,int startColumnIndex) throws Exception {
 		Workbook workbook = null;
 		Sheet sheet = null;
 		if (sourceFile!=null&&LoserStarFileUtil.isFile(sourceFile)) {
@@ -308,13 +336,16 @@ public class LoserStarExcelUtils {
 			sheet = workbook.getSheet(sourceFileSheetName);
 		}else {
 			//源文件没有，就直接生成个新的
-			if (newFile.getAbsolutePath().endsWith("xls")) {
+			if (fileName.endsWith("xls")) {
 				workbook = new HSSFWorkbook();
-			}else if (newFile.getAbsolutePath().endsWith("xlsx")) {
+			}else if (fileName.endsWith("xlsx")) {
 				workbook = new XSSFWorkbook();
+			}else {
+				throw new Exception("新文件必须是xls或xlsx后缀！");
 			}
 			sheet = workbook.createSheet(newFileSheetName);
 		}
+		
 		workbook.setSheetName(0, newFileSheetName);
 
 		for (int i =0; i < list.size(); i++) {//遍历行
@@ -329,12 +360,7 @@ public class LoserStarExcelUtils {
 				j++;
 			}
 		}
-		
-		//遍历完，输出
-		FileOutputStream outputStream = new FileOutputStream(newFile);
-		workbook.write(outputStream);
-		outputStream.flush();
-		outputStream.close();
+		return workbook;
 	}
 	
 	
@@ -380,8 +406,9 @@ public class LoserStarExcelUtils {
 				map.put("id6",  i+"行"+"5列");
 				list.add(map);
 			}
-//			writeListMapToExcel(null,null, sourceFile,"hellow",list,0,0);//生成一个新文件，数据从第0行索引开始
-			writeListMapToExcel(sourceFile,"hellow", newFile,"hellow2",list,19,0);//没有源文件或者传个null，就生成一个新的，如果有源文件，就从第19行索引覆盖
+			Workbook workbook =null;
+			workbook = writeListMapToExcel(sourceFile, "hellow", "xlsx", "hellow2", list, 19, 0);//没有源文件或者传个null，就生成一个新的，如果有源文件，就从第19行索引覆盖
+			writeWorkbook(workbook, new FileOutputStream(newFile));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
