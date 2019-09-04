@@ -9,7 +9,6 @@ package com.loserstar.utils.excel;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,9 +32,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.loserstar.utils.file.LoserStarFileUtil;
-import com.loserstar.utils.json.LoserStarJsonUtil;
-
 /**
  * author: loserStar 
  * date: 2018年5月29日下午9:48:47 
@@ -43,181 +39,6 @@ import com.loserstar.utils.json.LoserStarJsonUtil;
  */
 public class LoserStarExcelUtils {
 	
-	/**
-	 * @param filePath excel文件路径
-	 * @param hideRowIndex 隐藏行的index，此行的值当做key
-	 * @param startRowIndex 数据开始行的index
-	 * @return
-	 * @throws Exception 
-	 */
-	public static Map<String, List<Map<String, String>>> readExcelToMap(String filePath, int hideRowIndex, int startRowIndex)
-			throws Exception {
-		if (filePath.endsWith("xlsx")) {
-			return readExcelToMap(new FileInputStream(filePath),"xlsx",hideRowIndex,startRowIndex);
-		} else if (filePath.endsWith("xls")) {
-			return readExcelToMap(new FileInputStream(filePath),"xlsx",hideRowIndex,startRowIndex);
-		} else {
-			new Exception("上传文件必须后缀必须为xls或xlsx！");
-		}
-		return null;
-	}
-	
-	/**
-	 * @param file excel文件对象
-	 * @param hideRowIndex 隐藏行的index，此行的值当做key
-	 * @param startRowIndex 数据开始行的index
-	 * @return
-	 * @throws Exception 
-	 */
-	public static Map<String, List<Map<String, String>>> readExcelToMap(File file, int hideRowIndex, int startRowIndex)
-			throws Exception {
-		if (file.getName().endsWith("xlsx")) {
-			return readExcelToMap(new FileInputStream(file),"xlsx",hideRowIndex,startRowIndex);
-		} else if (file.getName().endsWith("xls")) {
-			return readExcelToMap(new FileInputStream(file),"xlsx",hideRowIndex,startRowIndex);
-		} else {
-			new Exception("上传文件必须后缀必须为xls或xlsx！");
-		}
-		return null;
-	}
-	
-	/**
-	 * @param in excel文件输入流对象
-	 * @param fileName 文件名或后缀名
-	 * @param hideRowIndex 隐藏行的index，此行的值当做key
-	 * @param startRowIndex 数据开始行的index
-	 * @return
-	 * @throws Exception 
-	 */
-	public static Map<String, List<Map<String, String>>> readExcelToMap(InputStream in,String fileName, int hideRowIndex, int startRowIndex)
-			throws Exception {
-		POIFSFileSystem fs = null;
-		Workbook workbook = null;
-		if (fileName.endsWith("xlsx")) {
-			workbook = new XSSFWorkbook(in);
-		} else if (fileName.endsWith("xls")) {
-			fs = new POIFSFileSystem(in);
-			workbook = new HSSFWorkbook(fs);
-		} else {
-			new Exception("上传文件必须后缀必须为xls或xlsx！");
-		}
-		return readExcelToMap(workbook, hideRowIndex, startRowIndex);
-	}
-	
-	/**
-	 * @param workbook poi文件poi对象
-	 * @param hideRowIndex 隐藏行的index，此行的值当做key
-	 * @param startRowIndex 数据开始行的index
-	 * @return
-	 * @throws Exception 
-	 */
-	public static Map<String, List<Map<String, String>>> readExcelToMap(Workbook workbook, int hideRowIndex, int startRowIndex)
-			throws Exception {
-		Map<String, List<Map<String, String>>> excelMap= new HashMap<String, List<Map<String, String>>>();
-		POIFSFileSystem fs = null;
-		CellStyle cellStyle = null;
-		if (workbook==null) {
-			throw new Exception("workbook不能为null！");
-		}
-		int sheetsCounts = workbook.getNumberOfSheets();
-		for (int i = 0; i < sheetsCounts; i++) {
-			Sheet sheet = workbook.getSheetAt(i);
-			List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-			String[] cellNames;
-			Row fisrtRow = sheet.getRow(hideRowIndex);
-
-			if (null == fisrtRow) {
-				continue;
-			}
-
-			int curCellNum = fisrtRow.getLastCellNum();
-			cellNames = new String[curCellNum];
-			for (int m = 0; m < curCellNum; m++) {
-				Cell cell = fisrtRow.getCell(m);
-				// 设置该列的样式是字符串
-//				cell.setCellType(CellType.STRING);
-				// 取得该列的字符串值
-				cellNames[m] = cell.getStringCellValue();
-			}
-
-			int rowNum = sheet.getLastRowNum();	
-			for (int j = startRowIndex; j <= rowNum; j++) {
-				// 一行数据对于一个Map
-				Map<String, String> rowMap = new HashMap<String, String>();
-				// 取得某一行
-				Row row = sheet.getRow(j);
-				int cellNum = row.getLastCellNum();
-				// 遍历每一列
-				System.out.println("------row:"+j);
-				for (int k = 0; k < cellNum; k++) {
-					System.out.println("-------col:"+k);
-					Cell cell = row.getCell(k);
-					// 保存该单元格的数据到该行中
-					String cellValue = "";
-					if (cell!=null) {
-						cell.setCellStyle(cellStyle);
-//						cell.setCellType(CellType.STRING);
-						cellValue = cell.getStringCellValue();
-					}
-					rowMap.put(cellNames[k], cellValue);
-				}
-				// 保存该行的数据到该表的List中
-				list.add(rowMap);
-			}
-			// 将该sheet表的表名为key，List转为json后的字符串为Value进行存储
-			excelMap.put(sheet.getSheetName(), list);
-		}
-		return excelMap;
-	}
-	
-	/**
-	 * 读取excel，转为json字符串
-	 * @param filePath 文件路径
-	 * @param hideRowIndex 隐藏的行索引
-	 * @param startRowIndex 开始读取数据的行索引
-	 * @return
-	 * @throws Exception
-	 */
-	public static String readExcelToJson(String filePath, int hideRowIndex, int startRowIndex) throws Exception {
-		Map<String, List<Map<String, String>>>  excelMap = readExcelToMap(filePath, hideRowIndex, startRowIndex);
-		return LoserStarJsonUtil.toJsonDeep(excelMap);
-	}
-	/**
-	 * 读取excel，转为json字符串
-	 * @param file 文件对象
-	 * @param hideRowIndex 隐藏的行索引
-	 * @param startRowIndex 开始读取数据的行索引
-	 * @return
-	 * @throws Exception
-	 */
-	public static String readExcelToJson(File file, int hideRowIndex, int startRowIndex) throws Exception {
-		Map<String, List<Map<String, String>>>  excelMap = readExcelToMap(file, hideRowIndex, startRowIndex);
-		return LoserStarJsonUtil.toJsonDeep(excelMap);
-	}
-	/**
-	 * 读取excel，转为json字符串
-	 * @param in 文件输入流
-	 * @param hideRowIndex 隐藏的行索引
-	 * @param startRowIndex 开始读取数据的行索引
-	 * @return
-	 * @throws Exception
-	 */
-	public static String readExcelToJson(InputStream in,String fileName, int hideRowIndex, int startRowIndex) throws Exception {
-		Map<String, List<Map<String, String>>>  excelMap = readExcelToMap(in,fileName,hideRowIndex, startRowIndex);
-		return LoserStarJsonUtil.toJsonDeep(excelMap);
-	}
-	/**
-	 * 读取excel，转为json字符串
-	 * @param workbook excel对象
-	 * @param hideRowIndex 隐藏的行索引
-	 * @param startRowIndex 开始读取数据的行索引
-	 * @return
-	 * @throws Exception
-	 */
-	public static String readExcelToJson(Workbook workbook, int hideRowIndex, int startRowIndex) throws Exception {
-		Map<String, List<Map<String, String>>>  excelMap = readExcelToMap(workbook, hideRowIndex, startRowIndex);
-		return LoserStarJsonUtil.toJsonDeep(excelMap);
-	}
 	
 	/**
 	 * 得到poi的excel的workbook对象
@@ -273,6 +94,26 @@ public class LoserStarExcelUtils {
 	}
 	
 	/**
+	 * 创建一个workbook和一个sheet
+	 * @param sheetName sheet的名称
+	 * @param isNew 是否创建新版本的excel。true：2007版本及以上的excel（xlsx）,false：97-2003版本的excel（xls）
+	 * @return
+	 */
+	public static Workbook createWorkbook(String sheetName,boolean isNew) {
+		Workbook workbook =null;
+		if (isNew) {
+			workbook = new XSSFWorkbook();
+		}else {
+			workbook = new HSSFWorkbook();
+		}
+		workbook.createSheet();
+		if (sheetName!=null&&!sheetName.equals("")) {
+			workbook.setSheetName(0, sheetName);
+		}
+		return workbook;
+	}
+	
+	/**
 	 * 把一个poi的excel的workbook对象输出
 	 * @param workbook excel对象
 	 * @param outputStream 输出流
@@ -311,6 +152,73 @@ public class LoserStarExcelUtils {
 		writeWorkbook(workbook, new File(filePath));
 	}
 	
+	
+	/**
+	 * @param workbook poi文件poi对象
+	 * @param hideRowIndex 隐藏行的index，此行的值当做key
+	 * @param startRowIndex 数据开始行的index
+	 * @return
+	 * @throws Exception 
+	 */
+	public static Map<String, List<Map<String, String>>> readWorkbookToMap(Workbook workbook, int hideRowIndex, int startRowIndex)
+			throws Exception {
+		Map<String, List<Map<String, String>>> excelMap= new HashMap<String, List<Map<String, String>>>();
+		CellStyle cellStyle = null;
+		if (workbook==null) {
+			throw new Exception("workbook不能为null！");
+		}
+		int sheetsCounts = workbook.getNumberOfSheets();
+		for (int i = 0; i < sheetsCounts; i++) {
+			Sheet sheet = workbook.getSheetAt(i);
+			List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+			String[] cellNames;
+			Row fisrtRow = sheet.getRow(hideRowIndex);
+
+			if (null == fisrtRow) {
+				continue;
+			}
+
+			int curCellNum = fisrtRow.getLastCellNum();
+			cellNames = new String[curCellNum];
+			for (int m = 0; m < curCellNum; m++) {
+				Cell cell = fisrtRow.getCell(m);
+				// 设置该列的样式是字符串
+//				cell.setCellType(CellType.STRING);
+				// 取得该列的字符串值
+				cellNames[m] = cell.getStringCellValue();
+			}
+
+			int rowNum = sheet.getLastRowNum();	
+			for (int j = startRowIndex; j <= rowNum; j++) {
+				// 一行数据对于一个Map
+				Map<String, String> rowMap = new HashMap<String, String>();
+				// 取得某一行
+				Row row = sheet.getRow(j);
+				int cellNum = row.getLastCellNum();
+				// 遍历每一列
+				System.out.println("------row:"+j);
+				for (int k = 0; k < cellNum; k++) {
+					System.out.println("-------col:"+k);
+					Cell cell = row.getCell(k);
+					// 保存该单元格的数据到该行中
+					String cellValue = "";
+					if (cell!=null) {
+						cell.setCellStyle(cellStyle);
+//						cell.setCellType(CellType.STRING);
+						cellValue = cell.getStringCellValue();
+					}
+					rowMap.put(cellNames[k], cellValue);
+				}
+				// 保存该行的数据到该表的List中
+				list.add(rowMap);
+			}
+			// 将该sheet表的表名为key，List转为json后的字符串为Value进行存储
+			excelMap.put(sheet.getSheetName(), list);
+		}
+		return excelMap;
+	}
+	
+	
 	/**
 	 * 把一个List<LinkedHashMap<String, Object>>对象写入到一个excel的对象中
 	 * @param sourceFile 源文件对象（模板文件对象，如果有就会以这个模板文件为基础覆盖里面的内容生成一个新的workbook）
@@ -323,31 +231,27 @@ public class LoserStarExcelUtils {
 	 * @return poi的workbook对象
 	 * @throws Exception
 	 */
-	public static Workbook writeListMapToExcel(File sourceFile,String sourceFileSheetName ,String fileName,String newFileSheetName,List<LinkedHashMap<String, Object>> list,int startRowIndex,int startColumnIndex) throws Exception {
-		Workbook workbook = null;
+	/**
+	 * 把一个List<LinkedHashMap<String, Object>>对象写入到一个workbook的对象中（操作第一个的sheet）
+	 * @param workbook workbook对象，不能为null，如果是新new的workbook没有sheet的话会自动创建一个sheet
+	 * @param list 内容
+	 * @param startRowIndex 从第几行开始写的索引
+	 * @param startColumnIndex 从第几列开始写的索引
+	 * @return 返回workbook对象
+	 * @throws Exception
+	 */
+	public static Workbook processWorkbookWriteListMap(Workbook workbook ,List<LinkedHashMap<String, Object>> list,int startRowIndex,int startColumnIndex) throws Exception {
 		Sheet sheet = null;
-		if (sourceFile!=null&&LoserStarFileUtil.isFile(sourceFile)) {
-			//源文件有，说明需要读取
-			if (sourceFile.getAbsolutePath().endsWith("xls")) {
-				workbook = new HSSFWorkbook(new FileInputStream(sourceFile));
-			}else if (sourceFile.getAbsolutePath().endsWith("xlsx")) {
-				workbook = new XSSFWorkbook(new FileInputStream(sourceFile));
-			}
-			sheet = workbook.getSheet(sourceFileSheetName);
-		}else {
-			//源文件没有，就直接生成个新的
-			if (fileName.endsWith("xls")) {
-				workbook = new HSSFWorkbook();
-			}else if (fileName.endsWith("xlsx")) {
-				workbook = new XSSFWorkbook();
+		if (workbook!=null) {
+			int sheetCount = workbook.getNumberOfSheets();
+			if (sheetCount<=0) {
+				sheet = workbook.createSheet();
 			}else {
-				throw new Exception("新文件必须是xls或xlsx后缀！");
+				sheet = workbook.getSheetAt(0);
 			}
-			sheet = workbook.createSheet(newFileSheetName);
+		}else {
+			throw new Exception("workbook不能为null!");
 		}
-		
-		workbook.setSheetName(0, newFileSheetName);
-
 		for (int i =0; i < list.size(); i++) {//遍历行
 			Row row = sheet.createRow(startRowIndex+i);//从第几行开始写
 			Map<String, Object> map = list.get(i);
@@ -384,17 +288,13 @@ public class LoserStarExcelUtils {
 	
 	public static void main(String[] args) {
 		try {
-
-//			String json = readExcelToJson(file, 1, 2);
-//			System.out.println(json);
-/*			Map<String, List<Map<String, String>>> map = readExcelToMap(file, 0, 1);
-			System.out.println(LoserStarJsonUtil.toJsonDeep(map));
-			Date newsdate = dateNumberToDate(Integer.valueOf(map.get("Sheet1").get(0).get("NEWSDATE")));
-			System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(newsdate));*/
-			
-			//生成一个新的excel，或者读取一个现有的excel进行覆盖或追加（适用于类似模板）
-			File sourceFile = new File("C:\\export.xlsx");
-			File newFile = new File("C:\\export2.xlsx");
+			/**
+			 * 三个步骤
+			 * 1.调用getWorkbook拿到workbook对象
+			 * 2.调用各种方法操作workbook对象
+			 * 3.调用writeWorkbook输出workbook
+			 */
+			//生成测试数据
 			List<LinkedHashMap<String, Object>> list = new ArrayList<LinkedHashMap<String,Object>>();
 			for (int i = 0; i < 20; i++) {
 				LinkedHashMap< String, Object> map = new LinkedHashMap<String, Object>();
@@ -406,8 +306,12 @@ public class LoserStarExcelUtils {
 				map.put("id6",  i+"行"+"5列");
 				list.add(map);
 			}
-			Workbook workbook =null;
-			workbook = writeListMapToExcel(sourceFile, "hellow", "xlsx", "hellow2", list, 19, 0);//没有源文件或者传个null，就生成一个新的，如果有源文件，就从第19行索引覆盖
+			
+			File sourceFile = new File("C:\\export.xlsx");
+			File newFile = new File("C:\\export2.xlsx");
+//			Workbook workbook = getWorkbook(sourceFile);//读取源文件当做模板输出
+			Workbook workbook =createWorkbook("loserStar测试嘎嘎", true);//生成新文件(包括sheet了)
+			workbook = processWorkbookWriteListMap(workbook, list, 19, 0);
 			writeWorkbook(workbook, new FileOutputStream(newFile));
 		} catch (Exception e) {
 			e.printStackTrace();

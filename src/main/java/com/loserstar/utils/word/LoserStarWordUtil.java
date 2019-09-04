@@ -65,109 +65,6 @@ import com.loserstar.utils.json.LoserStarJsonUtil;
 字号‘小初’对应磅值36
  */
 public class LoserStarWordUtil {
-	
-	
-	
-	
-	/**
-	 * 合并单元格的范围类
-	 */
-	public static class MergeRange{
-		private int startRowIndex = 0;
-		private int endRowIndex = 0;
-		private int startColIndex = 0;
-		private int endColIndex = 0;
-		
-		/**
-		 * 创建一个范围对象
-		 * @param startRowIndex 开始的行索引
-		 * @param endRowIndex 结束的行索引
-		 * @param startColIndex 开始的列索引
-		 * @param endColIndex 结束的列索引
-		 * @return
-		 */
-		public static MergeRange createInstance(int startRowIndex,int endRowIndex,int startColIndex,int endColIndex) {
-			MergeRange mergeRange = new MergeRange();
-			mergeRange.startRowIndex = startRowIndex;
-			mergeRange.endRowIndex = endRowIndex;
-			mergeRange.startColIndex = startColIndex;
-			mergeRange.endColIndex = endColIndex;
-			return mergeRange;
-		}
-	}
-	
-	/**
-	 * 通过厘米，计算出Word中的宽度的单位的值（目前不知道是什么单位，但是知道1厘米=567）
-	 * @param centimeter
-	 * @return
-	 */
-	private static int getWidthFromCentimeter(Double centimeter) {
-		int width = (int)(centimeter*567);
-		return width;
-	}
-	
-	
-	/**
-	 * 跨列合并单元格  
-	 * @param table 表对象
-	 * @param row 行的索引
-	 * @param fromCell 开始列的索引
-	 * @param toCell 结束列的索引
-	 */
-    private  static void mergeCellsHorizontal(XWPFTable table, int row, int fromCell, int toCell) {    
-        for (int cellIndex = fromCell; cellIndex <= toCell; cellIndex++) {    
-            XWPFTableCell cell = table.getRow(row).getCell(cellIndex);    
-            if ( cellIndex == fromCell ) {    
-                // The first merged cell is set with RESTART merge value    
-                cell.getCTTc().addNewTcPr().addNewHMerge().setVal(STMerge.RESTART);    
-            } else {    
-                // Cells which join (merge) the first one, are set with CONTINUE    
-                cell.getCTTc().addNewTcPr().addNewHMerge().setVal(STMerge.CONTINUE);    
-            }    
-        }    
-    }    
-    /**
-     * 跨行合并单元格  
-     * @param table表对象
-     * @param col 列索引
-     * @param fromRow 开始行的索引
-     * @param toRow 开始列的索引
-     */
-    private static void mergeCellsVertically(XWPFTable table, int col, int fromRow, int toRow) {    
-        for (int rowIndex = fromRow; rowIndex <= toRow; rowIndex++) {    
-            XWPFTableCell cell = table.getRow(rowIndex).getCell(col);    
-            if ( rowIndex == fromRow ) {    
-                // The first merged cell is set with RESTART merge value    
-                cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.RESTART);    
-            } else {    
-                // Cells which join (merge) the first one, are set with CONTINUE    
-                cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);    
-            }    
-        }    
-    }   
-    
-    /**
-     * 通过一个每组有多少数量的一个数据集，构建一个合并哪些行的一个范围对象
-     * @param groupRecordList 每组的数量有多少个的数据集
-     * @param colArray 要合并的列的下标数组
-     * @param startRowIndex 开始合并的起始行
-     * @return
-     */
-    public static List<MergeRange> buildRowMergeRange(List<Record> groupRecordList,String countFieldName,int[] colArray,int startRowIndex){
-    	List<MergeRange> rangeList = new ArrayList<MergeRange>();
-    	int preMergEndIndex = startRowIndex-1;//上一个的结束行索引（本来应该是-1，但是因为有个表头，所以跳过表头）
-		for (Record record : groupRecordList) {
-			int currentStartRowIndex = preMergEndIndex+1;//开始行索引=上一个的索引+1
-			int currentEndRowIndex = preMergEndIndex+record.getInt(countFieldName);//结束索引= 上一次结束的索引+这一次的数量
-			//把当前加到上一次
-			preMergEndIndex = currentEndRowIndex;
-			for (int i = 0; i < colArray.length; i++) {
-				rangeList.add(MergeRange.createInstance(currentStartRowIndex, currentEndRowIndex, colArray[i], colArray[i]));
-			}
-		}
-		return rangeList;
-    }
-
 	/**
 	 * @param args
 	 * @throws Exception 
@@ -180,51 +77,6 @@ public class LoserStarWordUtil {
 		List<String> textList = readParagraph(document);
 		System.out.println(LoserStarJsonUtil.toJsonDeep(textList));
 	}
-	
-	/**
-	 * 读取Word的段落
-	 * @param document
-	 * @return
-	 * @throws IOException
-	 */
-	public static List<String> readParagraph(XWPFDocument document) throws IOException{
-		List<String> textList = new ArrayList<String>();
-		List<XWPFParagraph> paragraphList = document.getParagraphs();
-        for (XWPFParagraph paragraph : paragraphList) {
-        	textList.add(paragraph.getParagraphText());
-			}
-        document.close();
-		return textList;
-	}
-	
-	public static List<List<List<String>>> readTable(XWPFDocument document) throws IOException{
-		List<List<List<String>>> tableList = new ArrayList<List<List<String>>>(); 
-         Iterator<XWPFTable> it = document.getTablesIterator();//得到word中的表格
-			// 设置需要读取的表格  set是设置需要读取的第几个表格，total是文件中表格的总数
-			while(it.hasNext()){
-				XWPFTable table = it.next();  
-				List<List<String>> tempTable = new ArrayList<List<String>>();
-				List<XWPFTableRow> rows = table.getRows(); 
-				//读取每一行数据
-				for (int i = 0; i < rows.size(); i++) {
-					XWPFTableRow  row = rows.get(i);
-					List<String> tempRow = new ArrayList<String>();
-					//读取每一列数据
-					List<XWPFTableCell> cells = row.getTableCells(); 
-					for (int j = 0; j < cells.size(); j++) {
-						//获取单元格
-						XWPFTableCell cell = cells.get(j);
-						String tempCell = cell.getText();
-						tempRow.add(tempCell);
-					}
-					tempTable.add(tempRow);
-				}
-				tableList.add(tempTable);
-			}
-         document.close();
-		return tableList;
-	}
-	
 	/**
 	 * 读取文本demo
 	 * @param path
@@ -451,46 +303,8 @@ public class LoserStarWordUtil {
         out.close();
     }
     
-    /**
-     * 输出Word文档
-     * @param document
-     * @param targetFilePath
-     * @throws Exception
-     */
-    public static void writeDocx(XWPFDocument document,String targetFilePath) throws Exception {
-    	writeDocx(document, new File(targetFilePath));
-    }
-
-    /**
-     * 输出Word文档
-     * @param document
-     * @param targetFile
-     * @throws Exception
-     */
-    public static void writeDocx(XWPFDocument document,File targetFile) throws Exception {
-    	writeDocx(document, new FileOutputStream(targetFile));
-    }
-    
-
-    /**
-     * 输出Word文档
-     * @param document
-     * @param outputStream
-     * @throws Exception
-     */
-    public static void writeDocx(XWPFDocument document,OutputStream outputStream) throws Exception {
-    	if (outputStream==null) {
-			throw new Exception("outputStream不能为null");
-		}
-    	BufferedOutputStream bufferedOutPut = new BufferedOutputStream(outputStream);
-    	//刷新此缓冲的输出流，保证数据全部都能写出
-    	bufferedOutPut.flush();
-    	document.write(bufferedOutPut);
-    	bufferedOutPut.close();
-    }
-
-    
-    /**
+	
+	   /**
      * 获取一个现有的Word文档的对象或者生成一个新的Word文档对象
      * @param filePath 文件路径
      * @return
@@ -530,6 +344,94 @@ public class LoserStarWordUtil {
 		}
     	return document;
     }
+	
+    /**
+     * 输出Word文档
+     * @param document
+     * @param targetFilePath
+     * @throws Exception
+     */
+    public static void writeDocx(XWPFDocument document,String targetFilePath) throws Exception {
+    	writeDocx(document, new File(targetFilePath));
+    }
+
+    /**
+     * 输出Word文档
+     * @param document
+     * @param targetFile
+     * @throws Exception
+     */
+    public static void writeDocx(XWPFDocument document,File targetFile) throws Exception {
+    	writeDocx(document, new FileOutputStream(targetFile));
+    }
+    
+
+    /**
+     * 输出Word文档
+     * @param document
+     * @param outputStream
+     * @throws Exception
+     */
+    public static void writeDocx(XWPFDocument document,OutputStream outputStream) throws Exception {
+    	if (outputStream==null) {
+			throw new Exception("outputStream不能为null");
+		}
+    	BufferedOutputStream bufferedOutPut = new BufferedOutputStream(outputStream);
+    	//刷新此缓冲的输出流，保证数据全部都能写出
+    	bufferedOutPut.flush();
+    	document.write(bufferedOutPut);
+    	bufferedOutPut.close();
+    }
+    
+	/**
+	 * 读取Word的段落
+	 * @param document
+	 * @return
+	 * @throws IOException
+	 */
+	public static List<String> readParagraph(XWPFDocument document) throws IOException{
+		List<String> textList = new ArrayList<String>();
+		List<XWPFParagraph> paragraphList = document.getParagraphs();
+        for (XWPFParagraph paragraph : paragraphList) {
+        	textList.add(paragraph.getParagraphText());
+			}
+        document.close();
+		return textList;
+	}
+	
+	public static List<List<List<String>>> readTable(XWPFDocument document) throws IOException{
+		List<List<List<String>>> tableList = new ArrayList<List<List<String>>>(); 
+         Iterator<XWPFTable> it = document.getTablesIterator();//得到word中的表格
+			// 设置需要读取的表格  set是设置需要读取的第几个表格，total是文件中表格的总数
+			while(it.hasNext()){
+				XWPFTable table = it.next();  
+				List<List<String>> tempTable = new ArrayList<List<String>>();
+				List<XWPFTableRow> rows = table.getRows(); 
+				//读取每一行数据
+				for (int i = 0; i < rows.size(); i++) {
+					XWPFTableRow  row = rows.get(i);
+					List<String> tempRow = new ArrayList<String>();
+					//读取每一列数据
+					List<XWPFTableCell> cells = row.getTableCells(); 
+					for (int j = 0; j < cells.size(); j++) {
+						//获取单元格
+						XWPFTableCell cell = cells.get(j);
+						String tempCell = cell.getText();
+						tempRow.add(tempCell);
+					}
+					tempTable.add(tempRow);
+				}
+				tableList.add(tempTable);
+			}
+         document.close();
+		return tableList;
+	}
+	
+
+
+
+    
+ 
     
     /**
      * /**
@@ -718,4 +620,109 @@ public class LoserStarWordUtil {
         return document;
     }
     
+	
+	/**
+	 * 合并单元格的范围类
+	 */
+	public static class MergeRange{
+		private int startRowIndex = 0;
+		private int endRowIndex = 0;
+		private int startColIndex = 0;
+		private int endColIndex = 0;
+		
+		/**
+		 * 创建一个范围对象
+		 * @param startRowIndex 开始的行索引
+		 * @param endRowIndex 结束的行索引
+		 * @param startColIndex 开始的列索引
+		 * @param endColIndex 结束的列索引
+		 * @return
+		 */
+		public static MergeRange createInstance(int startRowIndex,int endRowIndex,int startColIndex,int endColIndex) {
+			MergeRange mergeRange = new MergeRange();
+			mergeRange.startRowIndex = startRowIndex;
+			mergeRange.endRowIndex = endRowIndex;
+			mergeRange.startColIndex = startColIndex;
+			mergeRange.endColIndex = endColIndex;
+			return mergeRange;
+		}
+	}
+	
+    /**
+     * 通过一个每组有多少数量的一个数据集，构建一个合并哪些行的一个范围对象
+     * @param groupRecordList 每组的数量有多少个的数据集
+     * @param colArray 要合并的列的下标数组
+     * @param startRowIndex 开始合并的起始行
+     * @return
+     */
+    public static List<MergeRange> buildRowMergeRange(List<Record> groupRecordList,String countFieldName,int[] colArray,int startRowIndex){
+    	List<MergeRange> rangeList = new ArrayList<MergeRange>();
+    	int preMergEndIndex = startRowIndex-1;//上一个的结束行索引（本来应该是-1，但是因为有个表头，所以跳过表头）
+		for (Record record : groupRecordList) {
+			int currentStartRowIndex = preMergEndIndex+1;//开始行索引=上一个的索引+1
+			int currentEndRowIndex = preMergEndIndex+record.getInt(countFieldName);//结束索引= 上一次结束的索引+这一次的数量
+			//把当前加到上一次
+			preMergEndIndex = currentEndRowIndex;
+			for (int i = 0; i < colArray.length; i++) {
+				rangeList.add(MergeRange.createInstance(currentStartRowIndex, currentEndRowIndex, colArray[i], colArray[i]));
+			}
+		}
+		return rangeList;
+    }
+	
+	/**
+	 * 通过厘米，计算出Word中的宽度的单位的值（目前不知道是什么单位，但是知道1厘米=567）
+	 * @param centimeter
+	 * @return
+	 */
+	private static int getWidthFromCentimeter(Double centimeter) {
+		int width = (int)(centimeter*567);
+		return width;
+	}
+	
+	
+	/**
+	 * 跨列合并单元格  
+	 * @param table 表对象
+	 * @param row 行的索引
+	 * @param fromCell 开始列的索引
+	 * @param toCell 结束列的索引
+	 */
+    private  static void mergeCellsHorizontal(XWPFTable table, int row, int fromCell, int toCell) {    
+        for (int cellIndex = fromCell; cellIndex <= toCell; cellIndex++) {    
+            XWPFTableCell cell = table.getRow(row).getCell(cellIndex);    
+            if ( cellIndex == fromCell ) {    
+                // The first merged cell is set with RESTART merge value    
+                cell.getCTTc().addNewTcPr().addNewHMerge().setVal(STMerge.RESTART);    
+            } else {    
+                // Cells which join (merge) the first one, are set with CONTINUE    
+                cell.getCTTc().addNewTcPr().addNewHMerge().setVal(STMerge.CONTINUE);    
+            }    
+        }    
+    }    
+    /**
+     * 跨行合并单元格  
+     * @param table表对象
+     * @param col 列索引
+     * @param fromRow 开始行的索引
+     * @param toRow 开始列的索引
+     */
+    private static void mergeCellsVertically(XWPFTable table, int col, int fromRow, int toRow) {    
+        for (int rowIndex = fromRow; rowIndex <= toRow; rowIndex++) {    
+            XWPFTableCell cell = table.getRow(rowIndex).getCell(col);    
+            if ( rowIndex == fromRow ) {    
+                // The first merged cell is set with RESTART merge value    
+                cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.RESTART);    
+            } else {    
+                // Cells which join (merge) the first one, are set with CONTINUE    
+                cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);    
+            }    
+        }    
+    }   
+    
+
+
+
+	
+
 }
