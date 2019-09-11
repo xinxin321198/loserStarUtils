@@ -416,7 +416,7 @@ public class LoserStarWordUtil {
 					for (int j = 0; j < cells.size(); j++) {
 						//获取单元格
 						XWPFTableCell cell = cells.get(j);
-						String tempCell = cell.getText();
+						String tempCell = (cell.getText()==null||cell.getText().equals("null"))?"":cell.getText();
 						tempRow.add(tempCell);
 					}
 					tempTable.add(tempRow);
