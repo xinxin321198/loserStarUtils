@@ -35,19 +35,20 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTShd;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblWidth;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTc;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTText;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STJc;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STMerge;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STShd;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STVerticalJc;
 
 import com.jfinal.plugin.activerecord.Record;
 import com.loserstar.utils.file.LoserStarFileUtil;
 import com.loserstar.utils.json.LoserStarJsonUtil;
 
 /**
- * author: loserStar
- * date: 2019年8月12日下午6:06:55
- * remarks:wrod解析
  * 字号‘八号’对应磅值5
 字号‘七号’对应磅值5.5
 字号‘小六’对应磅值6.5
@@ -63,6 +64,12 @@ import com.loserstar.utils.json.LoserStarJsonUtil;
 字号‘小一’对应磅值24
 字号‘一号’对应磅值26
 字号‘小初’对应磅值36
+ */
+/**
+ * 
+ * author: loserStar
+ * date: 2019年9月25日下午5:29:54
+ * remarks:增加表第一行内容可以居中的设置
  */
 public class LoserStarWordUtil {
 	/**
@@ -241,7 +248,6 @@ public class LoserStarWordUtil {
         XWPFTable infoTable = document.createTable();
         //去表格边框
         infoTable.getCTTbl().getTblPr().unsetTblBorders();
-
         //列宽自动分割
         CTTblWidth infoTableWidth = infoTable.getCTTbl().addNewTblPr().addNewTblW();
         infoTableWidth.setType(STTblWidth.DXA);
@@ -538,10 +544,11 @@ public class LoserStarWordUtil {
      * @param cellWidthList 每一列的宽度（厘米）
      * @param rowMergeRangeList 要合并的行的范围对象
      * @param colMergeRangeList 要合并的列的范围对象
+     * @param isFirstRowCenter首行是否水平居中
      * @return 处理好的文档对象
      * @throws Exception
      */
-    public static XWPFDocument processDocumentReplaceTextWithTable(XWPFDocument document,String oldText,List<List<String>> newTextList,List<Double> cellWidthList,List<MergeRange> rowMergeRangeList,List<MergeRange> colMergeRangeList) throws Exception {
+    public static XWPFDocument processDocumentReplaceTextWithTable(XWPFDocument document,String oldText,List<List<String>> newTextList,List<Double> cellWidthList,List<MergeRange> rowMergeRangeList,List<MergeRange> colMergeRangeList,boolean isFirstRowCenter) throws Exception {
     	
     	//读取内容
         List<XWPFParagraph> paragraphList = document.getParagraphs();
@@ -555,7 +562,6 @@ public class LoserStarWordUtil {
 				}
         		//基本信息表格
                 XWPFTable infoTable = document.insertNewTbl(paragraph.getCTP().newCursor());
-                
                 //设置总体宽度
 //                CTTblWidth infoTableWidth = infoTable.getCTTbl().addNewTblPr().addNewTblW();
 //                infoTableWidth.setType(STTblWidth.DXA);
@@ -580,6 +586,12 @@ public class LoserStarWordUtil {
 								cell = infoTableRow.getCell(0);
 							}else {
 								cell = infoTableRow.addNewTableCell();
+							}
+							if (isFirstRowCenter) {
+							CTTc cttc = cell.getCTTc();
+							CTTcPr ctPr = cttc.addNewTcPr();
+							ctPr.addNewVAlign().setVal(STVerticalJc.CENTER);
+							cttc.getPList().get(0).addNewPPr().addNewJc().setVal(STJc.CENTER);
 							}
 						}else {
 							//如果不是第一行,就直接取列

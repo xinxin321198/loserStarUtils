@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.loserstar</groupId>
 	<artifactId>loserStarUtils</artifactId>
-	<version>1.4.1</version>
+	<version>1.4.2</version>
 	<name>loserStarUtils</name>
 	<description>362527240@qq.com</description>
 	<packaging>jar</packaging>
@@ -80,6 +80,12 @@
             <artifactId>poi-scratchpad</artifactId>
             <version>3.14</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.poi/ooxml-schemas -->
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>ooxml-schemas</artifactId>
+		    <version>1.3</version>
+		</dependency>
 
 
 		<!-- jdk1.6 只能用2.5-->
