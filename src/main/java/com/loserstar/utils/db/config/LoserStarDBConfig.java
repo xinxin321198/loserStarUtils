@@ -1,6 +1,6 @@
 package com.loserstar.utils.db.config;
 
-public class DBConfig {
+public class LoserStarDBConfig {
 	public static final boolean isTest = true;//false为生产，true为测试机
 	public static final boolean isUpdate = false;//更新开关
 	

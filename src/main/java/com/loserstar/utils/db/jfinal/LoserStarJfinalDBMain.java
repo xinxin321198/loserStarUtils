@@ -17,7 +17,7 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.dialect.AnsiSqlDialect;
 import com.jfinal.plugin.druid.DruidPlugin;
-import com.loserstar.utils.db.config.DBConfig;
+import com.loserstar.utils.db.config.LoserStarDBConfig;
 import com.loserstar.utils.db.jfinal.base.IDBUtils;
 import com.loserstar.utils.db.jfinal.base.imp.InStr;
 import com.loserstar.utils.db.jfinal.base.imp.JoinHelper;
@@ -39,9 +39,9 @@ import com.loserstar.utils.json.LoserStarJsonUtil;
  */
 public class LoserStarJfinalDBMain {
 	private static void startPlugin() {
-		String connectionStr = DBConfig.getConnectionstr();
-		DruidPlugin dp  = new DruidPlugin(connectionStr, DBConfig.getUsername(),DBConfig.getPassword());
-		dp.setDriverClass(DBConfig.getDriver());
+		String connectionStr = LoserStarDBConfig.getConnectionstr();
+		DruidPlugin dp  = new DruidPlugin(connectionStr, LoserStarDBConfig.getUsername(),LoserStarDBConfig.getPassword());
+		dp.setDriverClass(LoserStarDBConfig.getDriver());
 		ActiveRecordPlugin arp = new ActiveRecordPlugin(UUID.randomUUID().toString(),dp);
 		arp.setShowSql(true);//打印出执行的sql
 		arp.setDialect(new AnsiSqlDialect());

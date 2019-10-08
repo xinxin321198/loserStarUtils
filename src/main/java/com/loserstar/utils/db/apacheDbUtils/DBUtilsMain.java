@@ -17,8 +17,7 @@ import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.loserstar.utils.db.config.DBConfig;
-import com.loserstar.utils.json.LoserStarJsonUtil;
+import com.loserstar.utils.db.config.LoserStarDBConfig;
 
 /**
  * author: loserStar
@@ -33,16 +32,16 @@ public class DBUtilsMain {
 	 */
 	public static void main(String[] args) throws SQLException {
 		DruidDataSource druidDataSource = new DruidDataSource();
-		druidDataSource.setDriverClassName(DBConfig.getDriver());
-		druidDataSource.setUsername(DBConfig.getUsername());
-		druidDataSource.setPassword(DBConfig.getPassword());
-		druidDataSource.setUrl(DBConfig.getConnectionstr());
+		druidDataSource.setDriverClassName(LoserStarDBConfig.getDriver());
+		druidDataSource.setUsername(LoserStarDBConfig.getUsername());
+		druidDataSource.setPassword(LoserStarDBConfig.getPassword());
+		druidDataSource.setUrl(LoserStarDBConfig.getConnectionstr());
 		
 		BasicDataSource ds = new BasicDataSource();
-        ds.setDriverClassName(DBConfig.getDriver());
-        ds.setUsername(DBConfig.getUsername());
-        ds.setPassword(DBConfig.getPassword());
-        ds.setUrl(DBConfig.getConnectionstr());
+        ds.setDriverClassName(LoserStarDBConfig.getDriver());
+        ds.setUsername(LoserStarDBConfig.getUsername());
+        ds.setPassword(LoserStarDBConfig.getPassword());
+        ds.setUrl(LoserStarDBConfig.getConnectionstr());
         
 		QueryRunner queryRunner = new QueryRunner(ds);
 		//增
@@ -52,12 +51,12 @@ public class DBUtilsMain {
 		}
 		//查
 		List<Map<String, Object>> list = queryRunner.query("select * from sys_users", new MapListHandler());
-		System.out.println(LoserStarJsonUtil.toJsonDeep(list));
+//		System.out.println(LoserStarJsonUtil.toJsonDeep(list));
 		
 		
 		//删
-/*		int count = queryRunner.update("delete from sys_users");
-		System.out.println("删除："+count);*/
+		int count = queryRunner.update("delete from sys_users");
+		System.out.println("删除："+count);
 	}
 
 }
