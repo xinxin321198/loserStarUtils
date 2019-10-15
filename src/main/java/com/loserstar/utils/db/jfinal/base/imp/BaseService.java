@@ -11,8 +11,8 @@ import com.loserstar.utils.idgen.SnowflakeIdWorker;
 /**
  * 
  * author: loserStar
- * date: 2019年2月27日下午4:37:29
- * remarks:基础service，修复BUG，软删除条件del字段假如数据库是字符类型，这边因为没加单引号导致sql错误
+ * date: 2019年10月15日上午9:25:25
+ * remarks:基础service，为了兼容联合主键，反向又为了兼容老代码，老的getById(String id)也提供，getById(String... id)也提供
  */
 public  abstract class BaseService {
 	public enum DBType{
@@ -356,6 +356,9 @@ public  abstract class BaseService {
 	 * @param id
 	 * @return
 	 */
+	public Record getById(String... id) {
+		return CheckDataSourceName()?Db.use(this.dataSourceName).findById(getTableName(),getPrimaryKey(),id):Db.findById(getTableName(), getPrimaryKey(), id);
+	}
 	public Record getById(String id) {
 		return CheckDataSourceName()?Db.use(this.dataSourceName).findById(getTableName(),getPrimaryKey(),id):Db.findById(getTableName(), getPrimaryKey(), id);
 	}
@@ -365,6 +368,9 @@ public  abstract class BaseService {
 	 * @param id
 	 * @return
 	 */
+	public Record getById(long... id) {
+		return CheckDataSourceName()?Db.use(this.dataSourceName).findById(getTableName(), getPrimaryKey(), id):Db.findById(getTableName(), getPrimaryKey(), id);
+	}
 	public Record getById(long id) {
 		return CheckDataSourceName()?Db.use(this.dataSourceName).findById(getTableName(), getPrimaryKey(), id):Db.findById(getTableName(), getPrimaryKey(), id);
 	}

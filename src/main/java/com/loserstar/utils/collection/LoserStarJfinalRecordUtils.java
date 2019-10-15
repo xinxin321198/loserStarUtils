@@ -72,6 +72,23 @@ public class LoserStarJfinalRecordUtils extends LoserStarMapUtils{
 	}
 	
 	/**
+	 * 遍历填充Record中为null的key
+	 * @param map
+	 */
+	public static Record fullNullKeysToEmptyString(Record record) {
+		Record newRecord = new Record();
+		Map<String, Object> map = record.getColumns();
+		for (Map.Entry<String, Object> entry : map.entrySet()) { 
+			if (entry.getValue()==null||entry.getValue().equals("null")) {
+				newRecord.set(entry.getKey(), "");
+			}else {
+				newRecord.set(entry.getKey(), entry.getValue());
+			}
+		}
+		return newRecord;
+	}
+	
+	/**
 	 * 得到List<Record>里某个字段的值的集合
 	 * @param list
 	 * @return
