@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
@@ -30,12 +31,14 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
- * author: loserStar 
- * date: 2018年5月29日下午9:48:47 
- * remarks: excel操作相关
+ * 
+ * author: loserStar
+ * date: 2019年10月15日上午11:00:39
+ * remarks:对路径输出时候检测如果没有该目录就创建
  */
 public class LoserStarExcelUtils {
 	
@@ -149,6 +152,22 @@ public class LoserStarExcelUtils {
 		if (filePath==null||filePath.equals("")) {
 			throw new Exception("filePath不能为空");
 		}
+		
+		//提取目录
+		int i1 = filePath.lastIndexOf("\\");
+		int i2 = filePath.lastIndexOf("/");
+		int index = 0;
+		if (i1>i2) {
+			index = i1;
+		}else{
+			index = i2;
+		}
+		String dir = filePath.substring(0, index+1);
+		//如果目录不存在就创建目录
+		File dirFile = new File(dir);
+		if (!dirFile.exists()) {
+			dirFile.mkdirs();
+		}
 		writeWorkbook(workbook, new File(filePath));
 	}
 	
@@ -220,18 +239,6 @@ public class LoserStarExcelUtils {
 	
 	
 	/**
-	 * 把一个List<LinkedHashMap<String, Object>>对象写入到一个excel的对象中
-	 * @param sourceFile 源文件对象（模板文件对象，如果有就会以这个模板文件为基础覆盖里面的内容生成一个新的workbook）
-	 * @param sourceFileSheetName 源文件对象的sheet
-	 * @param fileName 生成的文件的格式（根据后缀名是xls还是xlsx判断以97-03格式生成还是以07格式生成）
-	 * @param newFileSheetName 新生成的excel的sheet名
-	 * @param list 要写入的数据
-	 * @param startRowIndex 写入的起始行索引，第一行为0
-	 * @param startColumnIndex 写入的起始列索引，第一列为0
-	 * @return poi的workbook对象
-	 * @throws Exception
-	 */
-	/**
 	 * 把一个List<LinkedHashMap<String, Object>>对象写入到一个workbook的对象中（操作第一个的sheet）
 	 * @param workbook workbook对象，不能为null，如果是新new的workbook没有sheet的话会自动创建一个sheet
 	 * @param list 内容
@@ -241,6 +248,20 @@ public class LoserStarExcelUtils {
 	 * @throws Exception
 	 */
 	public static Workbook processWorkbookWriteListMap(Workbook workbook ,List<LinkedHashMap<String, Object>> list,int startRowIndex,int startColumnIndex) throws Exception {
+		return processWorkbookWriteListMap(workbook,list,startRowIndex,startColumnIndex,null);
+	}
+	
+	/**
+	 * 把一个List<LinkedHashMap<String, Object>>对象写入到一个workbook的对象中（操作第一个的sheet）
+	 * @param workbook workbook对象，不能为null，如果是新new的workbook没有sheet的话会自动创建一个sheet
+	 * @param list 内容
+	 * @param startRowIndex 从第几行开始写的索引
+	 * @param startColumnIndex 从第几列开始写的索引
+	 * @param columnsWidth 每一列的宽度，从索引0开始（字符）
+	 * @return 返回workbook对象
+	 * @throws Exception
+	 */
+	public static Workbook processWorkbookWriteListMap(Workbook workbook ,List<LinkedHashMap<String, Object>> list,int startRowIndex,int startColumnIndex,List<Integer> columnsWidthList) throws Exception {
 		Sheet sheet = null;
 		if (workbook!=null) {
 			int sheetCount = workbook.getNumberOfSheets();
@@ -248,6 +269,12 @@ public class LoserStarExcelUtils {
 				sheet = workbook.createSheet();
 			}else {
 				sheet = workbook.getSheetAt(0);
+			}
+			if (columnsWidthList!=null&&columnsWidthList.size()>0) {
+				for(int i=0;i<columnsWidthList.size();i++) {
+					int width = columnsWidthList.size()*256;
+					sheet.setColumnWidth(i,width );
+				}
 			}
 		}else {
 			throw new Exception("workbook不能为null!");
@@ -260,7 +287,11 @@ public class LoserStarExcelUtils {
 				String key = entry.getKey();
 				Object value = entry.getValue();
 				Cell cell = row.createCell(j);
-				cell.setCellValue(String.valueOf(value));
+/*				CellStyle cellStyle=workbook.createCellStyle();       
+				cellStyle.setWrapText(true);
+				cell.setCellStyle(cellStyle);*/
+				String valueStr = String.valueOf(value);
+				cell.setCellValue(valueStr);
 				j++;
 			}
 		}
