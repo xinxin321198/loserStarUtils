@@ -16,6 +16,7 @@ import com.loserstar.utils.ObjectMapConvert.LoserStarObjMapConvertUtil;
 import com.loserstar.utils.date.LoserStarDateUtils;
 import com.loserstar.utils.http.LoserStarHttpUtil;
 import com.loserstar.utils.json.LoserStarJsonUtil;
+import com.loserstar.utils.string.LoserStarStringUtils;
 
 /**
  * author: loserStar
@@ -23,60 +24,23 @@ import com.loserstar.utils.json.LoserStarJsonUtil;
  * remarks:企业微信调用工具类
  */
 public class LoserStarWeChartUtils {
-
-	private String corpid = "";//企业id
-	private String secret = "";////企业门户待办应用的secret
-	private String agentId = "";//企业门户待办应用功能的agentId
 	
-	/**
-	 * @param corpid
-	 * @param secret
-	 * @param agentId
-	 */
-	public LoserStarWeChartUtils(String corpid, String secret, String agentId) {
-		super();
-		this.corpid = corpid;
-		this.secret = secret;
-		this.agentId = agentId;
-	}
-	
-	/**
-	 * 检测基本参数是否存在
-	 * @throws Exception
-	 */
-	private void checkParam() throws Exception {
-		if (this.corpid==null||this.corpid.equals("")) {
-			throw new Exception("没有找到corpid，企业id，该参数在企业微信后台“我的企业”可以找到，请使用带参数的构造函数初始化或者调用init方法初始化");
-		}
-		if (this.secret==null||this.secret.equals("")) {
-			throw new Exception("没有找到secret，自定义应用的secret，该参数在企业微信后台的自建应用里可以看到");
-		}
-//		if (this.agentId==null||this.agentId.equals("")) {
-//			throw new Exception("没有找到agentId，自定义应用的agentId，该参数在企业微信后台的自建应用里可以看到");
-//		}
-	}
-	/**
-	 * 初始化
-	 * @param corpid
-	 * @param secret
-	 * @param agentId
-	 */
-	public void init(String corpid,String secret,String agentId) {
-		this.corpid = corpid;
-		this.secret = secret;
-		this.agentId = agentId;
-	}
 	
 	/**
 	 * 获取token
-	 * @param corpid
-	 * @param secret
+	 * @param corpid 参数在企业微信后台“我的企业”可以找到
+	 * @param secret 该参数在企业微信后台的自建应用里可以看到
 	 * @return
 	 * @throws Exception 
 	 */
-	public String getToken() throws Exception {
-		checkParam();
-		String getTokenUrl = "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid="+this.corpid+"&corpsecret="+this.secret;
+	public static String getToken(String corpid,String secret) throws Exception {
+		if (null==corpid||"".equals(corpid)) {
+			throw new Exception("没有找到corpid，企业id，该参数在企业微信后台“我的企业”可以找到，请使用带参数的构造函数初始化或者调用init方法初始化");
+		}
+		if (null==secret||"".equals(secret)) {
+			throw new Exception("没有找到secret，自定义应用的secret，该参数在企业微信后台的自建应用里可以看到");
+		}
+		String getTokenUrl = "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid="+corpid+"&corpsecret="+secret;
 		String result = LoserStarHttpUtil.get(getTokenUrl, null);
 		Map<String, Object> tokenResult = LoserStarJsonUtil.toModel(result, Map.class);
 		String access_token = tokenResult.get("access_token").toString();
@@ -92,9 +56,8 @@ public class LoserStarWeChartUtils {
 	 * @return
 	 * @throws Exception 
 	 */
-	public String sendMsg(String token,String userid,String msg) throws Exception {
-		checkParam();
-		if (this.agentId==null||this.agentId.equals("")) {
+	public static String sendMsg(String token,String agentId,String userid,String msg) throws Exception {
+		if (null==agentId||"".equals(agentId)) {
 			throw new Exception("没有找到agentId，自定义应用的agentId，该参数在企业微信后台的自建应用里可以看到");
 		}
 		String sendUrl = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token="+token;
@@ -102,7 +65,7 @@ public class LoserStarWeChartUtils {
 		paramMap.put("touser", userid);
 		paramMap.put("toparty", "");
 		paramMap.put("totag", "");
-		paramMap.put("agentid", this.agentId);
+		paramMap.put("agentid", agentId);
 		paramMap.put("msgtype", "text");
 		Map<String, String> text = new HashMap<String, String>();
 //		text.put("content", "这是测试"+LoserStarDateUtils.format(new Date())+"<a href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wwf137351476e08eb5&redirect_uri=http://wx.hongta.com:8081/EPMobile/test/index.do&response_type=code&scope=snsapi_userinfo&agentid=1000003&state=STATE#wechat_redirect'>登录大厅办理</a>");
@@ -125,8 +88,7 @@ public class LoserStarWeChartUtils {
 	 * @return
 	 * @throws Exception 
 	 */
-	public String updateUserInfo(String token,String userId,Map<String, Object> paramMap) throws Exception {
-		checkParam();
+	public static String updateUserInfo(String token,String userId,Map<String, Object> paramMap) throws Exception {
 		String url = "https://qyapi.weixin.qq.com/cgi-bin/user/update?access_token="+token;
 		paramMap.put("userid", userId);
 		String postJson = LoserStarJsonUtil.toJsonDeep(paramMap);
@@ -141,7 +103,7 @@ public class LoserStarWeChartUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Map<String, Object>> getDepartmentList(String token,String departmentId) throws Exception{
+	public static List<Map<String, Object>> getDepartmentList(String token,String departmentId) throws Exception{
 		String url = "https://qyapi.weixin.qq.com/cgi-bin/department/list?access_token="+token;
 		if (departmentId!=null&&!departmentId.equals("")) {
 			url+="&id="+departmentId;
@@ -151,7 +113,12 @@ public class LoserStarWeChartUtils {
 		String errorcode = resultMap.get("errcode").toString();
 		String errmsg = resultMap.get("errmsg").toString();
 		if (!errorcode.equals("0")) {
-			throw new Exception(resultJson);
+			if(errorcode.equals("42001")) {
+				//token失效，需要重新获取
+				throw new Exception("token失效");
+			}else {
+				throw new Exception(resultJson);
+			}
 		}
 		List<Map<String, Object>> departmentList = (List<Map<String, Object>>) LoserStarObjMapConvertUtil.ConvertObjectToList(resultMap.get("department"));
 		return departmentList;
@@ -165,7 +132,7 @@ public class LoserStarWeChartUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Map<String, Object>> getUserListByDepartmentId(String token,int departmentId,boolean fetch_child) throws Exception{
+	public static List<Map<String, Object>> getUserListByDepartmentId(String token,int departmentId,boolean fetch_child) throws Exception{
 		String url = "https://qyapi.weixin.qq.com/cgi-bin/user/list?access_token="+token+"&department_id="+departmentId;
 		if (fetch_child) {
 			url+="&fetch_child=1";
@@ -177,9 +144,107 @@ public class LoserStarWeChartUtils {
 		String errorcode = resultMap.get("errcode").toString();
 		String errmsg = resultMap.get("errmsg").toString();
 		if (!errorcode.equals("0")) {
-			throw new Exception(resultJson);
+			if(errorcode.equals("42001")) {
+				//token失效，需要重新获取
+				throw new Exception("token失效");
+			}else {
+				throw new Exception(resultJson);
+			}
 		}
 		List<Map<String, Object>> userList = (List<Map<String, Object>>) LoserStarObjMapConvertUtil.ConvertObjectToList(resultMap.get("userlist"));
 		return userList;
+	}
+	
+	/**
+	 * 根据token和code，获取包含企业微信用户的唯一凭证UserId的map
+	 * 但也可能是
+	 * @param token
+	 * @param code
+	 * @return
+	 * a) 当用户为企业成员时返回示例如下：
+	 * 参数	说明
+		errcode	返回码
+		errmsg	对返回码的文本描述内容
+		UserId	成员UserID。若需要获得用户详情信息，可调用通讯录接口：读取成员
+		DeviceId	手机设备号(由企业微信在安装时随机生成，删除重装会改变，升级不受影响)
+		
+		b) 非企业成员授权时返回示例如下：
+		errcode	返回码
+		errmsg	对返回码的文本描述内容
+		OpenId	非企业成员的标识，对当前企业唯一
+		DeviceId	手机设备号(由企业微信在安装时随机生成，删除重装会改变，升级不受影响)
+	 */
+	@SuppressWarnings("unchecked")
+	public  static Map<String, Object> getWeixinUserInfoForMap(String token,String code){
+		String getTokenUrl = "https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo?access_token="+token+"&code="+code;
+		String result = LoserStarHttpUtil.get(getTokenUrl, null);
+		return LoserStarJsonUtil.toModel(result, Map.class);
+	}
+	
+	/**
+	 * 根据token和code，获取企业微信用户的唯一凭证UserId
+	 * @param token
+	 * @param code
+	 * @return
+	 * @throws Exception 
+	 */
+	public  static String getWeixinUserInfoForString(String token,String code) throws Exception{
+		Map<String, Object> resultMap = getWeixinUserInfoForMap(token, code);
+		String errcode = LoserStarStringUtils.toString(resultMap.get("errcode")); 
+		if (errcode.equals("")||!errcode.equals("0")) {
+			throw new Exception("获取userId失败："+resultMap.get("errmsg"));
+		}else if(errcode.equals("42001")) {
+			//token失效，需要重新获取
+			throw new Exception("token失效");
+		}
+		String userId = LoserStarStringUtils.toString(resultMap.get("UserId"));
+		if (userId.equals("")) {
+			String OpenId = LoserStarStringUtils.toString(resultMap.get("OpenId"));
+			throw new Exception("没有获取到UserId,当前属于非企业成员的授权，请勿使用个人微信访问，必须使用企业微信进行访问，或尝试在企业微信的“设置”里切换到对应的企业，OpenId="+OpenId);
+		}
+		return userId;
+	}
+	
+	/**
+	 * 根据token和企业微信用户的唯一拼争UserId获取用户的详细信息
+	 * @param token
+	 * @param userId
+	 * @return
+	 * @throws Exception 
+	 */
+	@SuppressWarnings("unchecked")
+	public  static Map<String, Object> getWeixinUserInfoDetail(String token,String userId) throws Exception{
+		String getTokenUrl = "https://qyapi.weixin.qq.com/cgi-bin/user/get?access_token="+token+"&userid="+userId;
+		String result = LoserStarHttpUtil.get(getTokenUrl, null);
+		Map<String, Object> resultMap = LoserStarJsonUtil.toModel(result, Map.class);
+		String errcode = LoserStarStringUtils.toString(resultMap.get("errcode")); 
+		if (errcode.equals("")||!errcode.equals("0")) {
+			throw new Exception("获取用户详细信息失败："+resultMap.get("errmsg"));
+		}else if(errcode.equals("42001")) {
+			//token失效，需要重新获取
+			throw new Exception("token失效");
+		}
+		return resultMap;
+	}
+	
+	/**
+	 * 获取使用js-sdk需要的JsapiTicket（用于生成签名）
+	 * @param token
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public String JS_SDK_getJsapiTicket(String token) throws Exception {
+		String JsapiTicket = "";
+		String getTokenUrl ="https://qyapi.weixin.qq.com/cgi-bin/get_jsapi_ticket?access_token="+token;
+		String result = LoserStarHttpUtil.get(getTokenUrl, null);
+		Map<String, Object> resultMap = LoserStarJsonUtil.toModel(result, Map.class);
+		String errcode = LoserStarStringUtils.toString(resultMap.get("errcode")); 
+		if (errcode.equals("")||!errcode.equals("0")) {
+			throw new Exception("获取jsapi_ticket信息失败："+resultMap.get("errmsg"));
+		}else {
+			JsapiTicket = LoserStarStringUtils.toString(resultMap.get("ticket"));
+		}
+		return JsapiTicket;
 	}
 }
