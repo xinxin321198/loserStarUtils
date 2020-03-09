@@ -72,7 +72,7 @@ public class LoserStarJfinalRecordUtils extends LoserStarMapUtils{
 	}
 	
 	/**
-	 * 遍历填充Record中为null的key
+	 * 遍历填充Record中为null的key为空字符串
 	 * @param map
 	 */
 	public static Record fullNullKeysToEmptyString(Record record) {
@@ -81,6 +81,27 @@ public class LoserStarJfinalRecordUtils extends LoserStarMapUtils{
 		for (Map.Entry<String, Object> entry : map.entrySet()) { 
 			if (entry.getValue()==null||entry.getValue().equals("null")) {
 				newRecord.set(entry.getKey(), "");
+			}else {
+				newRecord.set(entry.getKey(), entry.getValue());
+			}
+		}
+		return newRecord;
+	}
+	
+	/**
+	 * 遍历填充Record中为空字符串的字段为null（这样才会让jfinal去把该字段更新为null）
+	 * @param map
+	 */
+	public static Record fullEmptyStringKeysToNull(Record record) {
+		Record newRecord = new Record();
+		Map<String, Object> map = record.getColumns();
+		for (Map.Entry<String, Object> entry : map.entrySet()) { 
+			if (entry.getValue()!=null) {
+				if (entry.getValue().equals("")) {
+					newRecord.set(entry.getKey(), null);
+				}else {
+					newRecord.set(entry.getKey(), entry.getValue());
+				}
 			}else {
 				newRecord.set(entry.getKey(), entry.getValue());
 			}
@@ -100,4 +121,6 @@ public class LoserStarJfinalRecordUtils extends LoserStarMapUtils{
 		}
 		return resultList;
 	}
+	
+	
 }

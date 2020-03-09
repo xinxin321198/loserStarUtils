@@ -145,8 +145,9 @@ public class LoserStarEmailUtil {
     
     public static void main(String[] args) {
 		try {
-			LoserStarEmailUtil.init("879264734@qq.com", "jdnecqgbwhqkbehh", "smtp.qq.com");
-			LoserStarEmailUtil.send("362527240@qq.com", "测试loserStarEmailUtil封装", "这是内容，带个超链接试试<a href='http://www.baidu.com'>百度</a>");
+//			LoserStarEmailUtil.init("879264734@qq.com", "jdnecqgbwhqkbehh", "smtp.qq.com");
+			LoserStarEmailUtil.init("18077968@qq.com", "wgewpfdrhkbcbhdf", "smtp.qq.com");
+			LoserStarEmailUtil.send("06000849@hongta.com", "测试loserStarEmailUtil封装", "这是内容，带个<br/>超链接试试<a href='http://www.baidu.com'>百度</a>");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
