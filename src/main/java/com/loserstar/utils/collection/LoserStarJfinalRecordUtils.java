@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
 import com.loserstar.utils.string.LoserStarStringUtils;
 
@@ -122,5 +123,69 @@ public class LoserStarJfinalRecordUtils extends LoserStarMapUtils{
 		return resultList;
 	}
 	
+	/**
+	 * 批量把jfinal的List Record 转为jfinal的List Model 对象
+	 * @param list
+	 * @param class1
+	 * @return
+	 */
+	public static <T extends Model<?>> List<T>  toModelList(List<Record> list,Class<T> class1){
+		List<T> modelList = new ArrayList<T>();
+		try {
+			for (Record record : list) {
+				T t = class1.newInstance();
+				t.put(record);
+				modelList.add(t);
+			}
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return modelList;
+	}
+	/**
+	 * 批量把jfinal的Record转为jfinal的Model对象
+	 * @param list
+	 * @param class1
+	 * @return
+	 */
+	public static <T extends Model<?>> T toModel(Record record,Class<T> class1){
+		T t = null;
+		try {
+			t = class1.newInstance();
+			t.put(record);
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return t;
+	}
 	
+	/**
+	 * 批量把jfinal的List Model 转为jfinal的List Record 对象
+	 * @param list
+	 * @param class1
+	 * @return
+	 */
+	public static <T extends Model<?>> List<Record> toRecordList(List<T> list) {
+		List<Record> recordList = new ArrayList<Record>();
+		for (T t : list) {
+			recordList.add(t.toRecord());
+		}
+		return recordList;
+	}
+	
+	/**
+	 * 批量把jfinal的 Model 转为jfinal的 Record 对象
+	 * @param list
+	 * @param class1
+	 * @return
+	 */
+	public static <T extends Model<?>> Record toRecordList(T model) {
+		return model.toRecord();
+	}
 }

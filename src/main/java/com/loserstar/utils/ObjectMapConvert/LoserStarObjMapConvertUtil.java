@@ -122,14 +122,29 @@ public class LoserStarObjMapConvertUtil {
 	}
 	
 	/**
-	 * 某个List的父或子对象转为List（返回值的泛型基于返回值实际类型，所以该方法并不知道返回值类型，调用时需强制转换）
+	 * 某个List的父或子对象转为List（返回值的泛型基于接收的变量的实际类型，所以该方法并不知道返回值类型，调用时还需强制转换，可用ConvertObjectToList2方法替换）
 	 * @param object
 	 * @return
 	 * @throws Exception
 	 */
-	public static List<?> ConvertObjectToList(Object object) throws Exception {
+	public static  List<?> ConvertObjectToList(Object object) throws Exception {
 		if (object instanceof List) {
 			return (List<?>)object;
+		}else {
+			throw new Exception("对象非List类型，不能转换");
+		}
+	}
+	
+	/**
+	 * 某个List的父或子对象转为List（）
+	 * @param object
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> List<T> ConvertObjectToList2(Object object) throws Exception {
+		if (object instanceof List) {
+			return (List<T>)object;
 		}else {
 			throw new Exception("对象非List类型，不能转换");
 		}

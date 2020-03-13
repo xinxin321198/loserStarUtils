@@ -4,7 +4,7 @@
  * email:362527240@qq.com
  * github:https://github.com/xinxin321198
  * remarks:
- */
+ *//*
 package com.loserstar.utils.db.apacheDbUtils;
 
 import java.sql.SQLException;
@@ -19,17 +19,17 @@ import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.loserstar.utils.db.config.LoserStarDBConfig;
 
-/**
+*//**
  * author: loserStar
  * date: 2019年9月10日下午2:43:18
  * remarks:
- */
+ *//*
 public class DBUtilsMain {
 
-	/**
+	*//**
 	 * @param args
 	 * @throws SQLException 
-	 */
+	 *//*
 	public static void main(String[] args) throws SQLException {
 		DruidDataSource druidDataSource = new DruidDataSource();
 		druidDataSource.setDriverClassName(LoserStarDBConfig.getDriver());
@@ -60,3 +60,4 @@ public class DBUtilsMain {
 	}
 
 }
+*/
