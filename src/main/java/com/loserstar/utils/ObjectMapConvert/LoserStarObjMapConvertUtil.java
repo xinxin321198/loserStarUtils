@@ -33,7 +33,7 @@ public class LoserStarObjMapConvertUtil {
 	 * @throws NoSuchMethodException
 	 * @throws InvocationTargetException
 	 */
-	public static <T> List<Object> getPropertyList(List<T> objList, String propertyName) throws IllegalAccessException,
+	public static <T,E> List<E> getPropertyList(List<T> objList, String propertyName) throws IllegalAccessException,
 			InvocationTargetException, NoSuchMethodException {
 		if (objList == null || objList.size() == 0)
 			throw new IllegalArgumentException("No objList specified");
@@ -41,13 +41,15 @@ public class LoserStarObjMapConvertUtil {
 			throw new IllegalArgumentException("No propertyName specified for bean class '" + objList.get(0).getClass() + "'");
 		}
 		PropertyUtilsBean p = new PropertyUtilsBean();
-		List<Object> propList = new LinkedList<Object>();
+		List<E> propList = new LinkedList<E>();
 		for (int i = 0; i < objList.size(); i++) {
 			T obj = objList.get(i);
-			propList.add(p.getProperty(obj, propertyName));
+			propList.add((E) p.getProperty(obj, propertyName));
 		}
 		return propList;
 	}
+	
+	
 
 	/**
 	 * 将List列表中的对象的某个属性封装成一个Map对象，key值是属性名，value值是对象列表中对象属性值的列表
@@ -61,14 +63,14 @@ public class LoserStarObjMapConvertUtil {
 	 * @throws InvocationTargetException
 	 * @throws NoSuchMethodException
 	 */
-	public static <T> Map<String, List<Object>> getPropertiesMap(List<T> objList, String... propertyName)
+	public static <T> Map<String, List<?>> getPropertiesMap(List<T> objList, String... propertyName)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if (objList == null || objList.size() == 0)
 			throw new IllegalArgumentException("No objList specified");
 		if (propertyName == null || propertyName.length == 0) {
 			throw new IllegalArgumentException("No propertyName specified for bean class '" + objList.get(0).getClass() + "'");
 		}
-		Map<String, List<Object>> maps = new HashMap<String, List<Object>>();
+		Map<String, List<?>> maps = new HashMap<String, List<?>>();
 		for (int i = 0; i < propertyName.length; i++) {
 			maps.put(propertyName[i], getPropertyList(objList, propertyName[i]));
 		}
@@ -147,6 +149,30 @@ public class LoserStarObjMapConvertUtil {
 			return (List<T>)object;
 		}else {
 			throw new Exception("对象非List类型，不能转换");
+		}
+	}
+	
+	public static void main(String[] args) {
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("aaa", "111");
+		map.put("bbb", "222");
+		list.add(map);
+		
+		try {
+			List<String> stringList = LoserStarObjMapConvertUtil.getPropertyList(list, "aaa");
+			for (String string : stringList) {
+				System.out.println(string);
+			}
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

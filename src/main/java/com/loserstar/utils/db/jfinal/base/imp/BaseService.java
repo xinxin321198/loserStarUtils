@@ -132,9 +132,17 @@ public  abstract class BaseService {
 			if (whereHelper==null) {
 				whereHelper = new WhereHelper();
 			}
-			whereHelper.addStrWhere(" and ("+getSoftDelField()+"= '"+NOT_DEL+"' or "+getSoftDelField()+" is null or "+getSoftDelField()+" = 0)");
+			whereHelper.addStrWhere(" and "+getSoftDelWhere());
 		}
 		return whereHelper;
+	}
+	/**
+	 * 获取软删除的条件
+	 * @return
+	 */
+	public String getSoftDelWhere() {
+		String softDelWhere = "  ("+getSoftDelField()+"= '"+NOT_DEL+"' or "+getSoftDelField()+" is null or "+getSoftDelField()+" = 0)";
+		return softDelWhere;
 	}
 	
 	/**
