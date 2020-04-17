@@ -3,13 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.loserstar</groupId>
 	<artifactId>loserStarUtils</artifactId>
-	<version>1.6.0</version>
+	<version>1.6.1</version>
 	<!-- 1.5.5更新了LoserStarJfinalRecordUtils，增加fullEmptyStringKeysToNull -->
 	<!-- 1.5.6更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
 	<!-- 1.5.7更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
 	<!-- 1.5.8更新了LoserStarJsonUtil，底层实现类直接换成FastJson-->
 	<!-- 1.5.9更新了BaseService暴露一个可以获取软删除条件的方法-->
 	<!-- 1.6.0更新了注意修改了com.loserstar.utils.ObjectMapConvert.LoserStarObjMapConvertUtil.getPropertyList(List<T>, String)方法，使用泛型，可能会导致编译错误-->
+	<!-- 1.6.1更新LoserStarJfinalRecordUtils，增强，record转model时候，record不为null才转 -->
 	<name>loserStarUtils</name>
 	<description>362527240@qq.com</description>
 	<packaging>jar</packaging>

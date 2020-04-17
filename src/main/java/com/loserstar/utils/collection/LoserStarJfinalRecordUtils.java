@@ -153,8 +153,10 @@ public class LoserStarJfinalRecordUtils extends LoserStarMapUtils{
 	public static <T extends Model<?>> T toModel(Record record,Class<T> class1){
 		T t = null;
 		try {
-			t = class1.newInstance();
-			t.put(record);
+			if(record!=null) {
+				t = class1.newInstance();
+				t.put(record);
+			}
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
