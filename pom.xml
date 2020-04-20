@@ -290,5 +290,21 @@
 		    <version>1.2.58</version>
 		</dependency>
 				
+		<!-- 参考：https://blog.csdn.net/u013310119/article/details/79803134++++++++++++++++begin -->
+		<!-- 这鬼东西，如果使用json-lib-2.4-jdk15.jar会出现报错，因为commons-lang升级了，包名路径都变了 -->
+		<!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
+<!-- 		<dependency>
+		    <groupId>commons-lang</groupId>
+		    <artifactId>commons-lang</artifactId>
+		    <version>2.6</version>
+		</dependency> -->
+		<!-- https://mvnrepository.com/artifact/net.sf.ezmorph/ezmorph -->
+<!-- 		<dependency>
+		    <groupId>net.sf.ezmorph</groupId>
+		    <artifactId>ezmorph</artifactId>
+		    <version>1.0.6</version>
+		</dependency> -->
+		<!-- 参考：https://blog.csdn.net/u013310119/article/details/79803134++++++++++++++++end -->
+		
 	</dependencies>
 </project>
