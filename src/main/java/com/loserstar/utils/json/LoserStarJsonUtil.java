@@ -1,11 +1,13 @@
 package com.loserstar.utils.json;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.jfinal.json.FastJson;
+import com.jfinal.plugin.activerecord.Record;
 
 
 
@@ -17,7 +19,11 @@ import com.jfinal.json.FastJson;
  * remarks:json工具类,反序列化使用松散模式
  */
 public class LoserStarJsonUtil {
-	
+	static {
+		//json全局配置，是否取消循环引用的检测
+//		JSON.DEFAULT_GENERATE_FEATURE |= SerializerFeature.DisableCircularReferenceDetect.getMask();
+	}
+
 	/**
 	 * 简单序列化（不包含集合）
 	 * @param object
@@ -35,7 +41,20 @@ public class LoserStarJsonUtil {
 	 * @return
 	 */
 	public static String toJsonDeep(Object object){
-		String json =FastJson.getJson().toJson(object);
+		FastJson fastJson = FastJson.getJson();
+//		fastJson.setDatePattern("yyyy-MM-dd HH:mm:ss");//如果用jfinal3.3需要设置这句
+		String json =fastJson.toJson(object);
+//		String json = JSON.toJSONStringWithDateFormat(object, "yyyy-MM-dd HH:mm:ss", SerializerFeature.WriteDateUseDateFormat);
+		return json;
+	}
+	public static String toJsonWithDateFormat(Object object,String datePattern){
+		FastJson fastJson = FastJson.getJson();
+		if (datePattern==null||datePattern.equals("")) {
+			datePattern = "yyyy-MM-dd HH:mm:ss";
+		}
+		fastJson.setDatePattern(datePattern);
+		String json =fastJson.toJson(object);
+//		String json = JSON.toJSONStringWithDateFormat(object, "yyyy-MM-dd HH:mm:ss", SerializerFeature.WriteDateUseDateFormat);
 		return json;
 	}
 	
@@ -66,6 +85,7 @@ public class LoserStarJsonUtil {
 		if (json==null||json.equals("")) {
 			return null;
 		}
+//		return JSON.parseObject(json, class1);
 		return FastJson.getJson().parse(json, class1);
 	}
 	
@@ -75,17 +95,27 @@ public class LoserStarJsonUtil {
 		map.put("b",10);
 		map.put("c",1000.123f);
 		map.put("d",1000.123d);
+		
 		Map<String, Object> map_sub1 = new HashMap<String, Object>();
 		map_sub1.put("sub1_a", "sub1_aaa");
 		map_sub1.put("sub1_b", 123);
 		map_sub1.put("sub1_c", 123d);
 		map.put("e", map_sub1);
+		map.put("e2", map_sub1);
+		
 		List<String> list = new ArrayList<String>();
 		list.add("list_1");
 		list.add("list_2");
 		list.add("list_3");
 		list.add("list_4");
 		map.put("list", list);
+		
+		map.put("f", new Date());
+		
+		Record record = new Record();
+		record.set("name", "loserStar");
+		record.set("sex", "oldWomen");
+		map.put("record", record);
 		System.out.println(LoserStarJsonUtil.toJson(map));
 		
 		String jsonStr = "{\"d\":1000.123,\"e\":{\"sub1_a\":\"sub1_aaa\",\"sub1_c\":123.0,\"sub1_b\":123},\"b\":10,\"c\":1000.123,\"a\":\"aaaaaaaa\",\"list\":[\"list_1\",\"list_2\",\"list_3\",\"list_4\"]}";
