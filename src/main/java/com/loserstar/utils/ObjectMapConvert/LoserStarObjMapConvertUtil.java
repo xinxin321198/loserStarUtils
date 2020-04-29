@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 
 
@@ -150,6 +151,35 @@ public class LoserStarObjMapConvertUtil {
 		}else {
 			throw new Exception("对象非List类型，不能转换");
 		}
+	}
+	
+	/**
+	 * bean转map
+	 * @param bean
+	 * @return
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 */
+	public static Map<String, String> apacheBeanToMap(Object bean) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		Map<String, String> map = BeanUtils.describe(bean);
+		return map;
+	}
+	
+	/**
+	 * map转bean
+	 * @param map
+	 * @param class1
+	 * @return
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 * @throws InstantiationException
+	 */
+	public static <T> T apacheMapToBean(Map<String, Object> map,Class<T> class1) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException {
+		T t = class1.newInstance();
+		BeanUtils.populate(t, map);
+		return t;
 	}
 	
 	public static void main(String[] args) {
