@@ -22,7 +22,7 @@ public class DaoXmlCodeReviewTest {
 	static int countFiles = 0;// 声明统计文件个数的变量
 	static int countFolders = 0;// 声明统计文件夹的变量
 
-	public static final String CODE_DIRECTORY = "E:/ynzl/ynzl2";// 要检测的目录
+	public static final String CODE_DIRECTORY = "D:\\development\\keWorkSpace";// 要检测的目录
 
 	public static final String FILE_NAME_ENDING = "Dao.xml";// 要检测的文件的文件名是以某个字符串结尾的
 
@@ -35,7 +35,7 @@ public class DaoXmlCodeReviewTest {
 	 * 
 	 * @throws IOException
 	 */
-	@Test
+//	@Test
 	public void check() throws IOException {
 		System.out.println(("-------------------检测以Dao.xml结尾的文件中是否存在1=1的sql写法-------------"));
 		File folder = new File(CODE_DIRECTORY);// 默认目录
