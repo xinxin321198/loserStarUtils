@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.loserstar</groupId>
 	<artifactId>loserStarUtils</artifactId>
-	<version>1.6.4</version>
+	<version>1.6.5</version>
 	<!-- 1.5.5更新了LoserStarJfinalRecordUtils，增加fullEmptyStringKeysToNull -->
 	<!-- 1.5.6更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
 	<!-- 1.5.7更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
@@ -12,6 +12,8 @@
 	<!-- 1.6.0更新了注意修改了com.loserstar.utils.ObjectMapConvert.LoserStarObjMapConvertUtil.getPropertyList(List<T>, String)方法，使用泛型，可能会导致编译错误-->
 	<!-- 1.6.1更新LoserStarJfinalRecordUtils，增强，record转model时候，record不为null才转 -->
 	<!-- 1.6.3更新LoserStarObjMapConvertUtil，增加apache的map和bean互转的方法 -->
+	<!-- 1.6.4更新修复LoserStarDateUtils里一个时间格式化字符串常量的错误，小时要使用HH，24小时制进行显示 -->
+	<!-- 1.6.5更新LoserStarIdGenUtil，增加以时间戳生成uuid的方法 -->
 	<name>loserStarUtils</name>
 	<description>362527240@qq.com</description>
 	<packaging>jar</packaging>

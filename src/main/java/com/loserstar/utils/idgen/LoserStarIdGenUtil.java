@@ -40,12 +40,39 @@ public class LoserStarIdGenUtil {
 		return LoserStarEncodes.encodeBase62(randomBytes);
 	}
 	
+	/**
+	 * 返回当前时间的毫秒数的十六进制的字符串当做uuid，并且会进行进程的阻塞以防止统一毫秒生成的uuid相同
+	 * @return
+	 */
+	public static String uuidTimeHex() {
+		return SnowflakeIdWorker.FakeGuid();
+	}
+	
+	/**
+	 * 返回十进制的毫秒数
+	 * @return
+	 */
+	public static Long uuidTimeLong() {
+		return SnowflakeIdWorker.FakeId();
+	}
 	
 	public static void main(String[] args) {
-		System.out.println(LoserStarIdGenUtil.uuid());
-		System.out.println(LoserStarIdGenUtil.uuid().length());
-		for (int i=0; i<1000; i++){
-			System.out.println(LoserStarIdGenUtil.randomLong() + "  " + LoserStarIdGenUtil.randomBase62(5));
+		System.out.println("生成随机的long");
+		for (int i=0; i<10; i++){
+			System.out.println(LoserStarIdGenUtil.randomLong());
+		}
+		int length = 5;
+		System.out.println("生成长度为："+length+"的随机字节码，并进行base62编码");
+		for (int i=0; i<10; i++){
+			System.out.println(LoserStarIdGenUtil.randomLong() + "  " + LoserStarIdGenUtil.randomBase62(length));
+		}
+		System.out.println("生成当前时间戳的十六进制字符串（会阻塞进程防止统一毫秒时间内值重复）：");
+		for (int i=0; i<10; i++){
+			System.out.println(LoserStarIdGenUtil.uuidTimeHex());
+		}
+		System.out.println("生成当前时间戳（会阻塞进程防止统一毫秒时间内值重复）：");
+		for (int i=0; i<10; i++){
+			System.out.println(LoserStarIdGenUtil.uuidTimeLong());
 		}
 	}
 
