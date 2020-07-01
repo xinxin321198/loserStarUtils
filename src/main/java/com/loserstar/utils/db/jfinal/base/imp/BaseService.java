@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.UUID;
 
 import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
+import com.loserstar.utils.collection.LoserStarJfinalRecordUtils;
 import com.loserstar.utils.idgen.SnowflakeIdWorker;
 
 /**
@@ -161,6 +163,18 @@ public  abstract class BaseService {
 	}
 	
 	/**
+	 * 根据sql得到单调数据（效率慢，因为是取所有数据出来再取第一条）
+	 * 顺带转为对应的jfinal实体
+	 * @param <T>
+	 * @param sql
+	 * @param class1 要转的实体类的class
+	 * @return
+	 */
+	public <T extends Model<?>> T get(String sql,Class<T> class1){
+		return LoserStarJfinalRecordUtils.toModel(this.get(sql), class1);
+	}
+	
+	/**
 	 * 根据sql得到单调数据(参数化查询方式，效率慢，因为是取所有数据出来再取第一条)
 	 * @see com.loserstar.utils.db.jfinal.base.imp.BaseService.getFirstList(WhereHelper, DBType)
 	 * @param sql
@@ -173,6 +187,20 @@ public  abstract class BaseService {
 		}else {
 			return null;
 		}
+	}
+	
+	/**
+	 * 根据sql得到单调数据(参数化查询方式，效率慢，因为是取所有数据出来再取第一条)
+	 * 顺带转为对应的jfinal实体
+	 * @see com.loserstar.utils.db.jfinal.base.imp.BaseService.getFirstList(WhereHelper, DBType)
+	 * @param <T>
+	 * @param sql
+	 * @param class1 要转的实体类的class
+	 * @param paras 查询参数
+	 * @return
+	 */
+	public <T extends Model<?>> T get(String sql,Class<T> class1,Object... paras) {
+		return LoserStarJfinalRecordUtils.toModel(this.get(sql,paras), class1);
 	}
 	
 	/**
@@ -223,6 +251,20 @@ public  abstract class BaseService {
 	}
 	
 	/**
+	 * 查询列表
+	 * 顺带转为jfinal实体
+	 * new一个whereHelper参数：如果设置过软删除字段自动过滤
+	 * null:直接不添加软删除过滤
+	 * @param <T>
+	 * @param whereHelper 查询条件
+	 * @param class1 要转的实体类的class
+	 * @return
+	 */
+	public <T extends Model<?>> List<T> getList(WhereHelper whereHelper,Class<T> class1){
+		return LoserStarJfinalRecordUtils.toModelList(getList(whereHelper), class1);
+	}
+	
+	/**
 	 * 查询列表(不自动添加软删除过滤)
 	 * @param whereHelper
 	 * @return
@@ -233,11 +275,24 @@ public  abstract class BaseService {
 	}
 	
 	/**
+	 * 查询列表(不自动添加软删除过滤)
+	 * 顺带转为jfinal实体
+	 * @param <T>
+	 * @param whereHelper 查询条件
+	 * @param class1 要转的实体类的class
+	 * @return
+	 */
+	public <T extends Model<?>> List<T> getList_notSoftDel(WhereHelper whereHelper,Class<T> class1){
+		return LoserStarJfinalRecordUtils.toModelList(getList_notSoftDel(whereHelper), class1);
+	}
+	
+	/**
 	 * 多表连接查询，默认查询出的字段使用*（此方法会造成如果两张表有相同名称的字段，会显示不全）
 	 * @param joinHelper
 	 * @param whereHelper
 	 * @return
 	 */
+	@Deprecated
 	public List<Record> getJoinList(JoinHelper joinHelper,WhereHelper whereHelper) {
 		return getJoinList(null, joinHelper, whereHelper);
 	}
@@ -249,6 +304,7 @@ public  abstract class BaseService {
 	 * @param whereHelper
 	 * @return
 	 */
+	@Deprecated
 	public List<Record> getJoinList(String selectFiled,JoinHelper joinHelper,WhereHelper whereHelper) {
 		addSoftDelField(whereHelper);
 		return getJoinList_notSoftDel(selectFiled,joinHelper,whereHelper);
@@ -261,6 +317,7 @@ public  abstract class BaseService {
 	 * @param whereHelper
 	 * @return
 	 */
+	@Deprecated
 	public List<Record> getJoinList_notSoftDel(String selectFiled,JoinHelper joinHelper,WhereHelper whereHelper) {
 		if (selectFiled==null||selectFiled.equals("")) {
 			selectFiled = " * ";
@@ -308,15 +365,29 @@ public  abstract class BaseService {
 	 * @param whereHelper
 	 * @return
 	 */
-
 	public Record getFirstList(WhereHelper whereHelper,DBType dbType){
 		addSoftDelField(whereHelper);
 		return getFirstList_notSoftDel(whereHelper,dbType);
 	}
 	
 	/**
+	 * 根据条件查询到的列表，获取第一条数据
+	 * new一个whereHelper参数：如果设置过软删除字段自动过滤
+	 * null:直接不添加软删除过滤
+	 * @param <T>
+	 * @param whereHelper
+	 * @param dbType 数据库类型（不同数据库获取第一条数据的语句不一样）
+	 * @param class1 要转的实体类的class
+	 * @return
+	 */
+	public <T extends Model<?>> T getFirstList(WhereHelper whereHelper,DBType dbType,Class<T> class1){
+		return LoserStarJfinalRecordUtils.toModel(getFirstList(whereHelper,dbType), class1);
+	}
+	
+	/**
 	 * 根据条件查询到的列表，获取第一条数据(不自动添加软删除字段过滤)
 	 * @param whereHelper
+	 * @param dbType 数据库类型（不同数据库获取第一条数据的语句不一样）
 	 * @return
 	 */
 	public Record getFirstList_notSoftDel(WhereHelper whereHelper,DBType dbType){
@@ -331,6 +402,28 @@ public  abstract class BaseService {
 			sql = "select TOP number|percent column_name(s) from "+getTableName()+CheckWhereHelper(whereHelper);
 		}
 		return get(sql);
+	}
+	
+	/**
+	 * 根据条件查询到的列表，获取第一条数据(不自动添加软删除字段过滤)
+	 * @param <T>
+	 * @param whereHelper
+	 * @param dbType 数据库类型（不同数据库获取第一条数据的语句不一样）
+	 * @param class1 要转的实体类的class
+	 * @return
+	 */
+	public <T extends Model<?>> T getFirstList_notSoftDel(WhereHelper whereHelper,DBType dbType,Class<T> class1){
+		String sql ="";
+		if(dbType.equals(DBType.db2)) {
+			sql = "select * from "+getTableName()+CheckWhereHelper(whereHelper)+" FETCH FIRST 1 ROWS ONLY";
+		}else if(dbType.equals(DBType.mysql)) {
+			sql = "select * from "+getTableName()+CheckWhereHelper(whereHelper)+" LIMIT 1";
+		}else if(dbType.equals(DBType.oracle)) {
+			sql = "select * from "+getTableName()+CheckWhereHelper(whereHelper)+" ROWNUM <= 1";
+		}else if(dbType.equals(DBType.sqlserver)) {
+			sql = "select TOP number|percent column_name(s) from "+getTableName()+CheckWhereHelper(whereHelper);
+		}
+		return get(sql,class1);
 	}
 	
 	/**
@@ -361,26 +454,81 @@ public  abstract class BaseService {
 	
 	/**
 	 * 根据字符串主键id得到一条记录
-	 * @param id
+	 * @param id 联合主键的多个主键值
 	 * @return
 	 */
 	public Record getById(String... id) {
 		return CheckDataSourceName()?Db.use(this.dataSourceName).findById(getTableName(),getPrimaryKey(),id):Db.findById(getTableName(), getPrimaryKey(), id);
 	}
+	/**
+	 * 根据字符串主键id得到一条记录
+	 * @param <T>
+	 * @param class1 要转的实体类的class
+	 * @param id 联合主键的多个主键值
+	 * @return
+	 */
+	public <T extends Model<?>> T getById(Class<T> class1,String... id) {
+		return LoserStarJfinalRecordUtils.toModel(getById(id), class1);
+	}
+	
+	/**
+	 * 根据字符串主键id得到一条记录
+	 * @param id 主键
+	 * @return
+	 */
 	public Record getById(String id) {
 		return CheckDataSourceName()?Db.use(this.dataSourceName).findById(getTableName(),getPrimaryKey(),id):Db.findById(getTableName(), getPrimaryKey(), id);
 	}
 	
 	/**
+	 * 根据字符串主键id得到一条记录
+	 * @param <T>
+	 * @param id 联合主键的多个主键值
+	 * @param class1 要转的实体类的class
+	 * @return
+	 */
+	public <T extends Model<?>> T getById(String id,Class<T> class1) {
+		return LoserStarJfinalRecordUtils.toModel(getById(id), class1);
+	}
+	
+	/**
 	 * 根据long形的主键id得到一条记录
-	 * @param id
+	 * @param id 联合主键的多个主键值
 	 * @return
 	 */
 	public Record getById(long... id) {
 		return CheckDataSourceName()?Db.use(this.dataSourceName).findById(getTableName(), getPrimaryKey(), id):Db.findById(getTableName(), getPrimaryKey(), id);
 	}
+	
+	/**
+	 * 根据long形的主键id得到一条记录
+	 * @param <T>
+	 * @param class1 要转的实体类的class
+	 * @param id 联合主键的多个主键值
+	 * @return
+	 */
+	public <T extends Model<?>> T getById(Class<T> class1,long... id) {
+		return LoserStarJfinalRecordUtils.toModel(getById(id), class1);
+	}
+	
+	/**
+	 * 根据long形的主键id得到一条记录
+	 * @param id 主键
+	 * @return
+	 */
 	public Record getById(long id) {
 		return CheckDataSourceName()?Db.use(this.dataSourceName).findById(getTableName(), getPrimaryKey(), id):Db.findById(getTableName(), getPrimaryKey(), id);
+	}
+	
+	/**
+	 * 根据long形的主键id得到一条记录
+	 * @param <T>
+	 * @param id 主键
+	 * @param class1  要转的实体类的class
+	 * @return
+	 */
+	public <T extends Model<?>> T getById(long id,Class<T> class1) {
+		return LoserStarJfinalRecordUtils.toModel(getById(id), class1);
 	}
 	
 	/**
@@ -388,6 +536,7 @@ public  abstract class BaseService {
 	 * @param record
 	 * @return
 	 */
+	@Deprecated
 	public boolean save(Record record) {
 		boolean flag = false;
 		if (record.getStr(getPrimaryKey())==null||record.getStr(getPrimaryKey()).equals("")) {
@@ -404,6 +553,7 @@ public  abstract class BaseService {
 	 * @param record
 	 * @return
 	 */
+	@Deprecated
 	public boolean saveLongGuid(Record record) {
 		boolean flag = false;
 		if (record.getStr(getPrimaryKey())==null||record.getStr(getPrimaryKey()).equals("")) {
@@ -425,6 +575,16 @@ public  abstract class BaseService {
 	}
 	
 	/**
+	 * 新增
+	 * @param <T>
+	 * @param t jfinal实体对象
+	 * @return
+	 */
+	public <T extends Model<?>> boolean insert(T t) {
+		return insert(t.toRecord());
+	}
+	
+	/**
 	 * 修改
 	 * @param record
 	 * @return
@@ -434,27 +594,40 @@ public  abstract class BaseService {
 	}
 	
 	/**
-	 * 删除本表的所有数据
+	 * 修改
+	 * @param <T>
+	 * @param t jfinal实体对象
 	 * @return
 	 */
+	public <T extends Model<?>> boolean update(T t) {
+		return update(t.toRecord());
+	}
+	
+	/**
+	 * 删除本表的所有数据(慎用，无条件，会硬删所有数据)
+	 * @return
+	 */
+	@Deprecated
 	public int deleteAll() {
 		return CheckDataSourceName()?Db.use(this.dataSourceName).delete("DELETE FROM "+getTableName()):Db.delete("DELETE FROM "+getTableName());
 	}
 	
 	/**
-	 * 根据条件删除数据
+	 * 根据条件删除数据（慎用，会硬删数据）
 	 * @param whereHelper
 	 * @return
 	 */
+	@Deprecated
 	public int deleteByWhere(WhereHelper whereHelper) {
 		return CheckDataSourceName()?Db.use(this.dataSourceName).delete("DELETE FROM "+getTableName()+CheckWhereHelper(whereHelper)):Db.delete("DELETE FROM "+getTableName()+CheckWhereHelper(whereHelper));
 	}
 	
 	/**
-	 * 根据主键id删除一条记录
+	 * 根据主键id删除一条记录(慎用，会硬删数据)
 	 * @param id
 	 * @return
 	 */
+	@Deprecated
 	public boolean deleteById(String id) {
 		return CheckDataSourceName()?Db.use(this.dataSourceName).deleteById(getTableName(),getPrimaryKey(), id):Db.deleteById(getTableName(),getPrimaryKey(), id);
 	}
@@ -490,6 +663,17 @@ public  abstract class BaseService {
 	}
 	
 	/**
+	 * 批量新增
+	 * 支持jfinal实体
+	 * @param <T>
+	 * @param list
+	 * @return 返回每条sql影响的行数
+	 */
+	public <T extends Model<?>> int[] batchInsertModel(List<T> list) {
+		return batchInsert(LoserStarJfinalRecordUtils.toRecordList(list));
+	}
+	
+	/**
 	 * 批量修改
 	 * @param list
 	 * @return 返回每条sql影响的行数
@@ -499,10 +683,22 @@ public  abstract class BaseService {
 	}
 	
 	/**
+	 * 批量修改
+	 * 支持jfinal实体
+	 * @param <T>
+	 * @param list
+	 * @return
+	 */
+	public <T extends Model<?>> int[] batchUpdateModel(List<T> list) {
+		return batchUpdate(LoserStarJfinalRecordUtils.toRecordList(list));
+	}
+	
+	/**
 	 * 批量保存，根据主键是否存在来决定是insert还是update
 	 * @param list
 	 * @return 执行成功的条数
 	 */
+	@Deprecated
 	public int batchSave(List<Record> list) {
 		int count = 0;
 		for (Record record : list) {
@@ -520,6 +716,7 @@ public  abstract class BaseService {
 	 * @param kpiList
 	 * @return
 	 */
+	@Deprecated
 	public boolean batchCURDSaveList(List<Record> list) {
 		boolean flag = true;
 		 for (Record record : list) {
@@ -541,6 +738,7 @@ public  abstract class BaseService {
 	 * @param record
 	 * @return
 	 */
+	@Deprecated
 	public static Record setCURDFlag(Record record,String curdValue) {
 		record.set(EDIT_FLAG, curdValue);
 		return record;
@@ -550,6 +748,7 @@ public  abstract class BaseService {
 	 * @param record
 	 * @return
 	 */
+	@Deprecated
 	public static List<Record> setCURDFlag(List<Record> records,String curdValue) {
 		for (Record record : records) {
 			record.set(EDIT_FLAG, curdValue);

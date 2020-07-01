@@ -16,7 +16,7 @@ public class LoserStarDateUtils {
 	/**
 	 * 带毫秒显示
 	 */
-	public static final String DISPLAY_MILLISECOND_FORMAT ="yyyy-MM-dd HH:mm:ss SSS";
+	public static final String DISPLAY_MILLISECOND_FORMAT ="yyyy-MM-dd HH:mm:ss.SSS";
 	/**
 	 * 带秒显示
 	 */
