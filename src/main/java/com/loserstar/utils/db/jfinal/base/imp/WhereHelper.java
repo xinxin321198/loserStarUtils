@@ -78,7 +78,7 @@ public class WhereHelper {
 	}
 	
 	/**
-	 * 拼出最终的sql语句
+	 * 拼出最终的sql语句(会自动去除每个where条件当中的开口的where and or关键字)
 	 */
 	@Override
 	public String toString() {
@@ -91,6 +91,25 @@ public class WhereHelper {
 				//去除字符串开头的where、and、or关键字
 				string = removePrefix(string);
 			}
+			andStr.append(" "+string);
+		}
+		resultStr.append(andStr.toString());
+		//拼接排序
+		if (this.orderStr!=null&&!this.orderStr.equals("")) {
+			resultStr.append(" "+this.orderStr);
+		}
+		return resultStr.toString();
+	}
+	
+	/**
+	 * 拼出最终的sql语句（不做任何去除关键字的处理，按原始条件输出）
+	 * @return
+	 */
+	public String toStringOriginal() {
+		StringBuffer resultStr = new StringBuffer();//记录最终的sql
+		StringBuffer andStr = new StringBuffer();//记录and条件
+		for (int i = 0; i <this.strWhereList.size(); i++) {
+			String string = this.strWhereList.get(i);
 			andStr.append(" "+string);
 		}
 		resultStr.append(andStr.toString());

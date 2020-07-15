@@ -10,28 +10,37 @@ package com.loserstar.utils.http;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 
+import javax.naming.spi.DirStateFactory.Result;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.apache.commons.collections.map.HashedMap;
+
+import com.loserstar.utils.db.jfinal.vo.VResult;
 import com.loserstar.utils.file.LoserStarFileUtil;
 
 
@@ -271,6 +280,99 @@ public class LoserStarHttpUtil {
 	}
 	
 	/**
+	 * 上传附件
+	 * @param uploadUrl 上传的地址
+	 * @param localPath 附件路径
+	 * @param paraMap 额外参数
+	 */
+	public static String uploadRemoteFile(String uploadUrl,String localPath,Map<String, String> paraMap)  {
+		String resultStr = "";
+		String urlStr = uploadUrl;
+		File file = new File(localPath);
+		String BOUNDARY = UUID.randomUUID().toString(); // 边界标识 随机生成
+        String PREFIX = "--";
+        String LINE_END = "\r\n";//行结束标记
+        String CONTENT_TYPE = "multipart/form-data"; // 内容类型
+        try {
+        	HttpURLConnection conn;
+			conn = createHttpUrlConnection(urlStr, "POST");
+            conn.setRequestProperty("Charset", "utf-8"); // 设置编码
+            conn.setRequestProperty("connection", "keep-alive");
+            conn.setRequestProperty("Content-Type", CONTENT_TYPE + ";boundary="
+                    + BOUNDARY);
+            if (file != null) {
+                /**
+                 * 当文件不为空，把文件包装并且上传
+                 */
+                DataOutputStream dos = new DataOutputStream(
+                        conn.getOutputStream());
+                
+                for (Map.Entry<String, String> entry : paraMap.entrySet()) {
+                	/**
+                	 * 额外的参数
+                	 */
+                	StringBuffer fileIdBuffer = new StringBuffer();
+                	fileIdBuffer.append(PREFIX+BOUNDARY+LINE_END);//数据分隔线
+                	fileIdBuffer.append("Content-Disposition: form-data;name=\""+entry.getKey()+"\"");
+                	fileIdBuffer.append(LINE_END);
+                	fileIdBuffer.append(LINE_END);
+                	fileIdBuffer.append(entry.getValue());
+                	fileIdBuffer.append(LINE_END);
+                	dos.write(fileIdBuffer.toString().getBytes());
+				}
+                
+                
+                
+                StringBuffer sb = new StringBuffer();
+                sb.append(PREFIX+BOUNDARY+LINE_END);//数据分隔线
+                /**
+                 * 这里重点注意： name里面的值为服务器端需要key 只有这个key 才可以得到对应的文件,不传也是可以的
+                 * filename是文件的名字，包含后缀名的 比如:abc.png
+                 */
+                sb.append("Content-Disposition: form-data; name=\"file\"; filename=\""
+                        + file.getName() + "\"" + LINE_END);
+                sb.append("Content-Type: application/ctet-stream" + LINE_END);
+                sb.append(LINE_END);
+                dos.write(sb.toString().getBytes());
+                InputStream is = new FileInputStream(file);
+                byte[] bytes = new byte[1024 * 1024];
+                int len = 0;
+                while ((len = is.read(bytes)) != -1) {
+                    dos.write(bytes, 0, len);
+                }
+                is.close();
+                dos.write(LINE_END.getBytes());
+                byte[] end_data = (PREFIX + BOUNDARY + PREFIX + LINE_END)
+                        .getBytes();
+                dos.write(end_data);//数据分隔线，结束线
+                dos.flush();
+                /**
+                 * 获取响应码 200=成功 当响应成功，获取响应的流
+                 */
+                int res = conn.getResponseCode();
+                if (res==200) {
+					
+				}
+                System.out.println("response code:" + res);
+                System.out.println("request success");
+                InputStream input = conn.getInputStream();
+                StringBuffer sb1 = new StringBuffer();
+                int ss;
+                while ((ss = input.read()) != -1) {
+                    sb1.append((char) ss);
+                }
+
+                resultStr = sb1.toString();
+                resultStr = new String(resultStr.getBytes("iso8859-1"), "utf-8");
+                System.out.println("result : " + resultStr);
+            }
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }
+        return resultStr;
+	}
+	
+	/**
 	 * 示例
 	 */
 	public static void main(String[] args){
@@ -288,6 +390,11 @@ public class LoserStarHttpUtil {
 //		downloadRemoteFile("https://bpmtst:9443/BPMHelp/ver362.3/advanced/images/e_contents_view.gif", "c://e_contents_view.gif");
 //		LoserStarHttpUtil.downloadRemoteFile("https://xiazai.xiazaiba.com/Soft/P/P2PSearcher_6.4.8.exe", "c://P2PSearcher_6.4.8.exe");
 //		System.out.println("1111111111111111");
-		LoserStarHttpUtil.downloadRemoteFile("http://c1ep1vm14.hongta.com/ContractProjectV2/contract/downloadFileUrl.do?coNum=Test-HTZT-2019-0114", "c:\\contractFile\\Test-HTZT-2019-0114\\1.doxc");
+		
+		//上传附件
+		Map<String, String> paraMap = new HashedMap();
+		paraMap.put("fileId", "loserStarFileId"+UUID.randomUUID());
+		String resultString = uploadRemoteFile("http://127.0.0.1:8080/ExtWebService/contractPayFile/fileUpload.do", "D:\\printDiskGroup.txt", paraMap);
+		System.out.println(resultString);
 	}
 }

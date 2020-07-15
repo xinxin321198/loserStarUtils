@@ -139,11 +139,23 @@ public  abstract class BaseService {
 		return whereHelper;
 	}
 	/**
-	 * 获取软删除的条件
-	 * @return
+	 * 得到软删除条件（软删除字段带表名前缀的条件）
 	 */
 	public String getSoftDelWhere() {
-		String softDelWhere = "  ("+getSoftDelField()+"= '"+NOT_DEL+"' or "+getSoftDelField()+" is null or "+getSoftDelField()+" = 0)";
+		return getSoftDelWhere(null);
+	}
+	
+	/**
+	 * 可以指定软删除字段的表名前缀（在多表连接的时候会指定，如果不指定的话就按照实现类中的表名输出）
+	 * @param tableName
+	 * @return
+	 */
+	public String getSoftDelWhere(String tableName) {
+		String softDelPre = getTableName();
+		if(tableName!=null&&!tableName.contentEquals("")) {
+			softDelPre = tableName;
+		}
+		String softDelWhere = "  ("+softDelPre+"."+getSoftDelField()+"= '"+NOT_DEL+"' or "+softDelPre+"."+getSoftDelField()+" is null or "+softDelPre+"."+getSoftDelField()+" = 0)";
 		return softDelWhere;
 	}
 	
