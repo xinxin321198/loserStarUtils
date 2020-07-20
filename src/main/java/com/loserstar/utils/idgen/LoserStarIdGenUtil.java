@@ -4,8 +4,10 @@
 package com.loserstar.utils.idgen;
 
 import java.security.SecureRandom;
+import java.util.Date;
 import java.util.UUID;
 
+import com.loserstar.utils.date.LoserStarDateUtils;
 import com.loserstar.utils.encodes.LoserStarEncodes;
 
 /**
@@ -41,20 +43,33 @@ public class LoserStarIdGenUtil {
 	}
 	
 	/**
-	 * 返回当前时间的毫秒数的十六进制的字符串当做uuid，并且会进行进程的阻塞以防止统一毫秒生成的uuid相同
+	 * 返回可排序的uuid，并且会进行进程的阻塞以防止统一毫秒生成的uuid相同
 	 * @return
 	 */
-	public static String uuidTimeHex() {
+	public static String uuidHex() {
 		return SnowflakeIdWorker.FakeGuid();
 	}
 	
 	/**
-	 * 返回十进制的毫秒数
+	 * 返回数字型的uuid
 	 * @return
 	 */
-	public static Long uuidTimeLong() {
+	public static Long uuidLong() {
 		return SnowflakeIdWorker.FakeId();
 	}
+	
+	/**
+	 * 返回毫秒级的日期时间的序列号，格化式为 yyyyMMddHHmmssSSS
+	 * 睡眠一毫秒，以免重复
+	 * @return
+	 * @throws InterruptedException
+	 */
+	public static String uuidMilliSecondTime() throws InterruptedException {
+		Thread.sleep(1);
+		return LoserStarDateUtils.format(new Date(),"yyyyMMddHHmmssSSS");
+	}
+	
+	
 	
 	public static void main(String[] args) {
 		System.out.println("生成随机的long");
@@ -68,11 +83,11 @@ public class LoserStarIdGenUtil {
 		}
 		System.out.println("生成当前时间戳的十六进制字符串（会阻塞进程防止统一毫秒时间内值重复）：");
 		for (int i=0; i<10; i++){
-			System.out.println(LoserStarIdGenUtil.uuidTimeHex());
+			System.out.println(LoserStarIdGenUtil.uuidHex());
 		}
 		System.out.println("生成当前时间戳（会阻塞进程防止统一毫秒时间内值重复）：");
 		for (int i=0; i<10; i++){
-			System.out.println(LoserStarIdGenUtil.uuidTimeLong());
+			System.out.println(LoserStarIdGenUtil.uuidLong());
 		}
 	}
 

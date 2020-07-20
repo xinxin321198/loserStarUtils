@@ -618,6 +618,26 @@ Z	时区	RFC 822 time zone	-0800
 	    return day + "天" + hour + "小时" + min + "分钟"+sec+"秒"+millisecond+"毫秒";
 	}
 	
+	/**
+	 * 阻塞一毫秒之后，再获取当前时间戳，
+	 * @return
+	 * @throws InterruptedException 
+	 */
+	public static long getCurrentTimeStampBlock() throws InterruptedException {
+		Thread.sleep(1);
+		return System.currentTimeMillis();
+	}
+	
+	/**
+	 * 阻塞一毫秒之后，再获取当前时间
+	 * @return
+	 * @throws InterruptedException 
+	 */
+	public static Date getCurrentDateBlock() throws InterruptedException {
+		Thread.sleep(1);
+		return new Date();
+	}
+	
 	public static void main(String[] args) throws ParseException {
 		//天数计算
 		Date date = LoserStarDateUtils.addDay(new Date(),2);
