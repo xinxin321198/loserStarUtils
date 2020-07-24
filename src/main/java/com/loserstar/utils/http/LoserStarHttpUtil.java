@@ -277,9 +277,10 @@ public class LoserStarHttpUtil {
 	 * 上传附件
 	 * @param uploadUrl 上传的地址
 	 * @param localPath 附件路径
+	 * @param requestHeaderMap 请求头
 	 * @param paraMap 额外参数
 	 */
-	public static String uploadRemoteFile(String uploadUrl,String localPath,Map<String, String> paraMap)  {
+	public static String uploadRemoteFile(String uploadUrl,String localPath,Map<String, String> requestHeaderMap,Map<String, String> paraMap)  {
 		String resultStr = "";
 		String urlStr = uploadUrl;
 		File file = new File(localPath);
@@ -290,10 +291,14 @@ public class LoserStarHttpUtil {
         try {
         	HttpURLConnection conn;
 			conn = createHttpUrlConnection(urlStr, "POST");
+			setRequestHeader(conn, requestHeaderMap);
             conn.setRequestProperty("Charset", "utf-8"); // 设置编码
             conn.setRequestProperty("connection", "keep-alive");
             conn.setRequestProperty("Content-Type", CONTENT_TYPE + ";boundary="
                     + BOUNDARY);
+        	// 建立连接
+         	// (请求未开始,直到connection.getInputStream()方法调用时才发起,以上各个参数设置需在此方法之前进行)
+            conn.connect();
             if (file != null) {
                 /**
                  * 当文件不为空，把文件包装并且上传
@@ -407,7 +412,7 @@ public class LoserStarHttpUtil {
 		Map<String, String> paraMap = new HashMap<String, String>();
 		paraMap.put("fileId", "loserStarFileId"+UUID.randomUUID());
 		String url = "http://127.0.0.1:8080/ExtWebService/contractPayFile/fileUpload.do";
-		String resultString = uploadRemoteFile(url, "D:\\printDiskGroup.txt", paraMap);
+		String resultString = uploadRemoteFile(url, "D:\\printDiskGroup.txt",null, paraMap);
 		System.out.println(resultString);
 	}
 }
