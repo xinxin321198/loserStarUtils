@@ -17,7 +17,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -25,22 +24,17 @@ import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 
-import javax.naming.spi.DirStateFactory.Result;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.apache.commons.collections.map.HashedMap;
-
-import com.loserstar.utils.db.jfinal.vo.VResult;
 import com.loserstar.utils.file.LoserStarFileUtil;
 
 
@@ -289,7 +283,7 @@ public class LoserStarHttpUtil {
 		String resultStr = "";
 		String urlStr = uploadUrl;
 		File file = new File(localPath);
-		String BOUNDARY = UUID.randomUUID().toString(); // 边界标识 随机生成
+		String BOUNDARY = UUID.randomUUID().toString().replaceAll("-", ""); // 边界标识 随机生成
         String PREFIX = "--";
         String LINE_END = "\r\n";//行结束标记
         String CONTENT_TYPE = "multipart/form-data"; // 内容类型
@@ -392,9 +386,28 @@ public class LoserStarHttpUtil {
 //		System.out.println("1111111111111111");
 		
 		//上传附件
-		Map<String, String> paraMap = new HashedMap();
+		/*multipart/form-data post 方法提交表单，后台获取不到数据
+		这个和servlet容器有关系，比如tomcat等。
+		
+		1.get方式
+		get方式提交的话，表单项都保存在http header中，格式是
+		http://localhost:8080/hello.do?name1=value1&name2=value2这样的字符串。server端通过request.getParameter是可以取到值的。
+		
+		2.post方式（enctype为缺省的application/x-www-form-urlencoded）
+		表单数据都保存在http的正文部分，格式类似于下面这样：用request.getParameter是可以取到数据的
+		
+		name1=value1&name2=value2
+		
+		3.post方式（enctype为multipart/form-data，多用于文件上传)
+			表单数据都保存在http的正文部分，各个表单项之间用boundary隔开。格式类似于下面这样：用request.getParameter是取不到数据的，这时需要通过request.getInputStream来取数据，不过取到的是个InputStream，所以无法直接获取指定的表单项（需要自己对取到的流进行解析，才能得到表单项以及上传的文件内容等信息）。这种需求属于比较共通的功能，所以有很多开源的组件可以直接利用。比如：apache的fileupload组件,smartupload等。通过这些开源的upload组件提供的API，就可以直接从request中取得指定的表单项了。
+			jfinal的话需要照如下方式获取参数：
+			MultipartRequest mRequest = new MultipartRequest(getRequest());
+			fileId = mRequest.getParameter("fileId");
+			*/
+		Map<String, String> paraMap = new HashMap<String, String>();
 		paraMap.put("fileId", "loserStarFileId"+UUID.randomUUID());
-		String resultString = uploadRemoteFile("http://127.0.0.1:8080/ExtWebService/contractPayFile/fileUpload.do", "D:\\printDiskGroup.txt", paraMap);
+		String url = "http://127.0.0.1:8080/ExtWebService/contractPayFile/fileUpload.do";
+		String resultString = uploadRemoteFile(url, "D:\\printDiskGroup.txt", paraMap);
 		System.out.println(resultString);
 	}
 }
