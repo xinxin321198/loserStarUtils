@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.loserstar</groupId>
 	<artifactId>loserStarUtils</artifactId>
-	<version>3.1</version>
+	<version>3.2</version>
 	<!-- 1.5.5更新了LoserStarJfinalRecordUtils，增加fullEmptyStringKeysToNull -->
 	<!-- 1.5.6更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
 	<!-- 1.5.7更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
@@ -20,7 +20,8 @@
 	<!-- 2.1 com.loserstar.utils.db.jfinal.base.imp.BaseService，增强获取软删除条件，以支持多表连接时不同表之间的软删除字段相同。WhereHelper增加不移除关键字的方法toStringOriginal()-->
 	<!-- 2.2  LoserStarHttpUtil增加远程上传附件的方法-->
 	<!-- 3.0  LoserStarIdGenUtil里生成id的方法名改变过，并且增加了使用毫秒级时间当做序列号的方法-->
-	<!-- 3.1  LoserStarHttpUtil-->
+	<!-- 3.1  LoserStarHttpUtil 远程上传附件-->
+	<!-- 3.2  LoserStarHttpUtil 远程上传附件-->
 	<name>loserStarUtils</name>
 	<description>362527240@qq.com</description>
 	<packaging>jar</packaging>
