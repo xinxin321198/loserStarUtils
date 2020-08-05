@@ -7,7 +7,6 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
-import com.loserstar.utils.collection.LoserStarJfinalRecordUtils;
 import com.loserstar.utils.idgen.SnowflakeIdWorker;
 
 /**
@@ -181,9 +180,26 @@ public  abstract class BaseService {
 	 * @param sql
 	 * @param class1 要转的实体类的class
 	 * @return
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public <T extends Model<?>> T get(String sql,Class<T> class1){
-		return LoserStarJfinalRecordUtils.toModel(this.get(sql), class1);
+	@SuppressWarnings("unchecked")
+	public <T extends Model<?>> T get(String sql,Class<T> class1) {
+		T t = null;
+		try {
+			if (CheckDataSourceName()) {
+					t = (T) class1.newInstance().use(this.dataSourceName).findFirst(sql);
+			}else {
+				t = (T) class1.newInstance().findFirst(sql);
+			}
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return t;
 	}
 	
 	/**
@@ -210,9 +226,26 @@ public  abstract class BaseService {
 	 * @param class1 要转的实体类的class
 	 * @param paras 查询参数
 	 * @return
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public <T extends Model<?>> T get(String sql,Class<T> class1,Object... paras) {
-		return LoserStarJfinalRecordUtils.toModel(this.get(sql,paras), class1);
+	@SuppressWarnings("unchecked")
+	public <T extends Model<?>> T get(String sql,Class<T> class1,Object... paras){
+		T t = null;
+		try {
+			if (CheckDataSourceName()) {
+					t = (T) class1.newInstance().use(this.dataSourceName).findFirst(sql,paras);
+			}else {
+				t = (T) class1.newInstance().findFirst(sql,paras);
+			}
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return t;
 	}
 	
 	/**
@@ -271,9 +304,12 @@ public  abstract class BaseService {
 	 * @param whereHelper 查询条件
 	 * @param class1 要转的实体类的class
 	 * @return
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public <T extends Model<?>> List<T> getList(WhereHelper whereHelper,Class<T> class1){
-		return LoserStarJfinalRecordUtils.toModelList(getList(whereHelper), class1);
+	public <T extends Model<?>> List<T> getList(WhereHelper whereHelper,Class<T> class1) {
+		addSoftDelField(whereHelper);
+		return getList_notSoftDel(whereHelper,class1);
 	}
 	
 	/**
@@ -293,9 +329,27 @@ public  abstract class BaseService {
 	 * @param whereHelper 查询条件
 	 * @param class1 要转的实体类的class
 	 * @return
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public <T extends Model<?>> List<T> getList_notSoftDel(WhereHelper whereHelper,Class<T> class1){
-		return LoserStarJfinalRecordUtils.toModelList(getList_notSoftDel(whereHelper), class1);
+	@SuppressWarnings("unchecked")
+	public <T extends Model<?>> List<T> getList_notSoftDel(WhereHelper whereHelper,Class<T> class1) {
+		String sql ="select * from "+getTableName()+CheckWhereHelper(whereHelper);
+		List<T> tList = null;
+		try {
+			if (CheckDataSourceName()) {
+					tList = class1.newInstance().use(this.dataSourceName).find(sql);
+			}else {
+				tList = (List<T>) class1.newInstance().find(sql);
+			}
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return tList;
 	}
 	
 	/**
@@ -391,9 +445,12 @@ public  abstract class BaseService {
 	 * @param dbType 数据库类型（不同数据库获取第一条数据的语句不一样）
 	 * @param class1 要转的实体类的class
 	 * @return
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
 	public <T extends Model<?>> T getFirstList(WhereHelper whereHelper,DBType dbType,Class<T> class1){
-		return LoserStarJfinalRecordUtils.toModel(getFirstList(whereHelper,dbType), class1);
+		addSoftDelField(whereHelper);
+		return getFirstList_notSoftDel(whereHelper, dbType, class1);
 	}
 	
 	/**
@@ -423,6 +480,8 @@ public  abstract class BaseService {
 	 * @param dbType 数据库类型（不同数据库获取第一条数据的语句不一样）
 	 * @param class1 要转的实体类的class
 	 * @return
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
 	public <T extends Model<?>> T getFirstList_notSoftDel(WhereHelper whereHelper,DBType dbType,Class<T> class1){
 		String sql ="";
@@ -469,18 +528,47 @@ public  abstract class BaseService {
 	 * @param id 联合主键的多个主键值
 	 * @return
 	 */
-	public Record getById(String... id) {
-		return CheckDataSourceName()?Db.use(this.dataSourceName).findById(getTableName(),getPrimaryKey(),id):Db.findById(getTableName(), getPrimaryKey(), id);
+	public Record getByIds(Object[] id) {
+		String[] pKeys = getPrimaryKey().split(",");
+		if (pKeys.length != id.length)
+			throw new IllegalArgumentException("primary key number must equals id value number");
+		
+		String sql = "";
+		if (CheckDataSourceName()) {
+			sql = Db.use(this.dataSourceName).getConfig().getDialect().forDbFindById(getTableName(), pKeys);
+		}else {
+			sql = Db.use().getConfig().getDialect().forDbFindById(getTableName(), pKeys);
+		}
+		List<Record> result = Db.find(sql, id);
+		return result.size() > 0 ? result.get(0) : null;
 	}
+	
+	
 	/**
 	 * 根据字符串主键id得到一条记录
 	 * @param <T>
 	 * @param class1 要转的实体类的class
 	 * @param id 联合主键的多个主键值
 	 * @return
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public <T extends Model<?>> T getById(Class<T> class1,String... id) {
-		return LoserStarJfinalRecordUtils.toModel(getById(id), class1);
+	public <T extends Model<?>> T getByIds(Class<T> class1,Object[] id) {
+		T t = null;
+		try {
+			if (CheckDataSourceName()) {
+					t = (T) class1.newInstance().use(this.dataSourceName).findByIdLoadColumns(id, "*");
+			}else {
+				t = (T) class1.newInstance().findByIdLoadColumns(id,"*");
+			}
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return t;
 	}
 	
 	/**
@@ -488,8 +576,9 @@ public  abstract class BaseService {
 	 * @param id 主键
 	 * @return
 	 */
-	public Record getById(String id) {
-		return CheckDataSourceName()?Db.use(this.dataSourceName).findById(getTableName(),getPrimaryKey(),id):Db.findById(getTableName(), getPrimaryKey(), id);
+	public Record getById(Object id) {
+		Object [] ids = {id};
+		return getByIds(ids);
 	}
 	
 	/**
@@ -498,50 +587,14 @@ public  abstract class BaseService {
 	 * @param id 联合主键的多个主键值
 	 * @param class1 要转的实体类的class
 	 * @return
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public <T extends Model<?>> T getById(String id,Class<T> class1) {
-		return LoserStarJfinalRecordUtils.toModel(getById(id), class1);
+	public <T extends Model<?>> T getById(Object id,Class<T> class1) {
+		Object [] ids = {id};
+		return getByIds(class1, ids);
 	}
 	
-	/**
-	 * 根据long形的主键id得到一条记录
-	 * @param id 联合主键的多个主键值
-	 * @return
-	 */
-	public Record getById(long... id) {
-		return CheckDataSourceName()?Db.use(this.dataSourceName).findById(getTableName(), getPrimaryKey(), id):Db.findById(getTableName(), getPrimaryKey(), id);
-	}
-	
-	/**
-	 * 根据long形的主键id得到一条记录
-	 * @param <T>
-	 * @param class1 要转的实体类的class
-	 * @param id 联合主键的多个主键值
-	 * @return
-	 */
-	public <T extends Model<?>> T getById(Class<T> class1,long... id) {
-		return LoserStarJfinalRecordUtils.toModel(getById(id), class1);
-	}
-	
-	/**
-	 * 根据long形的主键id得到一条记录
-	 * @param id 主键
-	 * @return
-	 */
-	public Record getById(long id) {
-		return CheckDataSourceName()?Db.use(this.dataSourceName).findById(getTableName(), getPrimaryKey(), id):Db.findById(getTableName(), getPrimaryKey(), id);
-	}
-	
-	/**
-	 * 根据long形的主键id得到一条记录
-	 * @param <T>
-	 * @param id 主键
-	 * @param class1  要转的实体类的class
-	 * @return
-	 */
-	public <T extends Model<?>> T getById(long id,Class<T> class1) {
-		return LoserStarJfinalRecordUtils.toModel(getById(id), class1);
-	}
 	
 	/**
 	 * 保存一条记录，根据是否有主键来决定新增还是修改(自动生成去横岗的guid)
@@ -593,7 +646,7 @@ public  abstract class BaseService {
 	 * @return
 	 */
 	public <T extends Model<?>> boolean insert(T t) {
-		return insert(t.toRecord());
+		return t.save();
 	}
 	
 	/**
@@ -612,7 +665,7 @@ public  abstract class BaseService {
 	 * @return
 	 */
 	public <T extends Model<?>> boolean update(T t) {
-		return update(t.toRecord());
+		return t.update();
 	}
 	
 	/**
@@ -621,7 +674,13 @@ public  abstract class BaseService {
 	 */
 	@Deprecated
 	public int deleteAll() {
-		return CheckDataSourceName()?Db.use(this.dataSourceName).delete("DELETE FROM "+getTableName()):Db.delete("DELETE FROM "+getTableName());
+//		return CheckDataSourceName()?Db.use(this.dataSourceName).delete("DELETE FROM "+getTableName()):Db.delete("DELETE FROM "+getTableName());
+		try {
+			throw new Exception("此方法太危险，之后不再提供，请自己去写delete语句调用，谢谢！");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 	
 	/**
@@ -631,7 +690,13 @@ public  abstract class BaseService {
 	 */
 	@Deprecated
 	public int deleteByWhere(WhereHelper whereHelper) {
-		return CheckDataSourceName()?Db.use(this.dataSourceName).delete("DELETE FROM "+getTableName()+CheckWhereHelper(whereHelper)):Db.delete("DELETE FROM "+getTableName()+CheckWhereHelper(whereHelper));
+//		return CheckDataSourceName()?Db.use(this.dataSourceName).delete("DELETE FROM "+getTableName()+CheckWhereHelper(whereHelper)):Db.delete("DELETE FROM "+getTableName()+CheckWhereHelper(whereHelper));
+		try {
+			throw new Exception("此方法太危险，之后不再提供，请自己去写delete语句调用，谢谢！");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 	
 	/**
@@ -641,7 +706,13 @@ public  abstract class BaseService {
 	 */
 	@Deprecated
 	public boolean deleteById(String id) {
-		return CheckDataSourceName()?Db.use(this.dataSourceName).deleteById(getTableName(),getPrimaryKey(), id):Db.deleteById(getTableName(),getPrimaryKey(), id);
+//		return CheckDataSourceName()?Db.use(this.dataSourceName).deleteById(getTableName(),getPrimaryKey(), id):Db.deleteById(getTableName(),getPrimaryKey(), id);
+		try {
+			throw new Exception("此方法太危险，之后不再提供，请自己去写delete语句调用，谢谢！");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	/**
@@ -674,16 +745,6 @@ public  abstract class BaseService {
 		return CheckDataSourceName()?Db.use(this.dataSourceName).batchSave(getTableName(), list, list.size()):Db.batchSave(getTableName(), list, list.size());
 	}
 	
-	/**
-	 * 批量新增
-	 * 支持jfinal实体
-	 * @param <T>
-	 * @param list
-	 * @return 返回每条sql影响的行数
-	 */
-	public <T extends Model<?>> int[] batchInsertModel(List<T> list) {
-		return batchInsert(LoserStarJfinalRecordUtils.toRecordList(list));
-	}
 	
 	/**
 	 * 批量修改
@@ -694,16 +755,6 @@ public  abstract class BaseService {
 		return CheckDataSourceName()?Db.use(this.dataSourceName).batchUpdate(getTableName(), list, list.size()):Db.batchUpdate(getTableName(), list, list.size());
 	}
 	
-	/**
-	 * 批量修改
-	 * 支持jfinal实体
-	 * @param <T>
-	 * @param list
-	 * @return
-	 */
-	public <T extends Model<?>> int[] batchUpdateModel(List<T> list) {
-		return batchUpdate(LoserStarJfinalRecordUtils.toRecordList(list));
-	}
 	
 	/**
 	 * 批量保存，根据主键是否存在来决定是insert还是update
