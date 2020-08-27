@@ -287,7 +287,7 @@ public class LoserStarComputeNumberUtils{
     }
     
     /**
-     * 提供精确的小数位向上取整
+     * 提供精确的小数位向上舍入
      * 1.54 -> 1.6
      * 1.55 -> 1.6
      * @param v
@@ -303,7 +303,7 @@ public class LoserStarComputeNumberUtils{
     }
     
     /**
-     * 提供精确的小数位向上取整
+     * 提供精确的小数位向上舍入
      * 1.54 -> 1.6
      * 1.55 -> 1.6
      * @param v
@@ -319,7 +319,7 @@ public class LoserStarComputeNumberUtils{
     }
     
     /**
-     * 提供精确的小数位向下取整
+     * 提供精确的小数位向下舍入
      * 1.54 -> 1.5
      * 1.55 -> 1.5
      * @param v
@@ -335,7 +335,7 @@ public class LoserStarComputeNumberUtils{
     }
     
     /**
-     * 提供精确的小数位向下取整
+     * 提供精确的小数位向下舍入
      * 1.54 -> 1.5
      * 1.55 -> 1.5
      * @param v
@@ -406,6 +406,23 @@ public class LoserStarComputeNumberUtils{
     public static void main(String[] args) {
         double div = div(132.69, 5000);
         System.out.println("计算结果:"+div);
+        
+		Double d1 = 1.544d;
+		Double d2 = 1.545d;
+		System.out.println("d1:"+d1.toString()+" d2:"+d2.toString());
+		System.out.println("d1常规四舍五入，保留2位小数："+LoserStarComputeNumberUtils.round(d1, 2));
+		System.out.println("d2常规四舍五入，保留2位小数："+LoserStarComputeNumberUtils.round(d2, 2));
+		System.out.println("d1向上舍入，保留2位小数："+LoserStarComputeNumberUtils.roundUp(d1, 2));
+		System.out.println("d2向上舍入，保留2位小数："+LoserStarComputeNumberUtils.roundUp(d2, 2));
+		System.out.println("d1向下舍入，保留2位小数："+LoserStarComputeNumberUtils.roundDown(d1, 2));
+		System.out.println("d2向上舍入，保留2位小数："+LoserStarComputeNumberUtils.roundDown(d2, 2));
+		
+		System.out.println("d1常规四舍五入，保留0位小数："+LoserStarComputeNumberUtils.round(d1, 0));
+		System.out.println("d2常规四舍五入，保留0位小数："+LoserStarComputeNumberUtils.round(d2, 0));
+		System.out.println("d1向上舍入，保留0位小数："+LoserStarComputeNumberUtils.roundUp(d1, 0));
+		System.out.println("d2向上舍入，保留0位小数："+LoserStarComputeNumberUtils.roundUp(d2, 0));
+		System.out.println("d1向下舍入，保留0位小数："+LoserStarComputeNumberUtils.roundDown(d1, 0));
+		System.out.println("d2向上舍入，保留0位小数："+LoserStarComputeNumberUtils.roundDown(d2, 0));
     }
 };
 
