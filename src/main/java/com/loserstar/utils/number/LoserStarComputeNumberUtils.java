@@ -294,7 +294,7 @@ public class LoserStarComputeNumberUtils{
      * @param scale
      * @return
      */
-    public static double roundUp(String v, int scale) {
+    public static double roundUp(double v, int scale) {
         if (scale < 0) {
             throw new IllegalArgumentException("The scale must be a positive integer or zero");
         }
@@ -310,11 +310,11 @@ public class LoserStarComputeNumberUtils{
      * @param scale
      * @return
      */
-    public static String roundUp(double v, int scale) {
+    public static String roundUp(String v, int scale) {
         if (scale < 0) {
             throw new IllegalArgumentException("The scale must be a positive integer or zero");
         }
-        BigDecimal b = new BigDecimal(Double.toString(v));
+        BigDecimal b = new BigDecimal(v);
         return b.setScale(scale, BigDecimal.ROUND_UP).toString();
     }
     

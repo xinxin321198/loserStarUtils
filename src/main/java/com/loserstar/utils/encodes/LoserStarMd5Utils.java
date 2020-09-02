@@ -5,7 +5,7 @@
  * github:https://github.com/xinxin321198
  * remarks:
  */
-package com.loserstar.utils.md5;
+package com.loserstar.utils.encodes;
 
 import org.apache.commons.codec.digest.DigestUtils;
 

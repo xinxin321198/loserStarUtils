@@ -7,6 +7,7 @@
  */
 package com.loserstar.utils.wechartUtils;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 import com.loserstar.utils.ObjectMapConvert.LoserStarObjMapConvertUtil;
 import com.loserstar.utils.date.LoserStarDateUtils;
+import com.loserstar.utils.encodes.LoserStarSha1Utils;
 import com.loserstar.utils.http.LoserStarHttpUtil;
 import com.loserstar.utils.json.LoserStarJsonUtil;
 import com.loserstar.utils.string.LoserStarStringUtils;
@@ -246,5 +248,21 @@ public class LoserStarWeChartUtils {
 			JsapiTicket = LoserStarStringUtils.toString(resultMap.get("ticket"));
 		}
 		return JsapiTicket;
+	}
+	
+	/**
+	 * SHA1加密生成签名，js-sdk需要的
+	 * @param jsapi_ticket 	获取企业的jsapi_ticket生成签名之前必须先了解一下jsapi_ticket，jsapi_ticket是H5应用调用企业微信JS接口的临时票据。正常情况下，jsapi_ticket的有效期为7200秒，通过access_token来获取。由于获取jsapi_ticket的api调用次数非常有限（一小时内，一个企业最多可获取400次，且单个应用不能超过100次），频繁刷新jsapi_ticket会导致api调用受限，影响自身业务，开发者必须在自己的服务全局缓存jsapi_ticket。
+	 * @param noncestr 必填，生成签名的随机串
+	 * @param timestamp 必填，生成签名的时间戳
+	 * @param url 使用该签名的页面的完整URL，包括参数
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 */
+	public static String JS_SDK_genSignature(String jsapi_ticket,String noncestr,long timestamp,String url) throws NoSuchAlgorithmException {
+		String signature = "";
+		String string1 = "jsapi_ticket="+jsapi_ticket+"&noncestr="+noncestr+"&timestamp="+timestamp+"&url="+url;
+		signature = LoserStarSha1Utils.getSHA1_apache(string1);
+		return signature;
 	}
 }
