@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.loserstar</groupId>
 	<artifactId>loserStarUtils</artifactId>
-	<version>4.1-1.8jdk</version>
+	<version>4.2-1.8jdk</version>
 	<!-- 1.5.5更新了LoserStarJfinalRecordUtils，增加fullEmptyStringKeysToNull -->
 	<!-- 1.5.6更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
 	<!-- 1.5.7更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
@@ -28,6 +28,7 @@
 	<!-- 3.5-1.6jdk   增加一个数学计算的工具类LoserStarComputeNumberUtils-->
 	<!-- 4.0-1.6jdk   移除MD5包，加密工具类统一移动到ecodes包下-->
 	<!-- 4.1-1.8jdk   baseService里的泛型直接使用泛型，不使用?通用泛型了-->
+	<!-- 4.2-1.8jdk   精简依赖的第三方框架删除一些没必要的工具类-->
 	<name>loserStarUtils</name>
 	<description>362527240@qq.com</description>
 	<packaging>jar</packaging>
@@ -185,7 +186,7 @@
 
 
 		<!-- https://mvnrepository.com/artifact/org.jodd/jodd-http -->
-		<dependency>
+<!-- 		<dependency>
 		    <groupId>org.jodd</groupId>
 		    <artifactId>jodd-http</artifactId>
 		    <version>3.6.6</version>
@@ -195,34 +196,22 @@
 		    <groupId>org.jodd</groupId>
 		    <artifactId>jodd-json</artifactId>
 		    <version>3.6.6</version>
-		</dependency>
+		</dependency> -->
 
-
-		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
-		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
-		<dependency>
-		    <groupId>com.fasterxml.jackson.core</groupId>
-		    <artifactId>jackson-databind</artifactId>
-		    <version>2.9.8</version>
-		</dependency>
-
-		
-		
-				
 
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
-		<dependency>
+<!-- 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
 			<version>2.8.5</version>
-		</dependency>
+		</dependency> -->
 
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
-		<dependency>
+<!-- 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.8.5</version>
-		</dependency>
+		</dependency> -->
 
 		
 		

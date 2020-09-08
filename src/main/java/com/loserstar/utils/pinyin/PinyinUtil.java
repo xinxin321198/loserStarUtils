@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import jodd.util.CharUtil;
-import jodd.util.StringUtil;
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
@@ -22,48 +20,6 @@ public class PinyinUtil {
 		format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
 		format.setVCharType(HanyuPinyinVCharType.WITH_V);
 	}
-
-	public static String getFullPinyin(String word) {
-		return getPinyin(word, false);
-	}
-
-	public static String getFirstLetterPinyin(String word) {
-		return getPinyin(word, true);
-	}
-
-	private static String getPinyin(String word, boolean isFirstLetter) {
-		if (StringUtil.isBlank(word)) {
-			return null;
-		}
-		if (isFirstLetter) {
-			format.setCaseType(HanyuPinyinCaseType.UPPERCASE);
-		} else {
-			format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
-		}
-		
-		StringBuffer buf = new StringBuffer();
-		char[] chs = word.toCharArray();
-		for (char c : chs) {
-			if (CharUtil.isAlphaOrDigit(c)) {
-				buf.append(c);
-			} else {
-				try {
-					String[] result = PinyinHelper.toHanyuPinyinStringArray(c, format);
-					if (result != null && result.length > 0) {
-						String pinyin = StringUtil.capitalize(result[0]);
-						if (!StringUtil.isEmpty(pinyin)) {
-							buf.append(isFirstLetter ? pinyin.charAt(0) : pinyin);
-						}
-					}
-				} catch (BadHanyuPinyinOutputFormatCombination e) {
-					System.out.println("生成(" + word + ")拼音时产生错误"+e.getMessage());
-				}
-			}
-		}
-		return buf.toString();
-	}
-	
-	
 	
 	/**
 	 * 获取一段文字的所有拼音组合情况,以list<String>形式返回  ，并且去掉重复（使用HashSet的方式）
@@ -153,10 +109,37 @@ public class PinyinUtil {
 	    	}
 		}
 	    for (int i = 0; i < formatPinyin.length; i++) {
-			formatPinyin[i] = StringUtil.capitalize(formatPinyin[i]);
+			formatPinyin[i] = changeFirstCharacterCase(true,formatPinyin[i]);
 		}
 	    return formatPinyin;  
 	}  
+	/**
+	 * Internal method for changing the first character case.
+	 */
+	private static String changeFirstCharacterCase(boolean capitalize, String string) {
+		int strLen = string.length();
+		if (strLen == 0) {
+			return string;
+		}
+
+		char ch = string.charAt(0);
+		char modifiedCh;
+		if (capitalize) {
+			modifiedCh = Character.toUpperCase(ch);
+		} else {
+			modifiedCh = Character.toLowerCase(ch);
+		}
+
+		if (modifiedCh == ch) {
+			// no change, return unchanged string
+			return string;
+
+		}
+
+		char chars[] = string.toCharArray();
+		chars[0] = modifiedCh;
+		return new String(chars);
+	}
 	
 	/** 
 	 * 用递归方法，求出这个二维数组每行取一个数据组合起来的所有情况，返回一个字符串数组 
@@ -189,17 +172,24 @@ public class PinyinUtil {
 
 	public static void main(String... args) throws BadHanyuPinyinOutputFormatCombination {
 		String word = "卡迪1 娜贝4·，可儿克、【里】奇 娅DRAGONSEA 法力藤长";
-		System.out.println(getFullPinyin(word));
-		System.out.println(getFirstLetterPinyin(word));
-		List<String> strings = getFullHardPinyins("大王");
+		List<String> strings = getFullHardPinyins(word);
 		for (String string : strings) {
 			System.out.println(string);
 		}
 		
-		List<String> first = getFirstHardPinyins("大王");
+		List<String> first = getFirstHardPinyins(word);
 		for (String string : first) {
 			System.out.println(string);
 		}
+		String word2 = "大王长";
+		List<String> strings2 = getFullHardPinyins(word2);
+		for (String string : strings2) {
+			System.out.println(string);
+		}
 		
+		List<String> first2 = getFirstHardPinyins(word2);
+		for (String string : first2) {
+			System.out.println(string);
+		}
 	}
 }
