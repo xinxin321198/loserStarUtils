@@ -184,7 +184,7 @@ public  abstract class BaseService {
 	 * @throws InstantiationException 
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Model<?>> T get(String sql,Class<T> class1) {
+	public <T extends Model<T>> T get(String sql,Class<T> class1) {
 		T t = null;
 		try {
 			if (CheckDataSourceName()) {
@@ -230,7 +230,7 @@ public  abstract class BaseService {
 	 * @throws InstantiationException 
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Model<?>> T get(String sql,Class<T> class1,Object... paras){
+	public <T extends Model<T>> T get(String sql,Class<T> class1,Object... paras){
 		T t = null;
 		try {
 			if (CheckDataSourceName()) {
@@ -307,7 +307,7 @@ public  abstract class BaseService {
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 */
-	public <T extends Model<?>> List<T> getList(WhereHelper whereHelper,Class<T> class1) {
+	public <T extends Model<T>> List<T> getList(WhereHelper whereHelper,Class<T> class1) {
 		addSoftDelField(whereHelper);
 		return getList_notSoftDel(whereHelper,class1);
 	}
@@ -333,7 +333,7 @@ public  abstract class BaseService {
 	 * @throws InstantiationException 
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Model<?>> List<T> getList_notSoftDel(WhereHelper whereHelper,Class<T> class1) {
+	public <T extends Model<T>> List<T> getList_notSoftDel(WhereHelper whereHelper,Class<T> class1) {
 		String sql ="select * from "+getTableName()+CheckWhereHelper(whereHelper);
 		List<T> tList = null;
 		try {
@@ -448,7 +448,7 @@ public  abstract class BaseService {
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 */
-	public <T extends Model<?>> T getFirstList(WhereHelper whereHelper,DBType dbType,Class<T> class1){
+	public <T extends Model<T>> T getFirstList(WhereHelper whereHelper,DBType dbType,Class<T> class1){
 		addSoftDelField(whereHelper);
 		return getFirstList_notSoftDel(whereHelper, dbType, class1);
 	}
@@ -483,7 +483,7 @@ public  abstract class BaseService {
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 */
-	public <T extends Model<?>> T getFirstList_notSoftDel(WhereHelper whereHelper,DBType dbType,Class<T> class1){
+	public <T extends Model<T>> T getFirstList_notSoftDel(WhereHelper whereHelper,DBType dbType,Class<T> class1){
 		String sql ="";
 		if(dbType.equals(DBType.db2)) {
 			sql = "select * from "+getTableName()+CheckWhereHelper(whereHelper)+" FETCH FIRST 1 ROWS ONLY";
@@ -553,7 +553,7 @@ public  abstract class BaseService {
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 */
-	public <T extends Model<?>> T getByIds(Class<T> class1,Object[] id) {
+	public <T extends Model<T>> T getByIds(Class<T> class1,Object[] id) {
 		T t = null;
 		try {
 			if (CheckDataSourceName()) {
@@ -590,7 +590,7 @@ public  abstract class BaseService {
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 */
-	public <T extends Model<?>> T getById(Object id,Class<T> class1) {
+	public <T extends Model<T>> T getById(Object id,Class<T> class1) {
 		Object [] ids = {id};
 		return getByIds(class1, ids);
 	}
@@ -645,7 +645,7 @@ public  abstract class BaseService {
 	 * @param t jfinal实体对象
 	 * @return
 	 */
-	public <T extends Model<?>> boolean insert(T t) {
+	public <T extends Model<T>> boolean insert(T t) {
 		return t.save();
 	}
 	
@@ -664,7 +664,7 @@ public  abstract class BaseService {
 	 * @param t jfinal实体对象
 	 * @return
 	 */
-	public <T extends Model<?>> boolean update(T t) {
+	public <T extends Model<T>> boolean update(T t) {
 		return t.update();
 	}
 	

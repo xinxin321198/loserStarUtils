@@ -27,6 +27,7 @@
 	<!-- 3.4-1.6jdk  1.6jdk编译 jfinal依赖版本3.4,dao底层操作实体改为官方的实体dao操作-->
 	<!-- 3.5-1.6jdk   增加一个数学计算的工具类LoserStarComputeNumberUtils-->
 	<!-- 4.0-1.6jdk   移除MD5包，加密工具类统一移动到ecodes包下-->
+	<!-- 4.1-1.8jdk   baseService里的泛型直接使用泛型，不使用?通用泛型了-->
 	<name>loserStarUtils</name>
 	<description>362527240@qq.com</description>
 	<packaging>jar</packaging>
@@ -90,7 +91,7 @@
 		<dependency>
 		    <groupId>com.jfinal</groupId>
 		    <artifactId>jfinal</artifactId>
-		    <version>3.4</version>
+		    <version>4.9.01</version>
 		</dependency>
 	
 		<!-- https://mvnrepository.com/artifact/junit/junit -->
