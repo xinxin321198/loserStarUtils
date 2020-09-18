@@ -118,7 +118,26 @@ public class LoserStarJfinalRecordUtils extends LoserStarMapUtils{
 	public static List<String> getFieldValueList(List<Record> list,String fieldName){
 		List<String> resultList = new ArrayList<String>();
 		for (Record record : list) {
-			resultList.add(record.getStr(fieldName));
+			String s = record.getStr(fieldName);
+			if (null!=s) {
+				resultList.add(s);
+			}
+		}
+		return resultList;
+	}
+	
+	/**
+	 * 得到List<Model>里某个字段的值的集合
+	 * @param list
+	 * @return
+	 */
+	public static <T extends Model<T>> List<String> getFieldValueListForModel(List<T> list,String fieldName){
+		List<String> resultList = new ArrayList<String>();
+		for (T t : list) {
+			String s = t.getStr(fieldName);
+			if (null!=s) {
+				resultList.add(s);
+			}
 		}
 		return resultList;
 	}
