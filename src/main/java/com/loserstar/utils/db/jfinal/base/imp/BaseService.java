@@ -1,5 +1,6 @@
 package com.loserstar.utils.db.jfinal.base.imp;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -533,13 +534,16 @@ public  abstract class BaseService {
 		if (pKeys.length != id.length)
 			throw new IllegalArgumentException("primary key number must equals id value number");
 		
+		List<Record> result = new ArrayList<Record>();
 		String sql = "";
 		if (CheckDataSourceName()) {
 			sql = Db.use(this.dataSourceName).getConfig().getDialect().forDbFindById(getTableName(), pKeys);
+			result = Db.use(this.dataSourceName).find(sql, id);
 		}else {
 			sql = Db.use().getConfig().getDialect().forDbFindById(getTableName(), pKeys);
+			result = Db.find(sql, id);
 		}
-		List<Record> result = Db.find(sql, id);
+		
 		return result.size() > 0 ? result.get(0) : null;
 	}
 	
