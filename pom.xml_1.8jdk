@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.loserstar</groupId>
 	<artifactId>loserStarUtils</artifactId>
-	<version>4.2-1.8jdk</version>
+	<version>4.7-1.8jdk</version>
 	<!-- 1.5.5更新了LoserStarJfinalRecordUtils，增加fullEmptyStringKeysToNull -->
 	<!-- 1.5.6更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
 	<!-- 1.5.7更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
@@ -29,6 +29,11 @@
 	<!-- 4.0-1.6jdk   移除MD5包，加密工具类统一移动到ecodes包下-->
 	<!-- 4.1-1.8jdk   baseService里的泛型直接使用泛型，不使用?通用泛型了-->
 	<!-- 4.2-1.8jdk   精简依赖的第三方框架删除一些没必要的工具类-->
+	<!-- 4.3-1.8jdk   LoserStarJfinalRecordUtils增加一个方法，可以从jfinal的List<实体>里提取某个字段值List<字段值>-->
+	<!-- 4.4-1.8jdk   Encode里新增两个方法-->
+	<!-- 4.5-   更新企业微信工具类里的方法-->
+	<!-- 4.6-   修复BaseSevice 中的getByIds方法，调用jfinal的find方法时候没有指定数据源，导致查非第一数据源的数据时候会报错-->
+	<!-- 4.7- 增加基于dom4j的xml工具类 -->
 	<name>loserStarUtils</name>
 	<description>362527240@qq.com</description>
 	<packaging>jar</packaging>
@@ -92,6 +97,7 @@
 		<dependency>
 		    <groupId>com.jfinal</groupId>
 		    <artifactId>jfinal</artifactId>
+		    <!-- <version>3.4</version> -->
 		    <version>4.9.01</version>
 		</dependency>
 	
@@ -322,6 +328,13 @@
 		    <version>1.0.6</version>
 		</dependency> -->
 		<!-- 参考：https://blog.csdn.net/u013310119/article/details/79803134++++++++++++++++end -->
+		
+		<!-- https://mvnrepository.com/artifact/org.dom4j/dom4j -->
+		<dependency>
+		    <groupId>org.dom4j</groupId>
+		    <artifactId>dom4j</artifactId>
+		    <version>2.0.3</version>
+		</dependency>
 		
 	</dependencies>
 </project>
