@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.loserstar</groupId>
 	<artifactId>loserStarUtils</artifactId>
-	<version>4.9-1.8jdk</version>
+	<version>5.0-1.8jdk</version>
 	<!-- 1.5.5更新了LoserStarJfinalRecordUtils，增加fullEmptyStringKeysToNull -->
 	<!-- 1.5.6更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
 	<!-- 1.5.7更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
@@ -36,6 +36,7 @@
 	<!-- 4.7- 增加基于dom4j的xml工具类 -->
 	<!--4.8 增强jfinalDB 尽量使用BaseDao来操作，里面已从BaseService里剔除一些不必要的方法，以及建议使用参数化执行sql以防sql注入。增加AES对称加密的工具，验证码图片生成的工具  -->
 	<!--4.9 修改了一下随机验证码生成类，使用安全的随机数生成器  -->
+	<!--5.0 httpUtil里一个判断空指针的小BUG  -->
 	<name>loserStarUtils</name>
 	<description>362527240@qq.com</description>
 	<packaging>jar</packaging>
@@ -99,7 +100,7 @@
 		<dependency>
 		    <groupId>com.jfinal</groupId>
 		    <artifactId>jfinal</artifactId>
-		    <!-- <version>3.4</version> -->
+		   <!--  <version>3.4</version> -->
 		    <version>4.9.01</version>
 		</dependency>
 	

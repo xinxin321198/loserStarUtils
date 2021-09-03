@@ -91,7 +91,7 @@ public class LoserStarHttpUtil {
 	 * @throws NoSuchAlgorithmException 
 	 * @throws KeyManagementException 
 	 */
-	private static HttpURLConnection createHttpUrlConnection(String urlStr,String method) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, KeyManagementException {
+	public static HttpURLConnection createHttpUrlConnection(String urlStr,String method) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, KeyManagementException {
 		URL url = new URL(urlStr);
 		HttpURLConnection conn  = null;//可能是http可能是https
 		if (url.getProtocol().equals("http")) {
@@ -133,7 +133,7 @@ public class LoserStarHttpUtil {
 		GZIPInputStream gZIPInputStream = null;
 		InputStreamReader inputStreamReader = null;
 		try {
-				if (null!=requestHeaderMap&&requestHeaderMap.get("Accept-Encoding").contains("gzip")) {
+				if (null!=requestHeaderMap&&requestHeaderMap.get("Accept-Encoding")!=null&&requestHeaderMap.get("Accept-Encoding").contains("gzip")) {
 					gZIPInputStream = new GZIPInputStream(inputStream);
 					byte[] buf = LoserStarFileUtil.ReadByteByInputStream(gZIPInputStream);
 					stringBuffer.append(new String(buf));
@@ -258,7 +258,16 @@ public class LoserStarHttpUtil {
 	}
 	
 	/**
-	 * 下载一个远程文件输出到某个outputstream输出流中
+	 * 下载一个远程文件输出到某个outputstream输出流中(无自定义请求头)
+	 * @param fileUrl 远程文件url
+	 * @param outputStream 输出流
+	 */
+	public static void downloadRemoteFileToOutputStream(String fileUrl,OutputStream outputStream) {
+		downloadRemoteFileToOutputStream(fileUrl, outputStream, null);
+	}
+	
+	/**
+	 * 下载一个远程文件输出到某个outputstream输出流中（可以自定义请求头信息）
 	 * @param fileUrl 远程文件url
 	 * @param outputStream 输出流
 	 */
