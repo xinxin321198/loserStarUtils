@@ -315,18 +315,20 @@ public class LoserStarHttpUtil {
                 DataOutputStream dos = new DataOutputStream(
                         conn.getOutputStream());
                 
-                for (Map.Entry<String, String> entry : paraMap.entrySet()) {
-                	/**
-                	 * 额外的参数
-                	 */
-                	StringBuffer fileIdBuffer = new StringBuffer();
-                	fileIdBuffer.append(PREFIX+BOUNDARY+LINE_END);//数据分隔线
-                	fileIdBuffer.append("Content-Disposition: form-data;name=\""+entry.getKey()+"\"");
-                	fileIdBuffer.append(LINE_END);
-                	fileIdBuffer.append(LINE_END);
-                	fileIdBuffer.append(entry.getValue());
-                	fileIdBuffer.append(LINE_END);
-                	dos.write(fileIdBuffer.toString().getBytes());
+                if (paraMap!=null) {
+                	for (Map.Entry<String, String> entry : paraMap.entrySet()) {
+                		/**
+                		 * 额外的参数
+                		 */
+                		StringBuffer fileIdBuffer = new StringBuffer();
+                		fileIdBuffer.append(PREFIX+BOUNDARY+LINE_END);//数据分隔线
+                		fileIdBuffer.append("Content-Disposition: form-data;name=\""+entry.getKey()+"\"");
+                		fileIdBuffer.append(LINE_END);
+                		fileIdBuffer.append(LINE_END);
+                		fileIdBuffer.append(entry.getValue());
+                		fileIdBuffer.append(LINE_END);
+                		dos.write(fileIdBuffer.toString().getBytes());
+                	}
 				}
                 
                 
