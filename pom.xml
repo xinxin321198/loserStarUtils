@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.loserstar</groupId>
 	<artifactId>loserStarUtils</artifactId>
-	<version>5.0-1.6jdk</version>
+	<version>5.0-1.8jdk</version>
 	<!-- 1.5.5更新了LoserStarJfinalRecordUtils，增加fullEmptyStringKeysToNull -->
 	<!-- 1.5.6更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
 	<!-- 1.5.7更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
@@ -50,8 +50,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.0.2</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.8</source>
+					<target>1.8</target>
 					  <!-- 指明编译源代码时使用的字符编码，  
         maven编译的时候默认使用的GBK编码，   
           通过encoding属性设置字符编码，  
@@ -100,8 +100,8 @@
 		<dependency>
 		    <groupId>com.jfinal</groupId>
 		    <artifactId>jfinal</artifactId>
-		    <version>3.4</version>
-		    <!-- <version>4.9.01</version> -->
+		    <!-- <version>3.4</version> -->
+		    <version>4.9.01</version>
 		</dependency>
 	
 		<!-- https://mvnrepository.com/artifact/junit/junit -->
