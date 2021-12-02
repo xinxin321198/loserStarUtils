@@ -178,7 +178,7 @@ public class LoserStarHttpUtil {
             	//根据请求头，判断处理方式（压缩格式的流需要使用GZIPInputStream特殊处理，否则乱码，而且并不是字符集的乱码）
             	stringBuffer.append(ReadStringByInputStream(inputStream,requestHeaderMap));
 			}else {
-				throw new Exception("请求失败:"+code);
+				throw new Exception("请求失败:"+code+"  "+ReadStringByInputStream(conn.getErrorStream(),requestHeaderMap));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -218,12 +218,12 @@ public class LoserStarHttpUtil {
 			dataout.close(); // 重要且易忽略步骤 (关闭流,切记!)
 			int code = connection.getResponseCode();
 			if (code==200) {
-	            	InputStream inputStream =  connection.getInputStream();//打开输入流
-	            	//根据请求头，判断处理方式（压缩格式的流需要使用GZIPInputStream特殊处理，否则乱码，而且并不是字符集的乱码）
-	            	stringBuffer.append(ReadStringByInputStream(inputStream,requestHeaderMap));
-				}else {
-					throw new Exception("请求失败:"+code);
-				}
+            	InputStream inputStream =  connection.getInputStream();//打开输入流
+            	//根据请求头，判断处理方式（压缩格式的流需要使用GZIPInputStream特殊处理，否则乱码，而且并不是字符集的乱码）
+            	stringBuffer.append(ReadStringByInputStream(inputStream,requestHeaderMap));
+			}else {
+				throw new Exception("请求失败:"+code+"  "+ReadStringByInputStream(connection.getErrorStream(),requestHeaderMap));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
