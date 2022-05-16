@@ -94,6 +94,8 @@ public class LoserStarHttpUtil {
 	 * @throws KeyManagementException
 	 */
 	public static HttpURLConnection createHttpUrlConnection(String urlStr, String method) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, KeyManagementException {
+		//lxx 20220516 加这句貌似才可以在1.7及以下jdk中使用调用https
+		System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
 		URL url = new URL(urlStr);
 		HttpURLConnection conn = null;// 可能是http可能是https
 		if (url.getProtocol().equals("http")) {
