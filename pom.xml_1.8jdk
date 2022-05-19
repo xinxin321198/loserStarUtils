@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.loserstar</groupId>
 	<artifactId>loserStarUtils</artifactId>
-	<version>5.1-1.8jdk</version>
+	<version>5.2-1.8jdk</version>
 	<!-- 1.5.5更新了LoserStarJfinalRecordUtils，增加fullEmptyStringKeysToNull -->
 	<!-- 1.5.6更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
 	<!-- 1.5.7更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
@@ -38,6 +38,7 @@
 	<!--4.9 修改了一下随机验证码生成类，使用安全的随机数生成器  -->
 	<!--5.0 httpUtil里一个判断空指针的小BUG  -->
 	<!--5.1 httpUtil里增加一个代码，让其在jdk1.7及以下时可调用https  -->
+	<!--5.2  LoserStarEncodes增加文件互转base64的方法-->
 	<name>loserStarUtils</name>
 	<description>362527240@qq.com</description>
 	<packaging>jar</packaging>
