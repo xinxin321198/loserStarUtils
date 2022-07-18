@@ -116,6 +116,11 @@ public class LoserStarExcelUtils {
 	
 	/**
 	 * 把一个poi的excel的workbook对象输出
+	 * 如果是删除到web里使用response的outputstream，相当于下载文件，要指定文件名的话，加入如下代码：
+	 * HttpServletResponse response = getResponse();
+			String fileName = LoserStarDateUtils.format(new Date(), "yyyyMMddHHmmss")+".xlsx";
+			response.addHeader("Content-Disposition","attachment;filename=" + new String(java.net.URLEncoder.encode(fileName, "UTF-8")));
+			response.setContentType("application/octet-stream");
 	 * @param workbook excel对象
 	 * @param outputStream 输出流
 	 * @throws Exception 
