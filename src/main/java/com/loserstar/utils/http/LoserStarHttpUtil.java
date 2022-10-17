@@ -199,6 +199,16 @@ public class LoserStarHttpUtil {
 		StringBuffer stringBuffer = new StringBuffer();
 		try {
 			HttpURLConnection conn = createHttpUrlConnection(urlStr, "GET");
+			stringBuffer = new StringBuffer(get(urlStr, requestHeaderMap, conn));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return stringBuffer.toString();
+	}
+	
+	public static String get(String urlStr, Map<String, String> requestHeaderMap,HttpURLConnection conn) {
+		StringBuffer stringBuffer = new StringBuffer();
+		try {
 			// 设置请求头里面的各个属性
 			setRequestHeader(conn, requestHeaderMap);
 			conn.connect();// 表示连接
@@ -237,6 +247,30 @@ public class LoserStarHttpUtil {
 		}
 		return post(urlStr, requestHeaderMap, createKeyValueParamString(parm));
 	}
+	
+	/**
+	 * post请求
+	 * 
+	 * @param urlStr
+	 *            请求的url
+	 * @param requestHeaderMap
+	 *            请求头的信息
+	 * @param parm
+	 *            键值对参数
+	 *  @param connection
+	 *            自定义连接对象
+	 * @return
+	 */
+	public static String post(String urlStr, Map<String, String> requestHeaderMap, Map<String, String> parm,HttpURLConnection connection) {
+		if (requestHeaderMap == null) {
+			requestHeaderMap = new HashMap<String, String>();
+		}else {
+			if (requestHeaderMap.get("Content-Type")==null||requestHeaderMap.get("Content-Type").equals("")) {
+				requestHeaderMap.put("Content-Type", "application/x-www-form-urlencoded");
+			}
+		}
+		return post(urlStr, requestHeaderMap, createKeyValueParamString(parm),connection);
+	}
 
 	/**
 	 * post请求
@@ -261,6 +295,37 @@ public class LoserStarHttpUtil {
 		StringBuffer stringBuffer = new StringBuffer();
 		try {
 			HttpURLConnection connection = createHttpUrlConnection(urlStr, "POST");
+			stringBuffer = new StringBuffer(post(urlStr, requestHeaderMap, parm, connection));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return stringBuffer.toString();
+	}
+
+	/**
+	 * post请求
+	 * 
+	 * @param POST_URL
+	 *            请求的url
+	 * @param requestHeaderMap
+	 *            请求头的信息 Content-Type参考：https://www.runoob.com/http/http-content-type.html https://www.cnblogs.com/wangyuxing/p/10037470.html
+	 * 
+	 *            application/x-www-form-urlencoded ：最常见的POST提交数据方式。 原生form默认的提交方式(可以使用enctype指定提交数据类型)。 jquery，zepto等默认post请求提交的方式。支持GET/POST等方法，所有数据变成键值对的形式 key1=value1&key2=value2 的形式，并且特殊字符需要转义成utf-8编号，如空格会变成 %20;
+	 * 
+	 *            multipart/form-data ： 使用表单上传文件时，必须指定表单的 enctype属性值为 multipart/form-data. 请求体被分割成多部分，每部分使用 --boundary分割；
+	 * 
+	 *            application/json： JSON数据格式，对于一些复制的数据对象，对象里面再嵌套数组的话，建议使用application/json传递比较好，开发那边也会要求使用application/json。因为他们那边不使用application/json的话，使用默认的application/x-www-form-urlencoded传递的话，开发那边先要解析成如上那样的， 然后再解析成json对象，如果对于比上面更复杂的json对象的话，那么他们那边是很解析的，所以直接json对象传递的话，对于他们来说更简单。
+	 *            通过json的形式将数据发送给服务器。json的形式的优点是它可以传递结构复杂的数据形式，比如对象里面嵌套数组这样的形式等。
+	 * 
+	 *            application/octet-stream ： 二进制流数据（如常见的文件下载）
+	 * @param parm
+	 * @param connection 自定义的连接对象
+	 * @return 返回内容
+	 */
+	public static String post(String urlStr, Map<String, String> requestHeaderMap, String parm,HttpURLConnection connection) {
+		StringBuffer stringBuffer = new StringBuffer();
+		try {
+			
 			// 设置请求头里面的各个属性
 			setRequestHeader(connection, requestHeaderMap);
 			// 建立连接
@@ -312,6 +377,21 @@ public class LoserStarHttpUtil {
 	 */
 	public static void downloadRemoteFile(String fileUrl, String localPath, Map<String, String> requestHeaderMap) {
 		try {
+			HttpURLConnection httpURLConnection = createHttpUrlConnection(fileUrl, "GET");
+			downloadRemoteFile(fileUrl, localPath, requestHeaderMap,httpURLConnection);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 
+	 * @param fileUrl
+	 * @param localPath
+	 * @param requestHeaderMap
+	 */
+	public static void downloadRemoteFile(String fileUrl, String localPath, Map<String, String> requestHeaderMap,HttpURLConnection httpURLConnection) {
+		try {
 			File file = new File(localPath);
 			if (!file.exists()) {
 				if (!LoserStarFileUtil.createDir(localPath)) {
@@ -319,7 +399,7 @@ public class LoserStarHttpUtil {
 				}
 			}
 			OutputStream outputStream = new FileOutputStream(new File(localPath));
-			downloadRemoteFileToOutputStream(fileUrl, outputStream, requestHeaderMap);
+			downloadRemoteFileToOutputStream(fileUrl, outputStream, requestHeaderMap,httpURLConnection);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -348,6 +428,21 @@ public class LoserStarHttpUtil {
 	public static void downloadRemoteFileToOutputStream(String fileUrl, OutputStream outputStream, Map<String, String> requestHeaderMap) {
 		try {
 			HttpURLConnection httpURLConnection = createHttpUrlConnection(fileUrl, "GET");
+			downloadRemoteFileToOutputStream(fileUrl, outputStream, requestHeaderMap, httpURLConnection);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 下载一个远程文件输出到某个outputstream输出流中（可以自定义请求头信息和自定义http连接对象）
+	 * @param fileUrl
+	 * @param outputStream
+	 * @param requestHeaderMap
+	 * @param httpURLConnection
+	 */
+	public static void downloadRemoteFileToOutputStream(String fileUrl, OutputStream outputStream, Map<String, String> requestHeaderMap,HttpURLConnection httpURLConnection) {
+		try {
 			setRequestHeader(httpURLConnection, requestHeaderMap);
 			InputStream inputStream = httpURLConnection.getInputStream();// 打开URLConnection的输入流
 			LoserStarFileUtil.WriteInputStreamToOutputStream(inputStream, outputStream);// 把这个流的数据写到文件输出流中
@@ -369,6 +464,35 @@ public class LoserStarHttpUtil {
 	 *            额外参数
 	 */
 	public static String uploadRemoteFile(String uploadUrl, String localPath, Map<String, String> requestHeaderMap, Map<String, String> paraMap) {
+		String returnStr = "";
+		try {
+			returnStr = uploadRemoteFile(uploadUrl, localPath, requestHeaderMap, paraMap,createHttpUrlConnection(uploadUrl, "POST"));
+		} catch (KeyManagementException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchProviderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return returnStr;
+	}
+
+	/**
+	 * 上传附件
+	 * @param uploadUrl 上传的地址
+	 * @param localPath 附件路径
+	 * @param requestHeaderMap 请求头
+	 * @param paraMap 额外参数
+	 * @param conn 自定义的连接对象
+	 * @return
+	 */
+	public static String uploadRemoteFile(String uploadUrl, String localPath, Map<String, String> requestHeaderMap, Map<String, String> paraMap,HttpURLConnection conn) {
 		String resultStr = "";
 		String urlStr = uploadUrl;
 		File file = new File(localPath);
@@ -377,7 +501,9 @@ public class LoserStarHttpUtil {
 		String LINE_END = "\r\n";// 行结束标记
 		String CONTENT_TYPE = "multipart/form-data"; // 内容类型
 		try {
-			HttpURLConnection conn;
+			if (conn==null) {
+				throw new Exception("HttpURLConnection对象为null");
+			}
 			conn = createHttpUrlConnection(urlStr, "POST");
 			setRequestHeader(conn, requestHeaderMap);
 			conn.setRequestProperty("Charset", "utf-8"); // 设置编码
@@ -453,7 +579,6 @@ public class LoserStarHttpUtil {
 		}
 		return resultStr;
 	}
-
 	/**
 	 * 示例
 	 */
