@@ -79,10 +79,22 @@ public class LoserStarWordUtil {
 	public static void main(String[] args) throws Exception {
 		String sourceFilePath = "c://1.docx";
 		String targetFilePath = "c://2.docx";
+		System.out.println(sourceFilePath);
 		//获取文档
 		XWPFDocument document = getDocument(sourceFilePath);
-		List<String> textList = readParagraph(document);
-		System.out.println(LoserStarJsonUtil.toJsonDeep(textList));
+		List<XWPFParagraph> paragraphList = document.getParagraphs();
+		for (XWPFParagraph xwpfParagraph : paragraphList) {
+			List<XWPFRun>  runs = xwpfParagraph.getRuns();
+			for (XWPFRun run : runs) {
+				System.out.println(run.getFontFamily());
+			}
+			System.out.println(xwpfParagraph.getText());
+		}
+//		List<String> textList = readParagraph(document);
+//		for (String string : textList) {
+//			System.out.println(string);
+//		}
+//		System.out.println(LoserStarJsonUtil.toJsonDeep(textList));
 	}
 	/**
 	 * 读取文本demo
