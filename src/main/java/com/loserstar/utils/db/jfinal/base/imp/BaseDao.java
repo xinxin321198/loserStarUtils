@@ -643,7 +643,7 @@ public abstract class BaseDao {
 			}
 			Record record = new Record();
 			record.set(getPrimaryKey(), id);
-			record.set(getSoftDelField(), "0");
+			record.set(getSoftDelField(), "1");
 			flag = CheckDataSourceName() ? Db.use(this.dataSourceName).update(getTableName(), getPrimaryKey(), record) : Db.update(getTableName(), getPrimaryKey(), record);
 		} catch (Exception e) {
 			e.printStackTrace();
