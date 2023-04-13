@@ -45,6 +45,8 @@
 	<!-- 5.5 增强http工具类，支持自定义的httpConnection对象 -->
 	<!-- 5.6 增强http工具类，提供可抛出请求异常的方法，之前的方法仅http返回状态码为200时才返回值，其它都算异常并且不抛出 -->
 	<!-- 5.7 增强jfinal的BseDao，增加两个带软删除的分页方法 -->
+	<!-- 5.8 加入Word转PDF的工具类 -->
+	<!-- 5.9 baseDao软删的方法，del应该设为1，不能设为0 -->
 	<name>loserStarUtils</name>
 	<description>362527240@qq.com</description>
 	<packaging>jar</packaging>
