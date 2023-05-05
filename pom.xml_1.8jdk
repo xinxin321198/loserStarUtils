@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.loserstar</groupId>
 	<artifactId>loserStarUtils</artifactId>
-	<version>5.9-1.8jdk</version>
+	<version>6.0-1.8jdk</version>
 	<!-- 1.5.5更新了LoserStarJfinalRecordUtils，增加fullEmptyStringKeysToNull -->
 	<!-- 1.5.6更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
 	<!-- 1.5.7更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
@@ -47,6 +47,7 @@
 	<!-- 5.7 增强jfinal的BseDao，增加两个带软删除的分页方法 -->
 	<!-- 5.8 加入Word转PDF的工具类 -->
 	<!-- 5.9 baseDao软删的方法，del应该设为1，不能设为0 -->
+	<!-- 6.0 WordUtil中又增加了几个处理Word的方法 -->
 	<name>loserStarUtils</name>
 	<description>362527240@qq.com</description>
 	<packaging>jar</packaging>

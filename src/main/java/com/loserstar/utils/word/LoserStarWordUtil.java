@@ -19,13 +19,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFPictureData;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
@@ -46,7 +49,10 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STVerticalJc;
 
 import com.jfinal.plugin.activerecord.Record;
 import com.loserstar.utils.file.LoserStarFileUtil;
-import com.loserstar.utils.json.LoserStarJsonUtil;
+import com.loserstar.utils.string.LoserStarStringUtils;
+import com.loserstar.utils.word.LoserStarWordUtil.LoserStarWordVo.LoserStarWordTable;
+import com.loserstar.utils.word.LoserStarWordUtil.LoserStarWordVo.LoserStarWordTable.LoserStarWordTableRow;
+import com.loserstar.utils.word.LoserStarWordUtil.LoserStarWordVo.LoserStarWordTable.LoserStarWordTableRow.LoserStarWordTableCell;
 
 /**
  * 字号‘八号’对应磅值5
@@ -417,6 +423,12 @@ public class LoserStarWordUtil {
 		return textList;
 	}
 	
+	/**
+	 * 读取Word的表格内容
+	 * @param document
+	 * @return
+	 * @throws IOException
+	 */
 	public static List<List<List<String>>> readTable(XWPFDocument document) throws IOException{
 		List<List<List<String>>> tableList = new ArrayList<List<List<String>>>(); 
          Iterator<XWPFTable> it = document.getTablesIterator();//得到word中的表格
@@ -445,8 +457,185 @@ public class LoserStarWordUtil {
 		return tableList;
 	}
 	
+	/**
+	 * 读取Word里的图片,并输出到某个文件中
+	 * @param document 文档对象
+	 * @param outDirPath 输出的目录（一个文档中可能有多个文件）
+	 * @param newFileName 重新指定文件名（如果存在多个文件，则会在该文件名上加上数字序号,传入空字符串或者null则不重命名，按原始文件名）
+	 * @throws IOException
+	 */
+	public static void readWordPicture(XWPFDocument document,String outDirPath,String newFileName) throws IOException {
+		
+		List<XWPFPictureData> allPictureDatas = document.getAllPictures();
+		int fileIndex = 0;
+		for (XWPFPictureData xwpfPictureData : allPictureDatas) {
+			String fileName = "";
+			if (newFileName==null||newFileName.equals("")) {
+				fileName = xwpfPictureData.getFileName();
+			}else {
+				if (fileIndex>0) {
+					fileName = LoserStarFileUtil.getFileNameNotSuffix(newFileName)+"_"+fileIndex+LoserStarFileUtil.getFileNameSuffix(newFileName);
+				}else {
+					fileName = newFileName;
+				}
+			}
+			String filePath = outDirPath+File.separator+fileName;
+			LoserStarFileUtil.WriteBytesToFilePath(xwpfPictureData.getData(),filePath, false);
+			fileIndex++;
+		}
+		document.close();
+	}
 
+	/**
+	 * 自定义的Word读取后的vo
+	 * @author loserStar
+	 *
+	 */
+	public static class LoserStarWordVo{
+		/**
+		 * 表格对象
+		 * @author loserStar
+		 *
+		 */
+		public static class LoserStarWordTable{
+			/**
+			 * 行对象
+			 * @author loserStar
+			 *
+			 */
+			public static class LoserStarWordTableRow{
+				/**
+				 * 单元格对象
+				 * @author loserStar
+				 *
+				 */
+				public static class LoserStarWordTableCell{
+					/**
+					 * 单元格内的段落文本
+					 */
+					private List<String> paragraphList = new ArrayList<String>();
 
+					public List<String> getParagraphList() {
+						return paragraphList;
+					}
+
+					public void setParagraphList(List<String> paragraphList) {
+						this.paragraphList = paragraphList;
+					}
+
+					
+				}
+				private List<LoserStarWordTableCell> cellList = new ArrayList<LoserStarWordTableCell>();
+				public List<LoserStarWordTableCell> getCellList() {
+					return cellList;
+				}
+				public void setCellList(List<LoserStarWordTableCell> cellList) {
+					this.cellList = cellList;
+				}
+				
+			}
+			
+			private List<LoserStarWordTableRow> rowList = new ArrayList<LoserStarWordTableRow>();
+			
+			/**
+			 * 根据坐标获取值
+			 * @param rowIndex
+			 * @param cellIndex
+			 * @param paragraphIndex 如果该值为-1，则合并单元格内的所有段落内容，以分号分隔
+			 * @return
+			 */
+			public String getTxt(int rowIndex,int cellIndex,int paragraphIndex) {
+				String s = "";
+				if(this.getRowList().size()>rowIndex) {
+					if (this.getRowList().get(rowIndex).getCellList().size()>cellIndex) {
+						if (paragraphIndex<0) {
+							s = LoserStarStringUtils.join(this.getRowList().get(rowIndex).getCellList().get(cellIndex).getParagraphList(), ";", "", "");
+						}else {
+							if (this.getRowList().get(rowIndex).getCellList().get(cellIndex).getParagraphList().size()>paragraphIndex) {
+								s = this.getRowList().get(rowIndex).getCellList().get(cellIndex).getParagraphList().get(paragraphIndex);
+							}
+						}
+					}
+				}
+				return s;
+			}
+
+			public List<LoserStarWordTableRow> getRowList() {
+				return rowList;
+			}
+
+			public void setRowList(List<LoserStarWordTableRow> rowList) {
+				this.rowList = rowList;
+			}
+			
+		}
+		/**
+		 * 段落
+		 */
+		private List<String> paragraphList = new ArrayList<String>();
+		/**
+		 * 表格
+		 */
+		private List<LoserStarWordTable> tableList = new ArrayList<LoserStarWordTable>();
+		
+		public List<String> getParagraphList() {
+			return paragraphList;
+		}
+		public void setParagraphList(List<String> paragraphList) {
+			this.paragraphList = paragraphList;
+		}
+		public List<LoserStarWordTable> getTableList() {
+			return tableList;
+		}
+		public void setTableList(List<LoserStarWordTable> tableList) {
+			this.tableList = tableList;
+		}
+		
+	}
+	
+	/**
+	 * 读取Word，得到一个vo对象
+	 * @param document
+	 * @return
+	 * @throws IOException 
+	 */
+	public static LoserStarWordVo readWord(XWPFDocument document) throws IOException {
+		LoserStarWordVo vo = new LoserStarWordVo();
+		List<XWPFParagraph> paragraphList = document.getParagraphs();//读取段落
+        for (XWPFParagraph paragraph : paragraphList) {
+        	vo.getParagraphList().add(paragraph.getParagraphText().trim());
+		}
+        
+        
+        Iterator<XWPFTable> it = document.getTablesIterator();//得到word中的表格
+		// 设置需要读取的表格  set是设置需要读取的第几个表格，total是文件中表格的总数
+		while(it.hasNext()){
+			XWPFTable table = it.next();
+			LoserStarWordTable tempTable = new LoserStarWordTable();
+			List<XWPFTableRow> rows = table.getRows(); 
+			//读取每一行数据
+			for (int i = 0; i < rows.size(); i++) {
+				XWPFTableRow  row = rows.get(i);
+				LoserStarWordTableRow tempRow = new LoserStarWordTableRow();
+				//读取每一列数据
+				List<XWPFTableCell> cells = row.getTableCells(); 
+				for (int j = 0; j < cells.size(); j++) {
+					//获取单元格
+					XWPFTableCell cell = cells.get(j);
+					LoserStarWordTableCell tmpCell = new LoserStarWordTableCell();
+					List<XWPFParagraph> tmpPlist =  cell.getParagraphs();
+					for (XWPFParagraph xwpfParagraph : tmpPlist) {
+						tmpCell.getParagraphList().add(xwpfParagraph.getParagraphText().trim());
+					}
+					tempRow.getCellList().add(tmpCell);
+				}
+				tempTable.getRowList().add(tempRow);
+			}
+			vo.getTableList().add(tempTable);
+		}
+		document.close();
+		return vo;
+	}
 
     
  
@@ -644,6 +833,227 @@ public class LoserStarWordUtil {
         return document;
     }
     
+	/**
+     * 可遍历到表格内的段落进行替换
+     * @param document 文档对象
+     * @param oldText 标记
+     * @param newTextList 标记地方替换的段落内容
+     * @param fontSize 所替换的字号大小
+     * @param paragraphAlignment 对齐方式
+     * @param fontFamily 字体
+     * @param hangingIndentList 每一段文本的悬挂缩进（释义：首行不缩进，其它行缩进）的值集合，索引得和newTextList一致，如果整个List为null则不进行悬挂缩进，每一段的值如果为null则那一段不进行悬挂缩进（单位不详，好像得根据字体和字号大小计算，偷懒的话自己研究一下对应关系转换一下）
+     * @return 处理好的文档对象
+     */
+    public static XWPFDocument processDocumentReplaceTableTextWithParagraph(XWPFDocument document,String oldText,List<String> newTextList,int fontSize,ParagraphAlignment paragraphAlignment,String fontFamily,List<Integer> hangingIndentList) {
+        //读取表格的段落
+        Iterator<XWPFTable> it = document.getTablesIterator();//得到word中的表格
+		// 设置需要读取的表格  set是设置需要读取的第几个表格，total是文件中表格的总数
+		while(it.hasNext()){
+			XWPFTable table = it.next();
+			List<XWPFTableRow> rows = table.getRows(); 
+			//读取每一行数据
+			for (int i = 0; i < rows.size(); i++) {
+				XWPFTableRow  row = rows.get(i);
+				//读取每一列数据
+				List<XWPFTableCell> cells = row.getTableCells(); 
+				for (int j = 0; j < cells.size(); j++) {
+					//获取单元格
+					XWPFTableCell cell = cells.get(j);
+					List<XWPFParagraph> tmpPlist = cell.getParagraphs();
+					for (int y = 0; y < tmpPlist.size(); y++) {
+						XWPFParagraph paragraph = tmpPlist.get(y);
+			        	String text = paragraph.getParagraphText();
+			        	paragraph.getRuns();
+			        	String trimText = text.trim();
+			        	//匹配标记的段落
+			        	if (trimText.contains(oldText)) {
+			        		//删除该段落
+			        		cell.removeParagraph(y);
+			        		for (int x = 0; x < newTextList.size(); x++) {
+			        			//创建一个新段落
+			        			XWPFParagraph newParagraph = cell.addParagraph();
+			        			if (paragraphAlignment!=null) {
+			        				newParagraph.setAlignment(paragraphAlignment);//字体对齐方式：1左对齐 2居中3右对齐
+								}
+			        			//悬挂缩进
+			        			if (hangingIndentList!=null&&hangingIndentList.size()>0) {
+			        				Integer indent = hangingIndentList.get(x);
+			        				if (indent!=null) {
+			        					newParagraph.setIndentFromLeft(indent);//整段右移
+			        					newParagraph.setIndentationHanging(indent);//首行前进
+									}
+								}
+			        			//运行段落
+			        			XWPFRun run=newParagraph.createRun();
+			        			run.setText(newTextList.get(x));
+			        			
+			        			//字号大小
+			        			if (fontSize!=0) {
+			        				run.setFontSize(fontSize);
+								}
+			        			//字体
+			        			if (fontFamily!=null) {
+									run.setFontFamily(fontFamily);
+								}
+			        			
+			        		}
+			        		break;
+						}
+					}
+				}
+			}
+		}
+        return document;
+    }
+    
+    /**
+     * 写入图片
+     * @param document 文档对象
+     * @param oldText 替换标识
+     * @param prictureInputStream 文件输入流
+     * @param fileName 文件名
+     * @param widthMm 宽（厘米）
+     * @param heightMm 高（厘米）
+     * @return
+     * @throws InvalidFormatException
+     * @throws IOException
+     */
+    public static XWPFDocument processDocumentReplaceTableTextWithPicture(XWPFDocument document,String oldText,InputStream prictureInputStream,String fileName,float widthMm,float heightMm) throws InvalidFormatException, IOException {
+    	//读取表格的段落
+        Iterator<XWPFTable> it = document.getTablesIterator();//得到word中的表格
+		// 设置需要读取的表格  set是设置需要读取的第几个表格，total是文件中表格的总数
+		while(it.hasNext()){
+			XWPFTable table = it.next();
+			List<XWPFTableRow> rows = table.getRows(); 
+			//读取每一行数据
+			for (int i = 0; i < rows.size(); i++) {
+				XWPFTableRow  row = rows.get(i);
+				//读取每一列数据
+				List<XWPFTableCell> cells = row.getTableCells(); 
+				for (int j = 0; j < cells.size(); j++) {
+					//获取单元格
+					XWPFTableCell cell = cells.get(j);
+					List<XWPFParagraph> tmpPlist = cell.getParagraphs();
+					for (int y = 0; y < tmpPlist.size(); y++) {
+						XWPFParagraph paragraph = tmpPlist.get(y);
+			        	String text = paragraph.getParagraphText();
+			        	paragraph.getRuns();
+			        	String trimText = text.trim();
+			        	//匹配标记的段落
+			        	if (trimText.contains(oldText)) {
+			        		//删除该段落
+			        		cell.removeParagraph(y);
+		        			//创建一个新段落
+		        			XWPFParagraph newParagraph = cell.addParagraph();
+		        			//运行段落
+		        			XWPFRun run=newParagraph.createRun();
+		        			run.addPicture(prictureInputStream, org.apache.poi.xwpf.usermodel.Document.PICTURE_TYPE_JPEG, fileName, mmToEmu(widthMm), mmToEmu(heightMm));
+		        			break;
+		        		}
+					}
+				}
+			}
+		}
+        return document;
+    }
+    
+    
+    /**
+     * (遗留问题：如果数据量大，会把表格后续的行的数据覆盖了，得确定出一个终止的行)
+     * 对现有表格内的某个标记开始，按顺序往右和往下遍历填充数据，如果数据超出现有表格，则会自动增加行或列
+     * @param document 文档对象
+     * @param oldText 要开始填充的第一行第一列的标识，此标识必须在单元格内
+     * @param newTextList 要填充的数据的二维数组字符串
+     * @param aligmentList 每一个单元格的对齐方式（数据的行数和列数得和newTextList参数的保持一致,map中需要两个key，stJc是水平对齐方式，stVerticalJc是垂直对齐方式）参考org.openxmlformats.schemas.wordprocessingml.x2006.main.STVerticalJc 和 org.openxmlformats.schemas.wordprocessingml.x2006.main.STJc）
+     * @param fontSize 字体大小
+     * @param fontFamily 字体样式
+     * @return
+     * @throws Exception
+     */
+    public static XWPFDocument processDocumentAddRowWithTable(XWPFDocument document,String oldText,List<List<String>> newTextList,List<List<Map<String, String>>> aligmentList,int fontSize,String fontFamily) throws Exception {
+    	
+    	//读取表格的段落
+        Iterator<XWPFTable> it = document.getTablesIterator();//得到word中的表格
+		// 设置需要读取的表格  set是设置需要读取的第几个表格，total是文件中表格的总数
+		while(it.hasNext()){
+			XWPFTable table = it.next();
+			List<XWPFTableRow> rows = table.getRows(); 
+			//读取每一行数据
+			boolean isFindOk =false;//是否找到添加数据的开始标记，没找到继续找，找到就不找
+			int findColumIndex = 0;//记录可开始写数据的列索引（因为可能出现第一行的第一列是合并后续行的列，所以从第二行开始还是从第一列写，数据就会被合并了）
+			int currentRowIndex = 0;//当前正在写数据的行索引
+			int currentColumnIndex = 0;//当前正在写数据的列索引
+			for (int i = 0; i < rows.size(); i++) {
+				XWPFTableRow  row = rows.get(i);
+				//读取每一列数据
+				List<XWPFTableCell> cells = row.getTableCells(); 
+				for (int j = 0; j < cells.size(); j++) {
+					//获取单元格
+					XWPFTableCell cell = cells.get(j);
+					List<XWPFParagraph> tmpPlist = cell.getParagraphs();
+					for (int y = 0; y < tmpPlist.size(); y++) {
+						XWPFParagraph paragraph = tmpPlist.get(y);
+			        	String text = paragraph.getParagraphText();
+			        	paragraph.getRuns();
+			        	String trimText = text.trim();
+			        	//匹配标记的段落
+			        	if (!isFindOk) {
+			        		if (trimText.contains(oldText)) {
+			        			findColumIndex = j;//记录可开始写数据的列索引（因为可能出现第一行的第一列是合并后续行的列，所以从第二行开始还是从第一列写，数据就会被合并了）
+			        			isFindOk = true;//记录找到了
+			        		}
+						}
+			        	
+			        	if (isFindOk) {
+			        		//找到开始标记了
+			        		if (currentRowIndex<newTextList.size()) {
+			        			//表格行数大于数据行数，继续填充
+			        			if (currentColumnIndex<newTextList.get(currentRowIndex).size()) {
+			        				//表格行数中的列数大于数据列数，继续填充
+			        				if (j>=findColumIndex) {
+			        					//删除该段落(只能删除与标记对应的列索引的数据，并且从该索引开始写数据)
+			        					cell.removeParagraph(y);
+			        					//创建一个新段落
+			        					XWPFParagraph newParagraph = cell.addParagraph();
+			        					//创建运行段落
+			        					XWPFRun run=newParagraph.createRun();
+			        					run.setText(newTextList.get(currentRowIndex).get(currentColumnIndex));
+			        					CTTc cttc = cell.getCTTc();
+										CTTcPr ctPr = cttc.addNewTcPr();
+										//处理对齐方式
+										if (aligmentList!=null&&aligmentList.size()>0) {
+											String stVerticalJc =aligmentList.get(currentRowIndex).get(currentColumnIndex).get("stVerticalJc");
+											String stJc = aligmentList.get(currentRowIndex).get(currentColumnIndex).get("stJc");
+											ctPr.addNewVAlign().setVal(STVerticalJc.Enum.forString(stVerticalJc));
+											cttc.getPList().get(0).addNewPPr().addNewJc().setVal(STJc.Enum.forString(stJc));
+										}
+					        			//字号大小
+					        			if (fontSize!=0) {
+					        				run.setFontSize(fontSize);
+										}
+					        			//字体
+					        			if (fontFamily!=null) {
+											run.setFontFamily(fontFamily);
+										}
+			        					currentColumnIndex++;
+			        				}
+			        			}
+							}
+						}
+					}
+				}
+				if (isFindOk) {
+					//遍历出的表格行比填充值的行数多，就不再进行填充
+					if (currentRowIndex<newTextList.size()) {
+						currentRowIndex++;
+						currentColumnIndex=0;//遍历完一行以后列序号清0，下一行才能正确进入判断正确取数
+					}
+				}
+			}
+		}
+        return document;
+    }
+    
 	
 	/**
 	 * 合并单元格的范围类
@@ -672,6 +1082,45 @@ public class LoserStarWordUtil {
 		}
 	}
 	
+	/**
+	 * 跨列合并单元格  
+	 * @param table 表对象
+	 * @param row 行的索引
+	 * @param fromCell 开始列的索引
+	 * @param toCell 结束列的索引
+	 */
+	protected  static void mergeCellsHorizontal(XWPFTable table, int row, int fromCell, int toCell) {    
+        for (int cellIndex = fromCell; cellIndex <= toCell; cellIndex++) {    
+            XWPFTableCell cell = table.getRow(row).getCell(cellIndex);    
+            if ( cellIndex == fromCell ) {    
+                // The first merged cell is set with RESTART merge value    
+                cell.getCTTc().addNewTcPr().addNewHMerge().setVal(STMerge.RESTART);    
+            } else {    
+                // Cells which join (merge) the first one, are set with CONTINUE    
+                cell.getCTTc().addNewTcPr().addNewHMerge().setVal(STMerge.CONTINUE);    
+            }    
+        }    
+    }    
+    /**
+     * 跨行合并单元格  
+     * @param table表对象
+     * @param col 列索引
+     * @param fromRow 开始行的索引
+     * @param toRow 开始列的索引
+     */
+    protected static void mergeCellsVertically(XWPFTable table, int col, int fromRow, int toRow) {    
+        for (int rowIndex = fromRow; rowIndex <= toRow; rowIndex++) {    
+            XWPFTableCell cell = table.getRow(rowIndex).getCell(col);    
+            if ( rowIndex == fromRow ) {    
+                // The first merged cell is set with RESTART merge value    
+                cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.RESTART);    
+            } else {    
+                // Cells which join (merge) the first one, are set with CONTINUE    
+                cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);    
+            }    
+        }    
+    }
+	
     /**
      * 通过一个每组有多少数量的一个数据集，构建一个合并哪些行的一个范围对象
      * @param groupRecordList 每组的数量有多少个的数据集
@@ -693,60 +1142,24 @@ public class LoserStarWordUtil {
 		}
 		return rangeList;
     }
-	
-	/**
-	 * 通过厘米，计算出Word中的宽度的单位的值（目前不知道是什么单位，但是知道1厘米=567）
+
+    /**
+	 * 通过厘米，计算出Word表格中的宽度的单位的值（目前不知道是什么单位，但是知道1厘米=567）
 	 * @param centimeter
 	 * @return
 	 */
-	private static int getWidthFromCentimeter(Double centimeter) {
+	protected static int getWidthFromCentimeter(Double centimeter) {
 		int width = (int)(centimeter*567);
 		return width;
 	}
 	
-	
 	/**
-	 * 跨列合并单元格  
-	 * @param table 表对象
-	 * @param row 行的索引
-	 * @param fromCell 开始列的索引
-	 * @param toCell 结束列的索引
+	 * 单位转换（毫米->emu）
+	 * @param mm
+	 * @return
 	 */
-    private  static void mergeCellsHorizontal(XWPFTable table, int row, int fromCell, int toCell) {    
-        for (int cellIndex = fromCell; cellIndex <= toCell; cellIndex++) {    
-            XWPFTableCell cell = table.getRow(row).getCell(cellIndex);    
-            if ( cellIndex == fromCell ) {    
-                // The first merged cell is set with RESTART merge value    
-                cell.getCTTc().addNewTcPr().addNewHMerge().setVal(STMerge.RESTART);    
-            } else {    
-                // Cells which join (merge) the first one, are set with CONTINUE    
-                cell.getCTTc().addNewTcPr().addNewHMerge().setVal(STMerge.CONTINUE);    
-            }    
-        }    
-    }    
-    /**
-     * 跨行合并单元格  
-     * @param table表对象
-     * @param col 列索引
-     * @param fromRow 开始行的索引
-     * @param toRow 开始列的索引
-     */
-    private static void mergeCellsVertically(XWPFTable table, int col, int fromRow, int toRow) {    
-        for (int rowIndex = fromRow; rowIndex <= toRow; rowIndex++) {    
-            XWPFTableCell cell = table.getRow(rowIndex).getCell(col);    
-            if ( rowIndex == fromRow ) {    
-                // The first merged cell is set with RESTART merge value    
-                cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.RESTART);    
-            } else {    
-                // Cells which join (merge) the first one, are set with CONTINUE    
-                cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);    
-            }    
-        }    
-    }   
-    
-
-
-
-	
+	protected static int mmToEmu(float mm) {
+		return (int) (mm*36000);
+	}
 
 }
