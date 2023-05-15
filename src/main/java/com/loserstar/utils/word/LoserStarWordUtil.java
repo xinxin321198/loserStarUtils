@@ -50,6 +50,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STVerticalJc;
 import com.jfinal.plugin.activerecord.Record;
 import com.loserstar.utils.file.LoserStarFileUtil;
 import com.loserstar.utils.string.LoserStarStringUtils;
+import com.loserstar.utils.word.LoserStarWordUtil.LoserStarParagraphIndentCfg.IndentDetail;
 import com.loserstar.utils.word.LoserStarWordUtil.LoserStarWordVo.LoserStarWordTable;
 import com.loserstar.utils.word.LoserStarWordUtil.LoserStarWordVo.LoserStarWordTable.LoserStarWordTableRow;
 import com.loserstar.utils.word.LoserStarWordUtil.LoserStarWordVo.LoserStarWordTable.LoserStarWordTableRow.LoserStarWordTableCell;
@@ -881,6 +882,146 @@ public class LoserStarWordUtil {
 			        				if (indent!=null) {
 			        					newParagraph.setIndentFromLeft(indent);//整段右移
 			        					newParagraph.setIndentationHanging(indent);//首行前进
+									}
+								}
+			        			//运行段落
+			        			XWPFRun run=newParagraph.createRun();
+			        			run.setText(newTextList.get(x));
+			        			
+			        			//字号大小
+			        			if (fontSize!=0) {
+			        				run.setFontSize(fontSize);
+								}
+			        			//字体
+			        			if (fontFamily!=null) {
+									run.setFontFamily(fontFamily);
+								}
+			        			
+			        		}
+			        		break;
+						}
+					}
+				}
+			}
+		}
+        return document;
+    }
+    
+    /**
+	 * 段落缩进对象
+	 */
+	public static class LoserStarParagraphIndentCfg{
+		List<IndentDetail> list = new ArrayList<IndentDetail>();
+		
+		public List<IndentDetail> getList() {
+			return list;
+		}
+
+		public void setList(List<IndentDetail> list) {
+			this.list = list;
+		}
+
+		public static class IndentDetail{
+			private int indent;
+			/**
+			 * first 首行缩进
+			 * hanging 悬挂缩进
+			 * form 整段缩进
+			 */
+			private String type;
+			
+			/**
+			 * 构造函数
+			 * @param indent 未知的缩进单位（好像通过厘米来换算的话，1厘米=567），自己尝试
+			 * @param type first 首行缩进  form 整段缩进 firstForward 首行前进 hanging 悬挂缩进（等于整段缩进+首行前进）
+			 */
+			public IndentDetail(int indent, String type) {
+				super();
+				this.indent = indent;
+				this.type = type;
+			}
+			public int getIndent() {
+				return indent;
+			}
+			public void setIndent(int indent) {
+				this.indent = indent;
+			}
+			public String getType() {
+				return type;
+			}
+			public void setType(String type) {
+				this.type = type;
+			}
+			
+		}
+	}
+	
+	/**
+     * 可遍历到表格内的段落进行替换
+     * @param document 文档对象
+     * @param oldText 标记
+     * @param newTextList 标记地方替换的段落内容
+     * @param fontSize 所替换的字号大小
+     * @param paragraphAlignment 对齐方式
+     * @param fontFamily 字体
+     * @param indentCfgs 每一段缩进时候更详细的配置
+     * @return 处理好的文档对象
+	 * @throws Exception 
+     */
+    public static XWPFDocument processDocumentReplaceTableTextWithParagraph2(XWPFDocument document,String oldText,List<String> newTextList,int fontSize,ParagraphAlignment paragraphAlignment,String fontFamily,List<LoserStarParagraphIndentCfg> indentCfgs) throws Exception {
+        //读取表格的段落
+        Iterator<XWPFTable> it = document.getTablesIterator();//得到word中的表格
+		// 设置需要读取的表格  set是设置需要读取的第几个表格，total是文件中表格的总数
+		while(it.hasNext()){
+			XWPFTable table = it.next();
+			List<XWPFTableRow> rows = table.getRows(); 
+			//读取每一行数据
+			for (int i = 0; i < rows.size(); i++) {
+				XWPFTableRow  row = rows.get(i);
+				//读取每一列数据
+				List<XWPFTableCell> cells = row.getTableCells(); 
+				for (int j = 0; j < cells.size(); j++) {
+					//获取单元格
+					XWPFTableCell cell = cells.get(j);
+					List<XWPFParagraph> tmpPlist = cell.getParagraphs();
+					for (int y = 0; y < tmpPlist.size(); y++) {
+						XWPFParagraph paragraph = tmpPlist.get(y);
+			        	String text = paragraph.getParagraphText();
+			        	paragraph.getRuns();
+			        	String trimText = text.trim();
+			        	//匹配标记的段落
+			        	if (trimText.contains(oldText)) {
+			        		//删除该段落
+			        		cell.removeParagraph(y);
+			        		for (int x = 0; x < newTextList.size(); x++) {
+			        			//创建一个新段落
+			        			XWPFParagraph newParagraph = cell.addParagraph();
+			        			if (paragraphAlignment!=null) {
+			        				newParagraph.setAlignment(paragraphAlignment);//字体对齐方式：1左对齐 2居中3右对齐
+								}
+			        			//悬挂缩进
+			        			if (indentCfgs!=null&&indentCfgs.size()>0) {
+			        				LoserStarParagraphIndentCfg cfg = indentCfgs.get(x);
+			        				if (cfg!=null) {
+			        					List<IndentDetail> details = cfg.getList();
+			        					for (IndentDetail detail : details) {
+											if(detail.getType().equals("firstIndent")) {
+												//首行缩进
+												newParagraph.setFirstLineIndent(detail.getIndent());//首行缩进
+											}else if(detail.getType().equals("firstForward")) {
+												//首行前进
+												newParagraph.setIndentationHanging(detail.getIndent());//首行前进
+											}else if(detail.getType().equals("form")) {
+												//整段右移
+												newParagraph.setIndentFromLeft(detail.getIndent());//整段右移
+											}else if(detail.getType().equals("hanging")) {
+												//悬挂缩进(其实等于整段右移+首行前进)
+												newParagraph.setIndentFromLeft(detail.getIndent());//整段右移
+												newParagraph.setIndentationHanging(detail.getIndent());//首行前进
+											}else {
+												throw new Exception("未知的缩进类型"+detail.getType());
+											}
+										}
 									}
 								}
 			        			//运行段落
