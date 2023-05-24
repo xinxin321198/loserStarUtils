@@ -653,6 +653,11 @@ public class LoserStarWordUtil {
      * @return 处理好的文档对象
      */
     public static XWPFDocument processDocumentReplaceTextWithText(XWPFDocument document,String oldText,List<String> newTextList,int fontSize,ParagraphAlignment paragraphAlignment,String fontFamily) {
+    	if (newTextList==null||newTextList.size()<1) {
+			newTextList  = new ArrayList<String>();
+			newTextList.add("");
+		}
+    	
     	//读取内容
         List<XWPFParagraph> paragraphList = document.getParagraphs();
         for (XWPFParagraph paragraph : paragraphList) {
@@ -699,6 +704,10 @@ public class LoserStarWordUtil {
      * @return 处理好的文档对象
      */
     public static XWPFDocument processDocumentReplaceTextWithParagraph(XWPFDocument document,String oldText,List<String> newTextList,int fontSize,ParagraphAlignment paragraphAlignment,String fontFamily) {
+    	if (newTextList==null||newTextList.size()<1) {
+			newTextList  = new ArrayList<String>();
+			newTextList.add("");
+		}
     	//读取内容
         List<XWPFParagraph> paragraphList = document.getParagraphs();
         for (XWPFParagraph paragraph : paragraphList) {
@@ -751,7 +760,15 @@ public class LoserStarWordUtil {
      * @throws Exception
      */
     public static XWPFDocument processDocumentReplaceTextWithTable(XWPFDocument document,String oldText,List<List<String>> newTextList,List<Double> cellWidthList,List<MergeRange> rowMergeRangeList,List<MergeRange> colMergeRangeList,boolean isFirstRowCenter) throws Exception {
-    	
+    	if (newTextList==null||newTextList.size()<1) {
+			newTextList  = new ArrayList<List<String>>();
+			List<String> colum = new ArrayList<String>();
+			colum.add("");
+			newTextList.add(colum);
+			
+			cellWidthList = new ArrayList<Double>();
+			cellWidthList.add(1d);
+		}
     	//读取内容
         List<XWPFParagraph> paragraphList = document.getParagraphs();
         for (XWPFParagraph paragraph : paragraphList) {
@@ -834,7 +851,7 @@ public class LoserStarWordUtil {
         return document;
     }
     
-	/**
+    /**
      * 可遍历到表格内的段落进行替换
      * @param document 文档对象
      * @param oldText 标记
@@ -846,7 +863,12 @@ public class LoserStarWordUtil {
      * @return 处理好的文档对象
      */
     public static XWPFDocument processDocumentReplaceTableTextWithParagraph(XWPFDocument document,String oldText,List<String> newTextList,int fontSize,ParagraphAlignment paragraphAlignment,String fontFamily,List<Integer> hangingIndentList) {
-        //读取表格的段落
+    	if (newTextList==null||newTextList.size()<1) {
+			newTextList  = new ArrayList<String>();
+			newTextList.add("");
+		}
+    	
+    	//读取表格的段落
         Iterator<XWPFTable> it = document.getTablesIterator();//得到word中的表格
 		// 设置需要读取的表格  set是设置需要读取的第几个表格，total是文件中表格的总数
 		while(it.hasNext()){
@@ -870,34 +892,34 @@ public class LoserStarWordUtil {
 			        	if (trimText.contains(oldText)) {
 			        		//删除该段落
 			        		cell.removeParagraph(y);
-			        		for (int x = 0; x < newTextList.size(); x++) {
-			        			//创建一个新段落
-			        			XWPFParagraph newParagraph = cell.addParagraph();
-			        			if (paragraphAlignment!=null) {
-			        				newParagraph.setAlignment(paragraphAlignment);//字体对齐方式：1左对齐 2居中3右对齐
-								}
-			        			//悬挂缩进
-			        			if (hangingIndentList!=null&&hangingIndentList.size()>0) {
-			        				Integer indent = hangingIndentList.get(x);
-			        				if (indent!=null) {
-			        					newParagraph.setIndentFromLeft(indent);//整段右移
-			        					newParagraph.setIndentationHanging(indent);//首行前进
-									}
-								}
-			        			//运行段落
-			        			XWPFRun run=newParagraph.createRun();
-			        			run.setText(newTextList.get(x));
-			        			
-			        			//字号大小
-			        			if (fontSize!=0) {
-			        				run.setFontSize(fontSize);
-								}
-			        			//字体
-			        			if (fontFamily!=null) {
-									run.setFontFamily(fontFamily);
-								}
-			        			
-			        		}
+			        		
+		        			for (int x = 0; x < newTextList.size(); x++) {
+		        				//创建一个新段落
+		        				XWPFParagraph newParagraph = cell.addParagraph();
+		        				if (paragraphAlignment!=null) {
+		        					newParagraph.setAlignment(paragraphAlignment);//字体对齐方式：1左对齐 2居中3右对齐
+		        				}
+		        				//悬挂缩进
+		        				if (hangingIndentList!=null&&hangingIndentList.size()>0) {
+		        					Integer indent = hangingIndentList.get(x);
+		        					if (indent!=null) {
+		        						newParagraph.setIndentFromLeft(indent);//整段右移
+		        						newParagraph.setIndentationHanging(indent);//首行前进
+		        					}
+		        				}
+		        				//运行段落
+		        				XWPFRun run=newParagraph.createRun();
+		        				run.setText(newTextList.get(x));
+		        				
+		        				//字号大小
+		        				if (fontSize!=0) {
+		        					run.setFontSize(fontSize);
+		        				}
+		        				//字体
+		        				if (fontFamily!=null) {
+		        					run.setFontFamily(fontFamily);
+		        				}
+		        			}
 			        		break;
 						}
 					}
@@ -969,6 +991,11 @@ public class LoserStarWordUtil {
 	 * @throws Exception 
      */
     public static XWPFDocument processDocumentReplaceTableTextWithParagraph2(XWPFDocument document,String oldText,List<String> newTextList,int fontSize,ParagraphAlignment paragraphAlignment,String fontFamily,List<LoserStarParagraphIndentCfg> indentCfgs) throws Exception {
+    	if (newTextList==null||newTextList.size()<1) {
+			newTextList  = new ArrayList<String>();
+			newTextList.add("");
+		}
+    	
         //读取表格的段落
         Iterator<XWPFTable> it = document.getTablesIterator();//得到word中的表格
 		// 设置需要读取的表格  set是设置需要读取的第几个表格，total是文件中表格的总数
@@ -993,51 +1020,50 @@ public class LoserStarWordUtil {
 			        	if (trimText.contains(oldText)) {
 			        		//删除该段落
 			        		cell.removeParagraph(y);
-			        		for (int x = 0; x < newTextList.size(); x++) {
-			        			//创建一个新段落
-			        			XWPFParagraph newParagraph = cell.addParagraph();
-			        			if (paragraphAlignment!=null) {
-			        				newParagraph.setAlignment(paragraphAlignment);//字体对齐方式：1左对齐 2居中3右对齐
-								}
-			        			//悬挂缩进
-			        			if (indentCfgs!=null&&indentCfgs.size()>0) {
-			        				LoserStarParagraphIndentCfg cfg = indentCfgs.get(x);
-			        				if (cfg!=null) {
-			        					List<IndentDetail> details = cfg.getList();
-			        					for (IndentDetail detail : details) {
-											if(detail.getType().equals("firstIndent")) {
-												//首行缩进
-												newParagraph.setFirstLineIndent(detail.getIndent());//首行缩进
-											}else if(detail.getType().equals("firstForward")) {
-												//首行前进
-												newParagraph.setIndentationHanging(detail.getIndent());//首行前进
-											}else if(detail.getType().equals("form")) {
-												//整段右移
-												newParagraph.setIndentFromLeft(detail.getIndent());//整段右移
-											}else if(detail.getType().equals("hanging")) {
-												//悬挂缩进(其实等于整段右移+首行前进)
-												newParagraph.setIndentFromLeft(detail.getIndent());//整段右移
-												newParagraph.setIndentationHanging(detail.getIndent());//首行前进
-											}else {
-												throw new Exception("未知的缩进类型"+detail.getType());
-											}
-										}
-									}
-								}
-			        			//运行段落
-			        			XWPFRun run=newParagraph.createRun();
-			        			run.setText(newTextList.get(x));
-			        			
-			        			//字号大小
-			        			if (fontSize!=0) {
-			        				run.setFontSize(fontSize);
-								}
-			        			//字体
-			        			if (fontFamily!=null) {
-									run.setFontFamily(fontFamily);
-								}
-			        			
-			        		}
+		        			for (int x = 0; x < newTextList.size(); x++) {
+		        				//创建一个新段落
+		        				XWPFParagraph newParagraph = cell.addParagraph();
+		        				if (paragraphAlignment!=null) {
+		        					newParagraph.setAlignment(paragraphAlignment);//字体对齐方式：1左对齐 2居中3右对齐
+		        				}
+		        				//悬挂缩进
+		        				if (indentCfgs!=null&&indentCfgs.size()>0) {
+		        					LoserStarParagraphIndentCfg cfg = indentCfgs.get(x);
+		        					if (cfg!=null) {
+		        						List<IndentDetail> details = cfg.getList();
+		        						for (IndentDetail detail : details) {
+		        							if(detail.getType().equals("firstIndent")) {
+		        								//首行缩进
+		        								newParagraph.setFirstLineIndent(detail.getIndent());//首行缩进
+		        							}else if(detail.getType().equals("firstForward")) {
+		        								//首行前进
+		        								newParagraph.setIndentationHanging(detail.getIndent());//首行前进
+		        							}else if(detail.getType().equals("form")) {
+		        								//整段右移
+		        								newParagraph.setIndentFromLeft(detail.getIndent());//整段右移
+		        							}else if(detail.getType().equals("hanging")) {
+		        								//悬挂缩进(其实等于整段右移+首行前进)
+		        								newParagraph.setIndentFromLeft(detail.getIndent());//整段右移
+		        								newParagraph.setIndentationHanging(detail.getIndent());//首行前进
+		        							}else {
+		        								throw new Exception("未知的缩进类型"+detail.getType());
+		        							}
+		        						}
+		        					}
+		        				}
+		        				//运行段落
+		        				XWPFRun run=newParagraph.createRun();
+		        				run.setText(newTextList.get(x));
+		        				
+		        				//字号大小
+		        				if (fontSize!=0) {
+		        					run.setFontSize(fontSize);
+		        				}
+		        				//字体
+		        				if (fontFamily!=null) {
+		        					run.setFontFamily(fontFamily);
+		        				}
+		        			}
 			        		break;
 						}
 					}
@@ -1112,6 +1138,12 @@ public class LoserStarWordUtil {
      * @throws Exception
      */
     public static XWPFDocument processDocumentAddRowWithTable(XWPFDocument document,String oldText,List<List<String>> newTextList,List<List<Map<String, String>>> aligmentList,int fontSize,String fontFamily) throws Exception {
+    	if (newTextList==null||newTextList.size()<1) {
+			newTextList  = new ArrayList<List<String>>();
+			List<String> column = new ArrayList<String>();
+			column.add("");
+			newTextList.add(column);
+		}
     	
     	//读取表格的段落
         Iterator<XWPFTable> it = document.getTablesIterator();//得到word中的表格
