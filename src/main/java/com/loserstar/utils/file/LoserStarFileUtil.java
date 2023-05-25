@@ -22,14 +22,18 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 
 /**
  * 
  * author: loserStar
- * date: 2019年3月12日下午6:04:13
- * remarks:IO操作
+ * date: 2023年5月25日下午3:34:19
+ * remarks: 文件操作相关工具类
  */
 public class LoserStarFileUtil {
 	public static final boolean isLog = false;
@@ -516,6 +520,89 @@ public class LoserStarFileUtil {
 			close(printStream);
 			close(outputStream);
 		}
+	}
+	
+	/**
+	 * 把一堆文件路径下的文件以zip形式压缩进一个zipFile文件中
+	 * @param filePathList
+	 * @param zipFilePath
+	 * @param reNameList
+	 * @throws Exception
+	 */
+	public static void zipFilePathListToZipFilePath(List<String> filePathList,String zipFilePath,List<String> reNameList) throws Exception {
+		List<File> fileList = new ArrayList<File>();
+		for (String string : filePathList) {
+			fileList.add(new File(string));
+		}
+		zipFileListToFile(fileList, new File(zipFilePath),reNameList);
+	}
+	
+	/**
+	 * 把一堆文件文件以zip形式压缩进一个zipFile文件中
+	 * @param fileList 需要压缩的文件对象集合
+	 * @param zipFile 压缩后生成的文件
+	 * @param reNameList 重命名要压缩的文件，可以写成路径，压缩包里就是带路径的，开头不用加根目录/，否则斜杠也会认作是目录名称（如果传入，数量必须与fileList的数量一致。重名的文件的话不会覆盖）
+	 * @throws Exception
+	 */
+	public static void zipFileListToFile(List<File> fileList,File zipFile,List<String> reNameList) throws Exception {
+		if (!LoserStarFileUtil.createDir(zipFile.getPath())) {throw new Exception("目录创建失败："+LoserStarFileUtil.getDir(zipFile.getPath()));}
+		zipFileListToOutputStream(fileList, new FileOutputStream(zipFile),reNameList);
+	}
+	
+	/**
+	 * 把一堆文件路径下的文件以zip形式压缩进一个outputstream中
+	 * @param filePathList 需要压缩的文件路径集合
+	 * @param out 输出流
+	 * @param reNameList 重命名要压缩的文件，可以写成路径，压缩包里就是带路径的，开头不用加根目录/，否则斜杠也会认作是目录名称（如果传入，数量必须与fileList的数量一致。重名的文件的话不会覆盖）
+	 * @throws Exception
+	 */
+	public static void zipFilePathListToOutputStream(List<String> filePathList,OutputStream out,List<String> reNameList) throws Exception {
+		List<File> fileList = new ArrayList<File>();
+		for (String string : filePathList) {
+			fileList.add(new File(string));
+		}
+		zipFileListToOutputStream(fileList, out,reNameList);
+	}
+	/**
+	 * 把一堆文件对象集合以zip形式压缩进一个outputstream中
+	 * @param fileList 文件对象集合
+	 * @param out 输出流
+	 * @param reNameList 重命名要压缩的文件，可以写成路径，压缩包里就是带路径的，开头不用加根目录/，否则斜杠也会认作是目录名称（如果传入，数量必须与fileList的数量一致。重名的文件的话不会覆盖）
+	 * @throws Exception
+	 */
+	public static void zipFileListToOutputStream(List<File> fileList,OutputStream out,List<String> reNameList) throws Exception {
+		if (reNameList!=null&&reNameList.size()>0) {
+			if (reNameList.size()!=fileList.size()) {
+				throw new Exception("您打算压缩进去的文件进行重命名，但是文件数量和重命名数量不一致");
+			}
+		}
+	    ZipOutputStream zos = null;
+	    try {
+	        //压缩文件
+	        zos = new ZipOutputStream(out);
+	        byte[] buf = new byte[1024];
+	        for(int i=0;i<fileList.size();i++) {
+	        	File file = fileList.get(i);
+	            //在压缩包中添加文件夹
+	        	if (reNameList!=null&&reNameList.size()>0) {
+	        		zos.putNextEntry(new ZipEntry(reNameList.get(i)));
+				}else {
+					zos.putNextEntry(new ZipEntry(file.getName()));
+				}
+	            int len;
+	            FileInputStream in = new FileInputStream(file);
+	            while ((len = in.read(buf)) != -1){
+	                zos.write(buf, 0, len);
+	            }
+	            zos.closeEntry();
+	            close(in);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }finally {
+	    	close(zos);
+	    	close(out);
+	    }
 	}
 	
 	
