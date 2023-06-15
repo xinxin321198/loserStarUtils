@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.loserstar</groupId>
 	<artifactId>loserStarUtils</artifactId>
-	<version>6.3-1.8jdk</version>
+	<version>6.4-1.8jdk</version>
 	<!-- 1.5.5更新了LoserStarJfinalRecordUtils，增加fullEmptyStringKeysToNull -->
 	<!-- 1.5.6更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
 	<!-- 1.5.7更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
@@ -51,6 +51,7 @@
 	<!-- 6.1 WordUtil中增强写入段落到单元格中的更详细的缩进配置 -->
 	<!-- 6.2 WordUtil修复小BUG，如果替换段落标记时，如果传入的字符数组是空的或者没有元素，就付个空字符串给它，否则生成的Word会显示语法错误 -->
 	<!-- 6.3 LoserStarFileUtil增加压缩文件的方法 -->
+	<!-- 6.4 WordUtil增加读取table中多段落时候可自定义多段落的分隔符 -->
 	<name>loserStarUtils</name>
 	<description>362527240@qq.com</description>
 	<packaging>jar</packaging>
@@ -352,5 +353,7 @@
 		    <artifactId>dom4j</artifactId>
 		    <version>2.0.3</version>
 		</dependency>
+		
+
 	</dependencies>
 </project>
