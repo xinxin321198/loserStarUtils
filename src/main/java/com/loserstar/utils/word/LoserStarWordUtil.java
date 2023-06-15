@@ -542,15 +542,19 @@ public class LoserStarWordUtil {
 			 * 根据坐标获取值
 			 * @param rowIndex
 			 * @param cellIndex
-			 * @param paragraphIndex 如果该值为-1，则合并单元格内的所有段落内容，以分号分隔
+			 * @param paragraphIndex 如果该值为-1，则合并单元格内的所有段落内容，以指定的分隔符分隔
+			 * @param separator 分隔符，paragraphIndex为-1时才有效,如果没传，就默认用空字符串
 			 * @return
 			 */
-			public String getTxt(int rowIndex,int cellIndex,int paragraphIndex) {
+			public String getTxt(int rowIndex,int cellIndex,int paragraphIndex,String separator) {
+				if (separator==null) {
+					separator = "";
+				}
 				String s = "";
 				if(this.getRowList().size()>rowIndex) {
 					if (this.getRowList().get(rowIndex).getCellList().size()>cellIndex) {
 						if (paragraphIndex<0) {
-							s = LoserStarStringUtils.join(this.getRowList().get(rowIndex).getCellList().get(cellIndex).getParagraphList(), ";", "", "");
+							s = LoserStarStringUtils.join(this.getRowList().get(rowIndex).getCellList().get(cellIndex).getParagraphList(), separator, "", "");
 						}else {
 							if (this.getRowList().get(rowIndex).getCellList().get(cellIndex).getParagraphList().size()>paragraphIndex) {
 								s = this.getRowList().get(rowIndex).getCellList().get(cellIndex).getParagraphList().get(paragraphIndex);
