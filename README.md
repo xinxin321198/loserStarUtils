@@ -2,9 +2,11 @@
 ## loserStar收藏及封装的一些常用工具集
 * ### 数组(排序、去重等)
 * ### ~~代码量的统计(指定路径、文件名的正则进行扫描)~~
-* ### 普通sql转为Java拼接的字符串（String和StringBuffer）
+* ### base64 编码解码
+* ### 验证码生成
 * ### jfinal的record和model互转
 * ### jfinal的record和Map构建树结构
+* ### 普通sql转为Java拼接的字符串（String和StringBuffer）
 * ### cookie的操作
 * ### 时间日期的操作和转换格式化(支持基于jdk的~~和基于jodd的~~)
 * ### DB相关的操作(基于jfinal的再次封装快速操作框架和jdbc原生操作的笔记)
@@ -23,16 +25,18 @@
 * ### MD5加密工具
 * ### 服务器本身主机名的判断
 * ### 数字计算工具
-* ### 数字转中文RMB
+* ### 数字转中文软妹币
 * ### 对象的集合和List或MAP的转换类
+* ### 密码校验工具
 * ### 汉子转拼音（基于pinyin4j），支持多音字
 * ### properties配置文件操作
 * ### 随机数工具类
 * ### servlet相关工具(获取路径、文件上传下载等)
-* ### 字符串处理
+* ### String字符串处理
 * ### 系统和环境相关信息
 * ### 企业微信相关api调用工具
 * ### Word导入导出（基于POI）
+* ### xml相关处理（基于dom4j的、基于w3cDom的）
 
 * 昵称：loserStar<br/>
 * email:xinxin321198@gmail.com<br/>
