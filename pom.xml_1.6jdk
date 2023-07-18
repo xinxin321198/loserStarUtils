@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.loserstar</groupId>
 	<artifactId>loserStarUtils</artifactId>
-	<version>6.4-1.6jdk</version>
+	<version>6.5-1.6jdk</version>
 	<!-- 1.5.5更新了LoserStarJfinalRecordUtils，增加fullEmptyStringKeysToNull -->
 	<!-- 1.5.6更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
 	<!-- 1.5.7更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
@@ -52,6 +52,7 @@
 	<!-- 6.2 WordUtil修复小BUG，如果替换段落标记时，如果传入的字符数组是空的或者没有元素，就付个空字符串给它，否则生成的Word会显示语法错误 -->
 	<!-- 6.3 LoserStarFileUtil增加压缩文件的方法 -->
 	<!-- 6.4 WordUtil增加读取table中多段落时候可自定义多段落的分隔符 -->
+	<!-- 6.5 优化LoserStarHttpUtil远程下载文件的方法，不然遇到返回值200，内容是0字节的，会阻塞了，一直等待中 -->
 	<name>loserStarUtils</name>
 	<description>362527240@qq.com</description>
 	<packaging>jar</packaging>
@@ -116,7 +117,7 @@
 		    <groupId>com.jfinal</groupId>
 		    <artifactId>jfinal</artifactId>
 		    <version>3.4</version>
-<!-- 		    <version>4.9.01</version> -->
+ 		   <!-- <version>4.9.01</version> -->
 		</dependency>
 	
 		<!-- https://mvnrepository.com/artifact/junit/junit -->

@@ -84,16 +84,31 @@ public class LoserStarHttpUtil {
 	}
 
 	/**
-	 * 创建一个http的请求连接对象（根据协议决定是创建http还是https,https是所有证书都信任的）
-	 * 
-	 * @param urlStr
+	 * 创建一个http的请求连接对象，可以设置超时时间（根据协议决定是创建http还是https,https是所有证书都信任的）
+	 * @param urlStr url地址
+	 * @param method 请求方法GET POST
 	 * @return
 	 * @throws IOException
-	 * @throws NoSuchProviderException
 	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchProviderException
 	 * @throws KeyManagementException
 	 */
 	public static HttpURLConnection createHttpUrlConnection(String urlStr, String method) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, KeyManagementException {
+		return createHttpUrlConnection(urlStr, method, 5000);
+	}
+
+	/**
+	 * 创建一个http的请求连接对象（根据协议决定是创建http还是https,https是所有证书都信任的）
+	 * @param urlStr url地址
+	 * @param method 请求方法GET POST
+	 * @param timeout 自定义超时时间
+	 * @return
+	 * @throws IOException
+	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchProviderException
+	 * @throws KeyManagementException
+	 */
+	public static HttpURLConnection createHttpUrlConnection(String urlStr, String method,int timeout) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, KeyManagementException {
 		// lxx 20220516 加这句貌似才可以在1.7及以下jdk中使用调用https
 		System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
 		URL url = new URL(urlStr);
@@ -115,7 +130,8 @@ public class LoserStarHttpUtil {
 			conn = httpsConn;
 		}
 		conn.setRequestMethod(method); // 设置本次请求的方式 ， 默认是GET方式， 参数要求都是大写字母
-		conn.setConnectTimeout(5000);// 设置连接超时
+		conn.setConnectTimeout(timeout);// 设置连接超时
+		conn.setReadTimeout(timeout);//设置读取超时时间
 		conn.setDoInput(true);// 是否打开输入流 ， 此方法默认为true(post 请求是以流的方式隐式的传递参数)
 		conn.setDoOutput(true);// 是否打开输出流， 此方法默认为false
 		// post请求缓存设为false
@@ -481,24 +497,22 @@ public class LoserStarHttpUtil {
 	}
 
 	/**
-	 * 下载一个远程的文件(没有自定义请求头)
-	 * 
-	 * @param url
-	 *            远程文件url
-	 * @param localPath
-	 *            本地存储路径（必须带文件名及后缀名）
+	 * 下载一个远程文件输出到某个本地路径下，每次下载前会等待10毫秒，如果10毫秒一个字节都没接收到，则会进入指定的超时间进行等待（默认为5秒，可通过自定义httpURLConnection的setReadTimeout设置）
+	 * 默认为GET请求，如需要其它类型请求，需自定义httpUrlConnection对象
+	 * 默认没有请求头，如需要请求头，需调用自定义方法
+	 * @param fileUrl 下载文件的地址
+	 * @param localPath 下载后的文件保存路径
 	 */
 	public static void downloadRemoteFile(String fileUrl, String localPath) {
 		downloadRemoteFile(fileUrl, localPath, null);
 	}
 
 	/**
-	 * 下载一个远程的文件（可以自定义请求头信息）
-	 * 
-	 * @param url
-	 *            远程文件url
-	 * @param localPath
-	 *            本地存储路径（必须带文件名及后缀名）
+	 * 下载一个远程文件输出到某个本地路径下，每次下载前会等待10毫秒，如果10毫秒一个字节都没接收到，则会进入指定的超时间进行等待（默认为5秒，可通过自定义httpURLConnection的setReadTimeout设置）
+	 * 默认为GET请求，如需要其它类型请求，需自定义httpUrlConnection对象
+	 * @param fileUrl 下载文件的地址
+	 * @param localPath 下载后的文件保存路径
+	 * @param requestHeaderMap 可自定义的请求头
 	 */
 	public static void downloadRemoteFile(String fileUrl, String localPath, Map<String, String> requestHeaderMap) {
 		try {
@@ -510,10 +524,13 @@ public class LoserStarHttpUtil {
 	}
 
 	/**
-	 * 
-	 * @param fileUrl
-	 * @param localPath
-	 * @param requestHeaderMap
+	 * 下载一个远程文件输出到某个本地路径下，每次下载前会等待10毫秒，如果10毫秒一个字节都没接收到，则会进入指定的超时间进行等待（默认为5秒，可通过自定义httpURLConnection的setReadTimeout设置）
+	 * 默认为GET请求，如需要其它类型请求，需自定义httpUrlConnection对象
+	 * 默认没有请求头，如需要请求头，需调用自定义方法
+	 * @param fileUrl 下载文件的地址
+	 * @param localPath 下载后的文件保存路径
+	 * @param requestHeaderMap 可自定义的请求头
+	 * @param httpURLConnection 可自定义的连接对象,可通过createHttpUrlConnection方法创建
 	 */
 	public static void downloadRemoteFile(String fileUrl, String localPath, Map<String, String> requestHeaderMap, HttpURLConnection httpURLConnection) {
 		try {
@@ -531,24 +548,22 @@ public class LoserStarHttpUtil {
 	}
 
 	/**
-	 * 下载一个远程文件输出到某个outputstream输出流中(无自定义请求头)
-	 * 
-	 * @param fileUrl
-	 *            远程文件url
-	 * @param outputStream
-	 *            输出流
+	 * 下载一个远程文件输出到某个outputstream输出流中，每次下载前会等待10毫秒，如果10毫秒一个字节都没接收到，则会进入指定的超时间进行等待（默认为5秒，可通过自定义httpURLConnection的setReadTimeout设置）
+	 * 默认为GET请求，如需要其它类型请求，需自定义httpUrlConnection对象
+	 * 默认没有请求头，如需要请求头，需调用自定义方法
+	 * @param fileUrl 下载文件的地址
+	 * @param outputStream 输出流对象
 	 */
 	public static void downloadRemoteFileToOutputStream(String fileUrl, OutputStream outputStream) {
 		downloadRemoteFileToOutputStream(fileUrl, outputStream, null);
 	}
 
 	/**
-	 * 下载一个远程文件输出到某个outputstream输出流中（可以自定义请求头信息）
-	 * 
-	 * @param fileUrl
-	 *            远程文件url
-	 * @param outputStream
-	 *            输出流
+	 * 下载一个远程文件输出到某个outputstream输出流中，每次下载前会等待10毫秒，如果10毫秒一个字节都没接收到，则会进入指定的超时间进行等待（默认为5秒，可通过自定义httpURLConnection的setReadTimeout设置）
+	 * 默认为GET请求，如需其它类型请求，需自定义httpUrlConnection对象
+	 * @param fileUrl 下载文件的地址
+	 * @param outputStream 输出流对象
+	 * @param requestHeaderMap 可自定义的请求头
 	 */
 	public static void downloadRemoteFileToOutputStream(String fileUrl, OutputStream outputStream, Map<String, String> requestHeaderMap) {
 		try {
@@ -560,18 +575,18 @@ public class LoserStarHttpUtil {
 	}
 
 	/**
-	 * 下载一个远程文件输出到某个outputstream输出流中（可以自定义请求头信息和自定义http连接对象）
-	 * 
-	 * @param fileUrl
-	 * @param outputStream
-	 * @param requestHeaderMap
-	 * @param httpURLConnection
+	 * 下载一个远程文件输出到某个outputstream输出流中，每次下载前会等待10毫秒，如果10毫秒一个字节都没接收到，则会进入指定的超时间进行等待（默认为5秒，可通过自定义httpURLConnection的setReadTimeout设置）
+	 * @param fileUrl 下载文件的地址
+	 * @param outputStream 输出流对象
+	 * @param requestHeaderMap 可自定义的请求头
+	 * @param httpURLConnection 可自定义的连接对象,可通过createHttpUrlConnection方法创建
 	 */
 	public static void downloadRemoteFileToOutputStream(String fileUrl, OutputStream outputStream, Map<String, String> requestHeaderMap, HttpURLConnection httpURLConnection) {
 		try {
 			setRequestHeader(httpURLConnection, requestHeaderMap);
 			InputStream inputStream = httpURLConnection.getInputStream();// 打开URLConnection的输入流
-			LoserStarFileUtil.WriteInputStreamToOutputStream(inputStream, outputStream);// 把这个流的数据写到文件输出流中
+			byte[] buf = LoserStarFileUtil.ReadByteByInputStreamTimeout(inputStream, httpURLConnection.getReadTimeout());
+			LoserStarFileUtil.WriteBytesToOutputStream(buf, outputStream);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

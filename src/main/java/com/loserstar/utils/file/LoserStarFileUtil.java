@@ -153,10 +153,13 @@ public class LoserStarFileUtil {
 	/**
 	 * 以字节的方式读取一个流中的内容
 	 * @param inputStream 输入流
-	 * @param length 每次读取的大小
+	 * @param length 每次读取的大小缓冲区，如果为0时直接返回空的字节数组，不去读取，因为读了也没地方存哈
 	 * @return
 	 */
 	public static byte[] ReadByteByInputStream(InputStream inputStream,int length){
+		if(0==length) {
+			return  new byte[] {};
+		}
 		/*附上API：
 	　　　　public int read(byte[] b) throws IOException　　　　
 	　　从输入流中读取一定数量的字节，并将其存储在缓冲区数组 b 中。以整数形式返回实际读取的字节数。
@@ -195,6 +198,7 @@ public class LoserStarFileUtil {
 	
 	/**
 	 * 以字节的方式读取一个流中的内容（每次读取的大小以inputStream.available()的值来决定，本地一次可以得到完整的流的大小，网络的是分批次传送，会读读多次）
+	 * 网络读取时，因网络有延迟，如果流返回的内容是0字节则会一直等待直到字节出现
 	 * @param inputStream 输入流
 	 * @return
 	 */
@@ -202,11 +206,40 @@ public class LoserStarFileUtil {
 		try {
 			//在进行网络操作时往往出错，因为你调用available()方法时，对发发送的数据可能还没有到达，你得到的count是0，所以等待到有数据出现
 			int count = 0;
-			while (count == 0) { 
-				   count = inputStream.available(); //获取到用于每次读取的byte大小
+			while (count == 0) {
+				count = inputStream.available(); //获取到用于每次读取的byte大小
 			  } 
 			byte[] buf = ReadByteByInputStream(inputStream, count);
 			sysLog("com.loserstar.utils.file.LoserStarFileUtil.ReadByteByInputStream(InputStream) end");
+			return buf;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			close(inputStream);
+		}
+		return null;
+	}
+	
+	/**
+	 * 以字节的方式读取一个流中的内容（每次读取的大小以inputStream.available()的值来决定，本地一次可以得到完整的流的大小，网络的是分批次传送，会读读多次）
+	 * 增加一个超时时间，如果经过10毫秒都没有读取到一个字节，则进入指定的millis超时等待，如果超过millis这个时间还每没有读取到字节，则放弃本次读取，不再一直等待
+	 * @param inputStream
+	 * @param millis
+	 * @return
+	 */
+	public static byte[] ReadByteByInputStreamTimeout(InputStream inputStream,int millis){
+		try {
+			//在进行网络操作时往往出错，因为你调用available()方法时，对发发送的数据可能还没有到达，你得到的count是0，所以等待到有数据出现
+			int count = 0;
+			//如果20毫秒一个字节都没有，就进入设定好的等待时间继续等待，超时过期
+			Thread.sleep(10);
+			count = inputStream.available();
+			if (0==count) {
+				Thread.sleep(millis);
+				count = inputStream.available();
+			}
+			byte[] buf = ReadByteByInputStream(inputStream, count);
+			sysLog("com.loserstar.utils.file.LoserStarFileUtil.ReadByteByInputStream(InputStream,int) end");
 			return buf;
 		} catch (Exception e) {
 			e.printStackTrace();
