@@ -7,7 +7,15 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
-
+/**
+ * 
+ * author: loserStar
+ * date: 2023年8月3日下午5:00:03
+ * remarks:查询数据DB
+ * 1.如果用到like，并且是参数化查询需要防注入，可使用两种方式：
+ * （1）sql条件上直接使用CONCAT('%'?,'%')
+ * （2）sql条件上直接使用?，参数上使用"%"+值+"%"
+ */
 public abstract class BaseDao {
 	public enum DBType {
 		mysql, db2, oracle, sqlserver
@@ -166,7 +174,6 @@ public abstract class BaseDao {
 
 	/**
 	 * 执行查询sql，参数化方式
-	 * 
 	 * @param sql
 	 * @param values
 	 * @return
@@ -181,6 +188,13 @@ public abstract class BaseDao {
 		return resultList;
 	}
 
+	/**
+	 * 执行查询sql，转为某个实体
+	 * @param <T>
+	 * @param sql
+	 * @param class1
+	 * @return
+	 */
 	public <T extends Model<T>> List<T> getListBySql(String sql, Class<T> class1) {
 		List<T> tList = null;
 		try {
@@ -199,6 +213,14 @@ public abstract class BaseDao {
 		return tList;
 	}
 
+	/**
+	 * 参数化执行查询sql，返回某种实体
+	 * @param <T>
+	 * @param sql
+	 * @param class1
+	 * @param values
+	 * @return
+	 */
 	public <T extends Model<T>> List<T> getListBySql(String sql, Class<T> class1, Object... values) {
 		List<T> tList = null;
 		try {
@@ -239,7 +261,6 @@ public abstract class BaseDao {
 
 	/**
 	 * 查询列表 new一个whereHelper参数：如果设置过软删除字段自动过滤 null:直接不添加软删除过滤
-	 * 
 	 * @param whereHelper
 	 *            查询条件
 	 * @return
@@ -251,7 +272,6 @@ public abstract class BaseDao {
 
 	/**
 	 * 查询列表 顺带转为jfinal实体 new一个whereHelper参数：如果设置过软删除字段自动过滤 null:直接不添加软删除过滤
-	 * 
 	 * @param <T>
 	 * @param whereHelper
 	 *            查询条件
@@ -268,7 +288,6 @@ public abstract class BaseDao {
 
 	/**
 	 * 查询列表(不自动添加软删除过滤)
-	 * 
 	 * @param whereHelper
 	 * @return
 	 */
@@ -285,7 +304,6 @@ public abstract class BaseDao {
 
 	/**
 	 * 查询列表(不自动添加软删除过滤) 顺带转为jfinal实体
-	 * 
 	 * @param <T>
 	 * @param whereHelper
 	 *            查询条件
@@ -309,7 +327,6 @@ public abstract class BaseDao {
 
 	/**
 	 * 根据条件查询到的列表，获取第一条数据 new一个whereHelper参数：如果设置过软删除字段自动过滤 null:直接不添加软删除过滤
-	 * 
 	 * @param whereHelper
 	 * @return
 	 */
@@ -320,7 +337,6 @@ public abstract class BaseDao {
 
 	/**
 	 * 根据条件查询到的列表，获取第一条数据 new一个whereHelper参数：如果设置过软删除字段自动过滤 null:直接不添加软删除过滤
-	 * 
 	 * @param <T>
 	 * @param whereHelper
 	 * @param dbType
@@ -338,7 +354,6 @@ public abstract class BaseDao {
 
 	/**
 	 * 根据条件查询到的列表，获取第一条数据(不自动添加软删除字段过滤)
-	 * 
 	 * @param whereHelper
 	 * @param dbType
 	 *            数据库类型（不同数据库获取第一条数据的语句不一样）
@@ -370,7 +385,6 @@ public abstract class BaseDao {
 
 	/**
 	 * 根据条件查询到的列表，获取第一条数据(不自动添加软删除字段过滤)
-	 * 
 	 * @param <T>
 	 * @param whereHelper
 	 * @param dbType
@@ -427,7 +441,6 @@ public abstract class BaseDao {
 
 	/**
 	 * 查询列表(分页)的列表数据（参数化查询，得到Record） new一个whereHelper参数：如果设置过软删除字段自动过滤 null:直接不添加软删除过滤
-	 * 
 	 * @param pageNumber
 	 *            页码
 	 * @param pageSize
@@ -445,7 +458,6 @@ public abstract class BaseDao {
 
 	/**
 	 * 查询列表(分页)的列表数据，不自动添加软删除字段（参数化查询，得到对应实体）
-	 * 
 	 * @param <T>
 	 *            要转的实体class
 	 * @param pageNumber
@@ -467,7 +479,7 @@ public abstract class BaseDao {
 			if (values == null || values.length == 0) {
 				page = CheckDataSourceName() ? class1.newInstance().use(this.dataSourceName).paginate(pageNumber, pageSize, "select *", sqlExceptSelect) : class1.newInstance().paginate(pageNumber, pageSize, "select *", sqlExceptSelect);
 			} else {
-				page = CheckDataSourceName() ? class1.newInstance().use(this.dataSourceName).paginate(pageNumber, pageSize, sqlExceptSelect, sqlExceptSelect, values) : class1.newInstance().paginate(pageNumber, pageSize, sqlExceptSelect, sqlExceptSelect, values);
+				page = CheckDataSourceName() ? class1.newInstance().use(this.dataSourceName).paginate(pageNumber, pageSize, "select *", sqlExceptSelect, values) : class1.newInstance().paginate(pageNumber, pageSize, sqlExceptSelect, sqlExceptSelect, values);
 			}
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
@@ -481,7 +493,6 @@ public abstract class BaseDao {
 
 	/**
 	 * 查询列表(分页)的列表数据，不自动添加软删除字段（参数化查询，得到Record）
-	 * 
 	 * @param pageNumber
 	 *            页码
 	 * @param pageSize
