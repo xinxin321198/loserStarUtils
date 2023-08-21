@@ -465,6 +465,41 @@ Z	时区	RFC 822 time zone	-0800
 		calendar.setTime(date);
 		return calendar.get(Calendar.MONTH)+1;
 	}
+	
+	/**
+	 * 得到是本月的第几周
+	 * @param date
+	 * @return
+	 */
+	public static int getWeekInMonth(Date date) {
+		Calendar calendar =Calendar.getInstance();
+		calendar.setTime(date);
+		return calendar.get(Calendar.DAY_OF_WEEK_IN_MONTH);
+	}
+	
+	/**
+	 * 得到是星期几（不用根据老外从星期天计算，获取到数字几就是星期几）
+	 * @param date
+	 * @return
+	 */
+	public static int getWeek(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		int[] weekInt = new int[] {7,1,2,3,4,5,6};
+		return weekInt[calendar.get(Calendar.DAY_OF_WEEK)-1] ;
+	}
+	
+	/**
+	 * 得到是星期几，中文（不用根据老外从星期天计算，获取到数字几就是星期几）
+	 * @param date
+	 * @return
+	 */
+	public static String getWeekZhCN(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		String[] weekZh = new String[] {"天","一","二","三","四","五","六"};
+		return weekZh[calendar.get(Calendar.DAY_OF_WEEK)-1] ;
+	}
 
 	/**
 	 * 得到天数
@@ -696,12 +731,12 @@ Z	时区	RFC 822 time zone	-0800
 		
 		System.out.println("计算时差---------------------------------------");
 		long startDate = System.currentTimeMillis();
-		try {
-			Thread.sleep(6785);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			Thread.sleep(6785);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		long  endDate = System.currentTimeMillis();
 		double second = calculateSecondDifference(new Date(startDate), new Date(endDate));
 		System.out.println("相差："+second+"秒");
@@ -719,6 +754,28 @@ Z	时区	RFC 822 time zone	-0800
 		Date maxMonth = new Date();
 		Date maxMonth2 = LoserStarDateUtils.setCurrentMonthMaxTime(maxMonth);
 		System.out.println(LoserStarDateUtils.format(maxMonth2));
+
 		
+//		Date weekDate = LoserStarDateUtils.fromString("2023-08-01 10:18:00");
+		Date weekDate = new Date();
+		System.out.println("获取年份------------------------------");
+		System.out.println(LoserStarDateUtils.getYear(weekDate));
+		System.out.println("获取月份------------------------------");
+		System.out.println(LoserStarDateUtils.getMoth(weekDate));
+		System.out.println("获取本月第几周------------------------------");
+		System.out.println(LoserStarDateUtils.getWeekInMonth(weekDate));
+		System.out.println("获取星期------------------------------");
+		System.out.println(LoserStarDateUtils.getWeek(weekDate));
+		System.out.println(LoserStarDateUtils.getWeekZhCN(weekDate));
+		System.out.println("获取几号------------------------------");
+		System.out.println(LoserStarDateUtils.getDay(weekDate));
+		System.out.println("获取几点------------------------------");
+		System.out.println(LoserStarDateUtils.getHour(weekDate));
+		System.out.println("获取几分------------------------------");
+		System.out.println(LoserStarDateUtils.getMinute(weekDate));
+		System.out.println("获取几秒------------------------------");
+		System.out.println(LoserStarDateUtils.getSecond(weekDate));
+		System.out.println("获取几毫秒------------------------------");
+		System.out.println(LoserStarDateUtils.getMillisecond(weekDate));
 	}
 }
