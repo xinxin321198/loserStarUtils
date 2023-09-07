@@ -42,7 +42,38 @@ import com.loserstar.utils.file.LoserStarFileUtil;
 
 /**
  * 
- * author: loserStar date: 2019年1月29日下午8:33:28 remarks:从input流读数据时候使用UTF-8，否则乱码
+ * author: loserStar 
+ * date: 2019年1月29日下午8:33:28 
+ * remarks:
+ * 1.从input流读数据时候使用UTF-8，否则乱码
+ * 2.本屌关闭流和连接的原则，最后吃完的洗碗，最后调用的负责关闭流或连接
+ * 
+ * GET:
+1、创建远程连接
+2、设置连接方式（get、post、put。。。）
+3、设置连接超时时间
+4、设置响应读取时间
+5、发起请求
+6、获取请求数据
+7、关闭连接
+
+POST:
+1、创建远程连接
+2、设置连接方式（get、post、put。。。）
+3、设置连接超时时间
+4、设置响应读取时间
+5、当向远程服务器传送数据/写数据时，需要设置为true（setDoOutput）
+6、当前向远程服务读取数据时，设置为true，该参数可有可无（setDoInput）
+7、设置传入参数的格式:（setRequestProperty）
+8、设置鉴权信息：Authorization:（setRequestProperty）
+9、设置参数
+10、发起请求
+11、获取请求数据
+12、关闭连接
+参考文档：
+java实现调用http请求的几种常见方式:https://blog.csdn.net/riemann_/article/details/90539829
+关于Java中流关闭以及先后顺序等问题总结：https://blog.csdn.net/u012117723/article/details/119562031
+关于OutputStream的flush()和close()方法：https://blog.csdn.net/lsy_cheer/article/details/107975868
  */
 public class LoserStarHttpUtil {
 	/**
@@ -152,16 +183,17 @@ public class LoserStarHttpUtil {
 	 */
 	private static StringBuffer ReadStringByInputStream(InputStream inputStream, Map<String, String> requestHeaderMap) {
 		StringBuffer stringBuffer = new StringBuffer();
-		GZIPInputStream gZIPInputStream = null;
-		InputStreamReader inputStreamReader = null;
+		GZIPInputStream gZIPInputStream = null;//远程连接响应本地的输入流的解压缩包装流
+		InputStreamReader inputStreamReader = null;//远程连接响应本地的输入流
+		BufferedReader bufferedReader = null;//远程连接响应本地的输入读取器
 		try {
 			if (null != requestHeaderMap && requestHeaderMap.get("Accept-Encoding") != null && requestHeaderMap.get("Accept-Encoding").contains("gzip")) {
 				gZIPInputStream = new GZIPInputStream(inputStream);
 				byte[] buf = LoserStarFileUtil.ReadByteByInputStream(gZIPInputStream);
-				stringBuffer.append(new String(buf));
+				stringBuffer.append(new String(buf,"UTF-8"));
 			} else {
 				inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
-				BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+				bufferedReader = new BufferedReader(inputStreamReader);
 				// 整行读,手动加上换行
 				String result = null;
 				while ((result = bufferedReader.readLine()) != null) {
@@ -175,6 +207,37 @@ public class LoserStarHttpUtil {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			if(inputStream!=null) {
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (null!=gZIPInputStream) {
+				try {
+					gZIPInputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (inputStreamReader!=null) {
+				try {
+					inputStreamReader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (bufferedReader!=null) {
+				try {
+					bufferedReader.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		return stringBuffer;
 	}
@@ -273,16 +336,25 @@ public class LoserStarHttpUtil {
 	 */
 	public static String getEx(String urlStr, Map<String, String> requestHeaderMap, HttpURLConnection conn) throws Exception {
 		StringBuffer stringBuffer = new StringBuffer();
-		// 设置请求头里面的各个属性
-		setRequestHeader(conn, requestHeaderMap);
-		conn.connect();// 表示连接
-		int code = conn.getResponseCode();
-		if (code == 200) {
-			InputStream inputStream = conn.getInputStream();// 打开输入流
-			// 根据请求头，判断处理方式（压缩格式的流需要使用GZIPInputStream特殊处理，否则乱码，而且并不是字符集的乱码）
-			stringBuffer.append(ReadStringByInputStream(inputStream, requestHeaderMap));
-		} else {
-			throw new Exception("请求失败:" + code + ";" + ReadStringByInputStream(conn.getErrorStream(), requestHeaderMap));
+		InputStream inputStream = null;//远程连接响应本地的输入流
+		try {
+			// 设置请求头里面的各个属性
+			setRequestHeader(conn, requestHeaderMap);
+			conn.connect();// 表示连接
+			int code = conn.getResponseCode();
+			if (code == 200) {
+				inputStream = conn.getInputStream();// 打开输入流
+				// 根据请求头，判断处理方式（压缩格式的流需要使用GZIPInputStream特殊处理，否则乱码，而且并不是字符集的乱码）
+				stringBuffer.append(ReadStringByInputStream(inputStream, requestHeaderMap));
+			} else {
+				throw new Exception("请求失败:" + code + ";" + ReadStringByInputStream(conn.getErrorStream(), requestHeaderMap));
+			}
+		} catch (Exception e) {
+			throw e;
+		}finally {
+			if (conn!=null) {
+				conn.disconnect();
+			}
 		}
 		return stringBuffer.toString();
 	}
@@ -465,33 +537,49 @@ public class LoserStarHttpUtil {
 	 */
 	public static String postEx(String urlStr, Map<String, String> requestHeaderMap, String parm, HttpURLConnection connection) throws Exception {
 		StringBuffer stringBuffer = new StringBuffer();
-		if (requestHeaderMap != null) {
-			if (requestHeaderMap.get("Content-Type") == null || requestHeaderMap.get("Content-Type").equals("")) {
-				requestHeaderMap.put("Content-Type", "application/x-www-form-urlencoded");
+		DataOutputStream dataout = null;//本地输出到远程连接的输出流
+		InputStream inputStream = null;//远程连接响应本地的输入流
+		try {
+			if (requestHeaderMap != null) {
+				if (requestHeaderMap.get("Content-Type") == null || requestHeaderMap.get("Content-Type").equals("")) {
+					requestHeaderMap.put("Content-Type", "application/x-www-form-urlencoded");
+				}
 			}
-		}
-		// 设置请求头里面的各个属性
-		setRequestHeader(connection, requestHeaderMap);
-		// 建立连接
-		// (请求未开始,直到connection.getInputStream()方法调用时才发起,以上各个参数设置需在此方法之前进行)
-		connection.connect();
-		// 创建输入输出流,用于往连接里面输出携带的参数,(输出内容为?后面的内容)
-		DataOutputStream dataout = new DataOutputStream(connection.getOutputStream());
-		// URLEncoder.encode("32", "utf-8"); // URLEncoder.encode()方法  为字符串进行编码
-		// 将参数输出到连接
-		// dataout.writeBytes(parm);//这好像会乱码
-		dataout.write(parm.getBytes("UTF-8"));
-
-		// 输出完成后刷新并关闭流
-		dataout.flush();
-		dataout.close(); // 重要且易忽略步骤 (关闭流,切记!)
-		int code = connection.getResponseCode();
-		if (code == 200) {
-			InputStream inputStream = connection.getInputStream();// 打开输入流
-			// 根据请求头，判断处理方式（压缩格式的流需要使用GZIPInputStream特殊处理，否则乱码，而且并不是字符集的乱码）
-			stringBuffer.append(ReadStringByInputStream(inputStream, requestHeaderMap));
-		} else {
-			throw new Exception("请求失败:" + code + "  " + ReadStringByInputStream(connection.getErrorStream(), requestHeaderMap));
+			// 设置请求头里面的各个属性
+			setRequestHeader(connection, requestHeaderMap);
+			// 建立连接
+			// (请求未开始,直到connection.getInputStream()方法调用时才发起,以上各个参数设置需在此方法之前进行)
+			connection.connect();
+			// 创建输入输出流,用于往连接里面输出携带的参数,(输出内容为?后面的内容)
+			dataout = new DataOutputStream(connection.getOutputStream());
+			// URLEncoder.encode("32", "utf-8"); // URLEncoder.encode()方法  为字符串进行编码
+			// 将参数输出到连接
+			// dataout.writeBytes(parm);//这好像会乱码
+			dataout.write(parm.getBytes("UTF-8"));
+			
+			// 输出完成后刷新并关闭流
+			dataout.flush();
+			int code = connection.getResponseCode();
+			if (code == 200) {
+				inputStream = connection.getInputStream();// 打开输入流
+				// 根据请求头，判断处理方式（压缩格式的流需要使用GZIPInputStream特殊处理，否则乱码，而且并不是字符集的乱码）
+				stringBuffer.append(ReadStringByInputStream(inputStream, requestHeaderMap));
+			} else {
+				throw new Exception("请求失败:" + code + "  " + ReadStringByInputStream(connection.getErrorStream(), requestHeaderMap));
+			}
+		} catch (Exception e) {
+			throw e;
+		}finally {
+			if (null!=dataout) {
+				try {
+					dataout.close(); //关闭本地发送给远程连接的输出流 重要且易忽略步骤 (关闭流,切记!)
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			if (null!=connection) {
+				connection.disconnect();//关闭连接
+			}
 		}
 		return stringBuffer.toString();
 	}
@@ -582,13 +670,18 @@ public class LoserStarHttpUtil {
 	 * @param httpURLConnection 可自定义的连接对象,可通过createHttpUrlConnection方法创建
 	 */
 	public static void downloadRemoteFileToOutputStream(String fileUrl, OutputStream outputStream, Map<String, String> requestHeaderMap, HttpURLConnection httpURLConnection) {
+		InputStream inputStream = null;//远程连接响应本地的输入流
 		try {
 			setRequestHeader(httpURLConnection, requestHeaderMap);
-			InputStream inputStream = httpURLConnection.getInputStream();// 打开URLConnection的输入流
+			inputStream = httpURLConnection.getInputStream();// 打开URLConnection的输入流
 			byte[] buf = LoserStarFileUtil.ReadByteByInputStreamTimeout(inputStream, httpURLConnection.getReadTimeout());
 			LoserStarFileUtil.WriteBytesToOutputStream(buf, outputStream);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			if (httpURLConnection!=null) {
+				httpURLConnection.disconnect();
+			}
 		}
 	}
 
@@ -647,6 +740,8 @@ public class LoserStarHttpUtil {
 		String PREFIX = "--";
 		String LINE_END = "\r\n";// 行结束标记
 		String CONTENT_TYPE = "multipart/form-data"; // 内容类型
+		DataOutputStream dos = null;//本地输出到远程连接的输出流
+		InputStream input = null;//远程连接响应本地的输入流
 		try {
 			if (conn == null) {
 				throw new Exception("HttpURLConnection对象为null");
@@ -663,7 +758,7 @@ public class LoserStarHttpUtil {
 				/**
 				 * 当文件不为空，把文件包装并且上传
 				 */
-				DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
+				dos = new DataOutputStream(conn.getOutputStream());
 
 				if (paraMap != null) {
 					for (Map.Entry<String, String> entry : paraMap.entrySet()) {
@@ -710,7 +805,7 @@ public class LoserStarHttpUtil {
 				}
 				System.out.println("response code:" + res);
 				System.out.println("request success");
-				InputStream input = conn.getInputStream();
+				input = conn.getInputStream();
 				StringBuffer sb1 = new StringBuffer();
 				int ss;
 				while ((ss = input.read()) != -1) {
@@ -723,6 +818,24 @@ public class LoserStarHttpUtil {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			if (dos!=null) {
+				try {
+					dos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (input!=null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (conn!=null) {
+				conn.disconnect();//用完关闭连接
+			}
 		}
 		return resultStr;
 	}

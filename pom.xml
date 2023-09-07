@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.loserstar</groupId>
 	<artifactId>loserStarUtils</artifactId>
-	<version>6.7-1.6jdk</version>
+	<version>6.8-1.8jdk</version>
 	<!-- 1.5.5更新了LoserStarJfinalRecordUtils，增加fullEmptyStringKeysToNull -->
 	<!-- 1.5.6更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
 	<!-- 1.5.7更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
@@ -55,6 +55,7 @@
 	<!-- 6.5 优化LoserStarHttpUtil远程下载文件的方法，不然遇到返回值200，内容是0字节的，会阻塞了，一直等待中 -->
 	<!-- 6.6 他娘的，发现一个大大BUG，BaseDao.getListPage_notSoftDel方法中，使用参数化查询的话，两个sql参数，第一个本来应该传select *,结果把where条件的sql也传进去了，导致参数悢不匹配，这个方法查询数据就报sql错 -->
 	<!-- 6.7 LoserStarDateUtils增加获取星期几，和本月第几个周的方法-->
+	<!-- 6.8 LoserStarHttpUtil优化，增加关闭连接对象，远程数据如果是gzip压缩数据，解压后的byte字节码转换为为字符时要指定下UTF-8，否则获取部分接口数据时中文会乱码，比如和风天气的api在服务器上用时候（很奇怪，也是Windows服务器，为何本地就不会？）-->
 	<name>loserStarUtils</name>
 	<description>362527240@qq.com</description>
 	<packaging>jar</packaging>
@@ -68,8 +69,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.0.2</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.8</source>
+					<target>1.8</target>
 					  <!-- 指明编译源代码时使用的字符编码，  
         maven编译的时候默认使用的GBK编码，   
           通过encoding属性设置字符编码，  
@@ -118,8 +119,8 @@
 		<dependency>
 		    <groupId>com.jfinal</groupId>
 		    <artifactId>jfinal</artifactId>
-		    <version>3.4</version>
- 		   <!-- <version>4.9.01</version> -->
+<!--		    <version>3.4</version>-->
+ 		    <version>4.9.01</version> 
 		</dependency>
 	
 		<!-- https://mvnrepository.com/artifact/junit/junit -->
