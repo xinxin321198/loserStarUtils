@@ -569,9 +569,9 @@ Z	时区	RFC 822 time zone	-0800
 	}
 	
 	/**
-	 * 计算两个时间相差多少天
-	 * @param startDate
-	 * @param endDate
+	 * 计算两个时间相差多少天（结束时间-开始时间）
+	 * @param startDate 开始时间
+	 * @param endDate 结束时间
 	 * @return
 	 */
 	public static double calculateDayDifference(Date startDate,Date endDate) {
@@ -583,9 +583,9 @@ Z	时区	RFC 822 time zone	-0800
 		return day;
 	}
 	/**
-	 * 计算两个时间相差多少小时
-	 * @param startDate
-	 * @param endDate
+	 * 计算两个时间相差多少小时（结束时间-开始时间）
+	 * @param startDate 开始时间
+	 * @param endDate 结束时间
 	 * @return
 	 */
 	public static double calculateHoursDifference(Date startDate,Date endDate) {
@@ -598,24 +598,23 @@ Z	时区	RFC 822 time zone	-0800
 	}
 
 	/**
-	 * 计算两个时间相差多少分钟
-	 * @param startDate
-	 * @param endDate
+	 * 计算两个时间相差多少分钟（结束时间-开始时间）
+	 * @param startDate 开始时间
+	 * @param endDate 结束时间
 	 * @return
 	 */
-	public static String calculateMinuteDifference(Date startDate,Date endDate) {
+	public static double calculateMinuteDifference(Date startDate,Date endDate) {
 		long startTime = startDate.getTime();
 		long endTime = endDate.getTime();
 		long diff = endTime-startTime;
 		long conversionRate = 1000*60;//1分钟=60*1000毫秒
 		double second = (double)diff/(double)conversionRate;
-		DecimalFormat decimalFormat = new DecimalFormat("0.00000");
-		return decimalFormat.format(second);
+		return second;
 	}
 	/**
-	 * 计算两个时间相差多少秒
-	 * @param startDate
-	 * @param endDate
+	 * 计算两个时间相差多少秒（结束时间-开始时间）
+	 * @param startDate 开始时间
+	 * @param endDate 结束时间
 	 * @return
 	 */
 	public static double calculateSecondDifference(Date startDate,Date endDate) {
@@ -731,16 +730,16 @@ Z	时区	RFC 822 time zone	-0800
 		
 		System.out.println("计算时差---------------------------------------");
 		long startDate = System.currentTimeMillis();
-//		try {
-//			Thread.sleep(6785);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		try {
+			Thread.sleep(6785);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		long  endDate = System.currentTimeMillis();
 		double second = calculateSecondDifference(new Date(startDate), new Date(endDate));
 		System.out.println("相差："+second+"秒");
-		String minute  = calculateMinuteDifference( new Date(endDate),new Date(startDate));
+		double minute  = calculateMinuteDifference( new Date(startDate),new Date(endDate));
 		System.out.println("相差："+minute+"分钟");
 		System.out.println();
 

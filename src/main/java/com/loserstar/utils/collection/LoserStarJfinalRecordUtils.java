@@ -31,7 +31,7 @@ public class LoserStarJfinalRecordUtils extends LoserStarMapUtils{
 	 * @param rootFiledKey 根节点Record的主要key
 	 * @param parentFiledKey 子节点的Record中所属父节点的key
 	 * @param childrenListFiled 构建完成之后子节点对象集合的key
-	 * @return
+	 * @return 返回一个root节点下列表树，不包含root节点
 	 * @throws Exception
 	 */
 	public static  List<Record> buildTree(List<Record> allList,Record parent,String rootFiledKey,String parentFiledKey,String childrenListFiled) throws Exception {
@@ -54,6 +54,42 @@ public class LoserStarJfinalRecordUtils extends LoserStarMapUtils{
 			}
 		}
 		return childrenList;
+	}
+	
+	/**
+	 * 把List<Record>对象 构建成一个树结构
+	 * @param allList 所有数据
+	 * @param parent 根节点Record对象
+	 * @param rootFiledKey 根节点Record的主要key
+	 * @param parentFiledKey 子节点的Record中所属父节点的key
+	 * @param childrenListFiled 构建完成之后子节点对象集合的key
+	 * @return 返回一个完整树结构对象，包含了root对象在里面
+	 * @throws Exception
+	 */
+	public static  Record buildTreeHasRoot(List<Record> allList,Record parent,String rootFiledKey,String parentFiledKey,String childrenListFiled) throws Exception {
+			List<Record> sub = buildTree(allList, parent, rootFiledKey, parentFiledKey, childrenListFiled);
+			parent.set(childrenListFiled, sub);
+			return parent;
+	}
+	
+	/**
+	 * 把树结构按深度优先转换为list
+	 * @param tree 树结构的record
+	 * @param reurnList 转换之后输出到该对象中
+	 * @param childrenListFiledKey 子节点的key
+	 */
+	public static void treeToList(Record tree,List<Record> reurnList,String childrenListFiledKey) {
+		if (reurnList==null) {
+			reurnList = new ArrayList<Record>();
+		}
+		reurnList.add(tree);
+		if (tree.get(childrenListFiledKey)!=null) {
+			List<Record> subList = tree.get(childrenListFiledKey);
+			tree.remove(childrenListFiledKey);
+			for (Record sub : subList) {
+				treeToList(sub, reurnList, childrenListFiledKey);
+			}
+		}
 	}
 	
 	/**

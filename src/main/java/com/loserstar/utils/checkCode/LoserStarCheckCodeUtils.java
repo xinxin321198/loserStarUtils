@@ -11,7 +11,7 @@ import com.loserstar.utils.random.RandomUtils;
 public class LoserStarCheckCodeUtils {
 	
 	/**
-	 * 生成一个随机验证码
+	 * 生成一个包含数字和字母的随机验证码
 	 * @param count 要生成的个数
 	 * @return
 	 */
@@ -21,6 +21,39 @@ public class LoserStarCheckCodeUtils {
 		String checkCode ="";
 		for (int i = 0; i <count; i++) {
 			checkCode += letterArray[RandomUtils.getRandomInt(0, 31)];
+		}
+		System.out.println("生成验证码：");
+		System.out.println(checkCode);
+		return checkCode;
+	}
+	
+	/**
+	 * 生成一个纯字母的随机验证码
+	 * @param count 要生成的个数
+	 * @return
+	 */
+	public static String genCheckCodeForLetter(int count) {
+		String[] letterArray = {"A","B","C","D","E","F","G","H","J","K","M","N","P","Q","R","S","T","U","V","W","X","Y","Z"};
+		String checkCode ="";
+		for (int i = 0; i <count; i++) {
+			checkCode += letterArray[RandomUtils.getRandomInt(0, 23)];
+		}
+		System.out.println("生成验证码：");
+		System.out.println(checkCode);
+		return checkCode;
+	}
+	
+	
+	/**
+	 * 生成一个纯数字的随机验证码
+	 * @param count
+	 * @return
+	 */
+	public static String genCheckCodeForNumber(int count) {
+		String[] letterArray = {"1","2","3","4","5","6","7","8","9","0"};
+		String checkCode ="";
+		for (int i = 0; i <count; i++) {
+			checkCode += letterArray[RandomUtils.getRandomInt(0, 10)];
 		}
 		System.out.println("生成验证码：");
 		System.out.println(checkCode);

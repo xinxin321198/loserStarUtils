@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.loserstar</groupId>
 	<artifactId>loserStarUtils</artifactId>
-	<version>6.8-1.6jdk</version>
+	<version>6.9-1.6jdk</version>
 	<!-- 1.5.5更新了LoserStarJfinalRecordUtils，增加fullEmptyStringKeysToNull -->
 	<!-- 1.5.6更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
 	<!-- 1.5.7更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
@@ -56,6 +56,7 @@
 	<!-- 6.6 他娘的，发现一个大大BUG，BaseDao.getListPage_notSoftDel方法中，使用参数化查询的话，两个sql参数，第一个本来应该传select *,结果把where条件的sql也传进去了，导致参数悢不匹配，这个方法查询数据就报sql错 -->
 	<!-- 6.7 LoserStarDateUtils增加获取星期几，和本月第几个周的方法-->
 	<!-- 6.8 LoserStarHttpUtil优化，增加关闭连接对象，远程数据如果是gzip压缩数据，解压后的byte字节码转换为为字符时要指定下UTF-8，否则获取部分接口数据时中文会乱码，比如和风天气的api在服务器上用时候（很奇怪，也是Windows服务器，为何本地就不会？）-->
+	<!-- 6.9 LoserStarCheckCodeUtils优化，增加生成纯数字或者纯字母随机验证码的方法-->
 	<name>loserStarUtils</name>
 	<description>362527240@qq.com</description>
 	<packaging>jar</packaging>
