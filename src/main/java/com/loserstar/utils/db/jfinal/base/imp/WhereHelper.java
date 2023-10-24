@@ -42,7 +42,14 @@ public class WhereHelper {
 	public String getOrderStr() {
 		return orderStr;
 	}
-
+	
+	/**
+	 *  * 1.如果用到like，并且是参数化查询需要防注入，可使用两种方式：
+	 * （1）sql条件上直接使用CONCAT('%'?,'%')
+	 * （2）sql条件上直接使用?，参数上使用"%"+值+"%"
+	 * @param s
+	 * @return
+	 */
 	public WhereHelper addStrWhere(String s) {
 		this.strWhereList.add(s);
 		return this;
