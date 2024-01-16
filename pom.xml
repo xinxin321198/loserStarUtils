@@ -1,23 +1,30 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.loserstar</groupId>
 	<artifactId>loserStarUtils</artifactId>
-	<version>7.0-1.6jdk</version>
+	<version>7.1-1.8jdk</version>
 	<!-- 1.5.5更新了LoserStarJfinalRecordUtils，增加fullEmptyStringKeysToNull -->
-	<!-- 1.5.6更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
-	<!-- 1.5.7更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
+	<!--
+	1.5.6更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
+	<!--
+	1.5.7更新了LoserStarJfinalRecordUtils，增加Record和model之间互转的方法，LoserStarObjMapConvertUtil新增一个Object转List的方法-->
 	<!-- 1.5.8更新了LoserStarJsonUtil，底层实现类直接换成FastJson-->
 	<!-- 1.5.9更新了BaseService暴露一个可以获取软删除条件的方法-->
-	<!-- 1.6.0更新了注意修改了com.loserstar.utils.ObjectMapConvert.LoserStarObjMapConvertUtil.getPropertyList(List<T>, String)方法，使用泛型，可能会导致编译错误-->
+	<!--
+	1.6.0更新了注意修改了com.loserstar.utils.ObjectMapConvert.LoserStarObjMapConvertUtil.getPropertyList(List<T>,
+	String)方法，使用泛型，可能会导致编译错误-->
 	<!-- 1.6.1更新LoserStarJfinalRecordUtils，增强，record转model时候，record不为null才转 -->
 	<!-- 1.6.3更新LoserStarObjMapConvertUtil，增加apache的map和bean互转的方法 -->
 	<!-- 1.6.4更新修复LoserStarDateUtils里一个时间格式化字符串常量的错误，小时要使用HH，24小时制进行显示 -->
 	<!-- 1.6.5更新LoserStarIdGenUtil，增加以时间戳生成uuid的方法 -->
 	<!-- 1.6.6更新LoserStarDateUtils，里一个时间格式化字符串常量的错误，带毫秒显示那个不标准 -->
-	
-	<!-- 2.0  更新com.loserstar.utils.db.jfinal.base.imp.BaseService ，新增直接支持jfinal的model的CURD相关方法，不用再单独调用，但是效率上没试验过，可能会有问题-->
-	<!-- 2.1 com.loserstar.utils.db.jfinal.base.imp.BaseService，增强获取软删除条件，以支持多表连接时不同表之间的软删除字段相同。WhereHelper增加不移除关键字的方法toStringOriginal()-->
+
+	<!-- 2.0  更新com.loserstar.utils.db.jfinal.base.imp.BaseService
+	，新增直接支持jfinal的model的CURD相关方法，不用再单独调用，但是效率上没试验过，可能会有问题-->
+	<!-- 2.1
+	com.loserstar.utils.db.jfinal.base.imp.BaseService，增强获取软删除条件，以支持多表连接时不同表之间的软删除字段相同。WhereHelper增加不移除关键字的方法toStringOriginal()-->
 	<!-- 2.2  LoserStarHttpUtil增加远程上传附件的方法-->
 	<!-- 3.0  LoserStarIdGenUtil里生成id的方法名改变过，并且增加了使用毫秒级时间当做序列号的方法-->
 	<!-- 3.1  LoserStarHttpUtil 远程上传附件-->
@@ -29,10 +36,12 @@
 	<!-- 4.0-1.6jdk   移除MD5包，加密工具类统一移动到ecodes包下-->
 	<!-- 4.1-1.8jdk   baseService里的泛型直接使用泛型，不使用?通用泛型了-->
 	<!-- 4.2-1.8jdk   精简依赖的第三方框架删除一些没必要的工具类-->
-	<!-- 4.3-1.8jdk   LoserStarJfinalRecordUtils增加一个方法，可以从jfinal的List<实体>里提取某个字段值List<字段值>-->
+	<!-- 4.3-1.8jdk
+	LoserStarJfinalRecordUtils增加一个方法，可以从jfinal的List<实体>里提取某个字段值List<字段值>-->
 	<!-- 4.4-1.8jdk   Encode里新增两个方法-->
 	<!-- 4.5-   更新企业微信工具类里的方法-->
-	<!-- 4.6-   修复BaseSevice 中的getByIds方法，调用jfinal的find方法时候没有指定数据源，导致查非第一数据源的数据时候会报错-->
+	<!-- 4.6-   修复BaseSevice
+	中的getByIds方法，调用jfinal的find方法时候没有指定数据源，导致查非第一数据源的数据时候会报错-->
 	<!-- 4.7- 增加基于dom4j的xml工具类 -->
 	<!--4.8 增强jfinalDB 尽量使用BaseDao来操作，里面已从BaseService里剔除一些不必要的方法，以及建议使用参数化执行sql以防sql注入。增加AES对称加密的工具，验证码图片生成的工具  -->
 	<!--4.9 修改了一下随机验证码生成类，使用安全的随机数生成器  -->
@@ -49,15 +58,20 @@
 	<!-- 5.9 baseDao软删的方法，del应该设为1，不能设为0 -->
 	<!-- 6.0 WordUtil中又增加了几个处理Word的方法 -->
 	<!-- 6.1 WordUtil中增强写入段落到单元格中的更详细的缩进配置 -->
-	<!-- 6.2 WordUtil修复小BUG，如果替换段落标记时，如果传入的字符数组是空的或者没有元素，就付个空字符串给它，否则生成的Word会显示语法错误 -->
+	<!-- 6.2
+	WordUtil修复小BUG，如果替换段落标记时，如果传入的字符数组是空的或者没有元素，就付个空字符串给它，否则生成的Word会显示语法错误 -->
 	<!-- 6.3 LoserStarFileUtil增加压缩文件的方法 -->
 	<!-- 6.4 WordUtil增加读取table中多段落时候可自定义多段落的分隔符 -->
 	<!-- 6.5 优化LoserStarHttpUtil远程下载文件的方法，不然遇到返回值200，内容是0字节的，会阻塞了，一直等待中 -->
-	<!-- 6.6 他娘的，发现一个大大BUG，BaseDao.getListPage_notSoftDel方法中，使用参数化查询的话，两个sql参数，第一个本来应该传select *,结果把where条件的sql也传进去了，导致参数悢不匹配，这个方法查询数据就报sql错 -->
+	<!-- 6.6
+	他娘的，发现一个大大BUG，BaseDao.getListPage_notSoftDel方法中，使用参数化查询的话，两个sql参数，第一个本来应该传select
+	*,结果把where条件的sql也传进去了，导致参数悢不匹配，这个方法查询数据就报sql错 -->
 	<!-- 6.7 LoserStarDateUtils增加获取星期几，和本月第几个周的方法-->
-	<!-- 6.8 LoserStarHttpUtil优化，增加关闭连接对象，远程数据如果是gzip压缩数据，解压后的byte字节码转换为为字符时要指定下UTF-8，否则获取部分接口数据时中文会乱码，比如和风天气的api在服务器上用时候（很奇怪，也是Windows服务器，为何本地就不会？）-->
+	<!-- 6.8
+	LoserStarHttpUtil优化，增加关闭连接对象，远程数据如果是gzip压缩数据，解压后的byte字节码转换为为字符时要指定下UTF-8，否则获取部分接口数据时中文会乱码，比如和风天气的api在服务器上用时候（很奇怪，也是Windows服务器，为何本地就不会？）-->
 	<!-- 6.9 LoserStarCheckCodeUtils优化，增加生成纯数字或者纯字母随机验证码的方法-->
 	<!-- 7.0 LoserStarJfinalRecordUtils优化构建树结构的方法-->
+	<!-- 7.1 尝试升级到jfinal5.1.5，不知道是否有坑-->
 	<name>loserStarUtils</name>
 	<description>362527240@qq.com</description>
 	<packaging>jar</packaging>
@@ -71,39 +85,39 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.0.2</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					  <!-- 指明编译源代码时使用的字符编码，  
+					<source>1.8</source>
+					<target>1.8</target>
+					<!-- 指明编译源代码时使用的字符编码，  
         maven编译的时候默认使用的GBK编码，   
           通过encoding属性设置字符编码，  
-          告诉maven这个项目使用UTF-8来编译 -->  
-       				 <encoding>utf8</encoding>   
+          告诉maven这个项目使用UTF-8来编译 -->
+					<encoding>utf8</encoding>
 				</configuration>
 			</plugin>
 			<plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-resources-plugin</artifactId>
-			    <version>2.4</version>
-			    <executions>
-			    <execution>
-			        <id>copy-resources</id>
-			        <phase>process-resources</phase>
-			        <goals>
-			        <goal>copy-resources</goal>
-			        </goals>
-			        <configuration>
-			        <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-			        <resources>
-			            <resource>
-			            <directory>src/main/java</directory>
-			            <includes>
-			                <include>**/*.java</include>
-			            </includes>
-			            </resource>
-			        </resources>
-			        </configuration>
-			    </execution>
-			    </executions>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/java</directory>
+									<includes>
+										<include>**/*.java</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -118,13 +132,62 @@
 	</build>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/com.jfinal/jfinal -->
+
+		<dependency>
+			<groupId>com.jfinal</groupId>
+			<artifactId>jfinal</artifactId>
+			<!--jdk1.6最高支持3.4-->
+			<!--		    <version>3.4</version>-->
+			<!--jdk1.8可以使用更高版本，甚至5.1.5-->
+			<!--<version>4.9.01</version>-->
+			<version>5.1.5</version>
+		</dependency>
+
+
+		<!--发送邮件的依赖  1.6jdk 只能用1.5.6-->
+		<!-- https://mvnrepository.com/artifact/com.sun.mail/javax.mail -->
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.5.6</version>
+		</dependency>
+
+		<!-- jdk1.6 只能用2.5-->
+		<!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
+		<!--		<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>servlet-api</artifactId>
+		    <version>2.5</version>
+		</dependency>-->
+
+		<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+		<!-- jdk1.8 可换成3.0-->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+
+		<!--jdk1.6最高支持2.3.28的freemarker-->
+		<!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
+		<dependency>
+		    <groupId>org.freemarker</groupId>
+		    <artifactId>freemarker</artifactId>
+		    <version>2.3.32</version>
+		</dependency>
+
+		
+		<!--早于 4.9.18  的 jfinal 只能使用 cos 2020.4 以及更早其的 cos 版本-->
+		<!-- https://mvnrepository.com/artifact/com.jfinal/cos -->
 		<dependency>
 		    <groupId>com.jfinal</groupId>
-		    <artifactId>jfinal</artifactId>
-		    <version>3.4</version>
- 		   <!-- <version>4.9.01</version> -->
+		    <artifactId>cos</artifactId>
+		    <!--<version>26Dec2008</version>-->
+		    <version>2022.2</version>
 		</dependency>
-	
+
+
+
 		<!-- https://mvnrepository.com/artifact/junit/junit -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -145,35 +208,24 @@
 			<artifactId>poi-ooxml</artifactId>
 			<version>3.14</version>
 		</dependency>
-		
+
 		<dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-scratchpad</artifactId>
-            <version>3.14</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.poi/ooxml-schemas -->
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-scratchpad</artifactId>
+			<version>3.14</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.poi/ooxml-schemas -->
 		<dependency>
-		    <groupId>org.apache.poi</groupId>
-		    <artifactId>ooxml-schemas</artifactId>
-		    <version>1.3</version>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>ooxml-schemas</artifactId>
+			<version>1.3</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.xmlbeans/xmlbeans -->
 		<dependency>
-		    <groupId>org.apache.xmlbeans</groupId>
-		    <artifactId>xmlbeans</artifactId>
-		    <version>2.6.0</version>
+			<groupId>org.apache.xmlbeans</groupId>
+			<artifactId>xmlbeans</artifactId>
+			<version>2.6.0</version>
 		</dependency>
-		
-
-
-		<!-- jdk1.6 只能用2.5-->
-		<!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
-		<dependency>
-		    <groupId>javax.servlet</groupId>
-		    <artifactId>servlet-api</artifactId>
-		    <version>2.5</version>
-		</dependency>
-		
 
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
 		<dependency>
@@ -183,29 +235,31 @@
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/commons-dbutils/commons-dbutils -->
 		<dependency>
-		    <groupId>commons-dbutils</groupId>
-		    <artifactId>commons-dbutils</artifactId>
-		    <version>1.7</version>
+			<groupId>commons-dbutils</groupId>
+			<artifactId>commons-dbutils</artifactId>
+			<version>1.7</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
+		<!--
+		https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.9.3</version>
 		</dependency>
-		
-		<!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
+
+		<!--
+		https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
 		<dependency>
-		    <groupId>commons-fileupload</groupId>
-		    <artifactId>commons-fileupload</artifactId>
-		    <version>1.3.3</version>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.3.3</version>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
 		<dependency>
-		    <groupId>commons-logging</groupId>
-		    <artifactId>commons-logging</artifactId>
-		    <version>1.1.1</version>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/commons-net/commons-net -->
 		<dependency>
@@ -215,45 +269,13 @@
 		</dependency>
 
 
-		<!-- https://mvnrepository.com/artifact/org.jodd/jodd-http -->
-<!-- 		<dependency>
-		    <groupId>org.jodd</groupId>
-		    <artifactId>jodd-http</artifactId>
-		    <version>3.6.6</version>
-		</dependency>
-		
+		<!-- https://mvnrepository.com/artifact/log4j/log4j -->
 		<dependency>
-		    <groupId>org.jodd</groupId>
-		    <artifactId>jodd-json</artifactId>
-		    <version>3.6.6</version>
-		</dependency> -->
-
-
-		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
-<!-- 		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
-			<version>2.8.5</version>
-		</dependency> -->
-
-		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
-<!-- 		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.8.5</version>
-		</dependency> -->
-
-		
-		
-		
-				<!-- https://mvnrepository.com/artifact/log4j/log4j -->
-		<dependency>
-		    <groupId>log4j</groupId>
-		    <artifactId>log4j</artifactId>
-		    <version>1.2.17</version>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
 		</dependency>
-		
-		
+
 
 		<!-- https://mvnrepository.com/artifact/com.belerweb/pinyin4j -->
 		<dependency>
@@ -261,105 +283,128 @@
 			<artifactId>pinyin4j</artifactId>
 			<version>2.5.1</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
+		<!--
+		https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpcore</artifactId>
 			<version>4.4.6</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+		<!--
+		https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>4.5.3</version>
 		</dependency>
-		
-		<dependency>
-		    <groupId>org.freemarker</groupId>
-		    <artifactId>freemarker</artifactId>
-		    <version>2.3.28</version>
-		</dependency>
+
+
 		<!-- https://mvnrepository.com/artifact/org.json/json -->
 		<dependency>
-		    <groupId>org.json</groupId>
-		    <artifactId>json</artifactId>
-		    <version>20180130</version>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20180130</version>
 		</dependency>
 
 
-		
-			<!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
+		<!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
 		<dependency>
-		    <groupId>com.alibaba</groupId>
-		    <artifactId>druid</artifactId>
-		    <version>1.1.9</version>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>1.1.9</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<dependency>
-		    <groupId>mysql</groupId>
-		    <artifactId>mysql-connector-java</artifactId>
-		    <version>5.1.46</version>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.46</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
+		<!--
+		https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
 		<dependency>
-		    <groupId>commons-fileupload</groupId>
-		    <artifactId>commons-fileupload</artifactId>
-		    <version>1.3.3</version>
-		</dependency>
-		
-		<!--发送邮件的依赖  1.6jdk 只能用1.5.6-->
-		<!-- https://mvnrepository.com/artifact/com.sun.mail/javax.mail -->
-		<dependency>
-		    <groupId>com.sun.mail</groupId>
-		    <artifactId>javax.mail</artifactId>
-		    <version>1.5.6</version>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.3.3</version>
 		</dependency>
 
-		
+
 		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
 		<dependency>
-		    <groupId>org.jsoup</groupId>
-		    <artifactId>jsoup</artifactId>
-		    <version>1.12.1</version>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.12.1</version>
 		</dependency>
-		
-			<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
-		<dependency>
-		    <groupId>org.jsoup</groupId>
-		    <artifactId>jsoup</artifactId>
-		    <version>1.10.3</version>
-		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
 		<dependency>
-		    <groupId>com.alibaba</groupId>
-		    <artifactId>fastjson</artifactId>
-		    <version>1.2.83</version>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.83</version>
 		</dependency>
-				
-		<!-- 参考：https://blog.csdn.net/u013310119/article/details/79803134++++++++++++++++begin -->
+
+		<!-- https://mvnrepository.com/artifact/org.dom4j/dom4j -->
+		<dependency>
+			<groupId>org.dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>2.0.3</version>
+		</dependency>
+		
+			<!-- 避免控制台输出如下提示信息：
+		 SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+		 项目中实际上用不到这个 jar 包，本 jfinal demo 用不上这个依赖，在此仅为大家
+		 在未来基于 jfinal demo 为模板做开发时做准备工作
+		 注意：eclipse 下可以将 scope 设置为 provided
+		-->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-nop</artifactId>
+			<version>1.7.29</version>
+			<!-- 打包前改成 provided，此处使用 compile 仅为支持 IDEA -->
+			<scope>compile</scope>
+		</dependency>
+
+
+		<!--jfinal推荐的ehcache-->
+		<!-- https://mvnrepository.com/artifact/net.sf.ehcache/ehcache -->
+<!--		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>2.10.9.2</version>
+		</dependency>-->
+
+
+		<!-- redis相关 begin-->
+<!--		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>3.6.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>de.ruedigermoeller</groupId>
+			<artifactId>fst</artifactId>
+			<version>2.57</version> 注意：更高版本不支持 jdk 8 
+		</dependency>-->
+		<!-- redis相关 end-->
+
+		<!--废弃的东西 begin-->
+		<!--
+		参考：https://blog.csdn.net/u013310119/article/details/79803134++++++++++++++++begin -->
 		<!-- 这鬼东西，如果使用json-lib-2.4-jdk15.jar会出现报错，因为commons-lang升级了，包名路径都变了 -->
 		<!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
-<!-- 		<dependency>
+		<!-- 		<dependency>
 		    <groupId>commons-lang</groupId>
 		    <artifactId>commons-lang</artifactId>
 		    <version>2.6</version>
 		</dependency> -->
 		<!-- https://mvnrepository.com/artifact/net.sf.ezmorph/ezmorph -->
-<!-- 		<dependency>
+		<!-- 		<dependency>
 		    <groupId>net.sf.ezmorph</groupId>
 		    <artifactId>ezmorph</artifactId>
 		    <version>1.0.6</version>
 		</dependency> -->
-		<!-- 参考：https://blog.csdn.net/u013310119/article/details/79803134++++++++++++++++end -->
-		
-		<!-- https://mvnrepository.com/artifact/org.dom4j/dom4j -->
-		<dependency>
-		    <groupId>org.dom4j</groupId>
-		    <artifactId>dom4j</artifactId>
-		    <version>2.0.3</version>
-		</dependency>
-		
-
+		<!--
+		参考：https://blog.csdn.net/u013310119/article/details/79803134++++++++++++++++end -->
+		<!--废弃的东西 end-->
 	</dependencies>
 </project>
