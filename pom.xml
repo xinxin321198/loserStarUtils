@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.loserstar</groupId>
 	<artifactId>loserStarUtils</artifactId>
-	<version>8.4-1.8jdk</version>
+	<version>8.5-1.8jdk</version>
 	<!--如果执行maven命令报jdk版本不符合或者其他异常：
 	java.lang.UnsupportedClassVersionError: org/codehaus/plexus/classworlds/launcher/Launcher : Unsupported major.minor version 52.0
 	javac: 无效的目标版本： 1.8
@@ -84,6 +84,7 @@
 	<!-- 8.2 BaseDao里用的getBySql,参数设计冲突了-->
 	<!-- 8.3 移除了w3cdDom操作的一个工具类，因为和batik里用到的依赖操作dom的包路径有冲突了,增加了一个svg水印生成得工具类-->
 	<!-- 8.4 LoserStarHttpUtil 增加http和https得最大并发数-->
+	<!--	8.5 com.loserstar.utils.convertToJavaString.CreateSqlWin鸡肋，移除，直接用网上现成得在线工具即可-->
 	<name>loserStarUtils</name>
 	<description>362527240@qq.com</description>
 	<packaging>jar</packaging>

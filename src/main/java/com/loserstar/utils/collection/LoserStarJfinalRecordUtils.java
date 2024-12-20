@@ -225,7 +225,6 @@ public class LoserStarJfinalRecordUtils extends LoserStarMapUtils{
 	/**
 	 * 批量把jfinal的List Model 转为jfinal的List Record 对象
 	 * @param list
-	 * @param class1
 	 * @return
 	 */
 	public static <T extends Model<?>> List<Record> toRecordList(List<T> list) {
@@ -238,8 +237,7 @@ public class LoserStarJfinalRecordUtils extends LoserStarMapUtils{
 	
 	/**
 	 * 批量把jfinal的 Model 转为jfinal的 Record 对象
-	 * @param list
-	 * @param class1
+	 * @param model 泛型对象，决定返回值得类型
 	 * @return
 	 */
 	public static <T extends Model<?>> Record toRecordList(T model) {
