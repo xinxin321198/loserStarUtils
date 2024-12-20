@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.loserstar</groupId>
 	<artifactId>loserStarUtils</artifactId>
-	<version>8.0-1.8jdk</version>
+	<version>8.4-1.8jdk</version>
 	<!--如果执行maven命令报jdk版本不符合或者其他异常：
 	java.lang.UnsupportedClassVersionError: org/codehaus/plexus/classworlds/launcher/Launcher : Unsupported major.minor version 52.0
 	javac: 无效的目标版本： 1.8
@@ -80,6 +80,10 @@
 	<!-- 6.9 LoserStarCheckCodeUtils优化，增加生成纯数字或者纯字母随机验证码的方法-->
 	<!-- 7.0 LoserStarJfinalRecordUtils优化构建树结构的方法-->
 	<!-- 8.0 尝试升级到jfinal5.1.5，不知道是否有坑-->
+	<!-- 8.1 BaseDao里用实体进行insert和update时候没做数据源的判断-->
+	<!-- 8.2 BaseDao里用的getBySql,参数设计冲突了-->
+	<!-- 8.3 移除了w3cdDom操作的一个工具类，因为和batik里用到的依赖操作dom的包路径有冲突了,增加了一个svg水印生成得工具类-->
+	<!-- 8.4 LoserStarHttpUtil 增加http和https得最大并发数-->
 	<name>loserStarUtils</name>
 	<description>362527240@qq.com</description>
 	<packaging>jar</packaging>
@@ -371,6 +375,12 @@
 			<scope>compile</scope>
 		</dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+    <dependency>
+	    <groupId>batik</groupId>
+	    <artifactId>batik-svggen</artifactId>
+	    <version>1.6-1</version>
+	</dependency>
 
 		<!--jfinal推荐的ehcache-->
 		<!-- https://mvnrepository.com/artifact/net.sf.ehcache/ehcache -->
@@ -414,5 +424,6 @@
 		<!--
 		参考：https://blog.csdn.net/u013310119/article/details/79803134++++++++++++++++end -->
 		<!--废弃的东西 end-->
+		
 	</dependencies>
 </project>

@@ -178,7 +178,7 @@ public abstract class BaseDao {
 	 * @param values
 	 * @return
 	 */
-	public List<Record> getListBySql(String sql, Object... values) {
+	public List<Record> getListBySql(String sql, Object[] values) {
 		List<Record> resultList = null;
 		if (CheckDataSourceName()) {
 			resultList = Db.use(this.dataSourceName).find(sql, values);
@@ -221,7 +221,7 @@ public abstract class BaseDao {
 	 * @param values
 	 * @return
 	 */
-	public <T extends Model<T>> List<T> getListBySql(String sql, Class<T> class1, Object... values) {
+	public <T extends Model<T>> List<T> getListBySql(String sql, Class<T> class1, Object[] values) {
 		List<T> tList = null;
 		try {
 			if (CheckDataSourceName()) {
@@ -615,7 +615,7 @@ public abstract class BaseDao {
 	 * @return
 	 */
 	public <T extends Model<T>> boolean insert(T t) {
-		return t.save();
+		return CheckDataSourceName() ? t.use(this.dataSourceName).save():t.save();
 	}
 
 	/**
@@ -637,7 +637,7 @@ public abstract class BaseDao {
 	 * @return
 	 */
 	public <T extends Model<T>> boolean update(T t) {
-		return t.update();
+		return CheckDataSourceName() ? t.use(this.dataSourceName).update():t.update();
 	}
 
 	/**
