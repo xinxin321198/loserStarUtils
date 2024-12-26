@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.loserstar</groupId>
 	<artifactId>loserStarUtils</artifactId>
-	<version>8.6-1.8jdk</version>
+	<version>8.4-1.8jdk</version>
 	<!--如果执行maven命令报jdk版本不符合或者其他异常：
 	java.lang.UnsupportedClassVersionError: org/codehaus/plexus/classworlds/launcher/Launcher : Unsupported major.minor version 52.0
 	javac: 无效的目标版本： 1.8
-	
+
 	大概率是maven的版本和jdk版本不对应，参照maven版本对照表：https://maven.apache.org/docs/history.html
 	jdk1.6仅有3.2.x版本支持（也就是说该工具类1.6jdk版的得用这些maven版本编译）
 	jdk1.8仅有3.9.x版本支持（也就是说该工具类1.8jdk版的得用这些maven版本编译）
@@ -82,10 +82,7 @@
 	<!-- 8.0 尝试升级到jfinal5.1.5，不知道是否有坑-->
 	<!-- 8.1 BaseDao里用实体进行insert和update时候没做数据源的判断-->
 	<!-- 8.2 BaseDao里用的getBySql,参数设计冲突了-->
-	<!-- 8.3 移除了w3cdDom操作的一个工具类，因为和batik里用到的依赖操作dom的包路径有冲突了,增加了一个svg水印生成得工具类-->
-	<!-- 8.4 LoserStarHttpUtil 增加http和https得最大并发数-->
-	<!--	8.5 com.loserstar.utils.convertToJavaString.CreateSqlWin鸡肋，移除，直接用网上现成得在线工具即可-->
-	<!--	8.6 升级jfinal至5.2.3-->
+	<!-- 8.3 移除了w3cdDom操作的一个工具类，因为和batik里用到的依赖操作dom的包路径有冲突了-->
 	<name>loserStarUtils</name>
 	<description>362527240@qq.com</description>
 	<packaging>jar</packaging>
@@ -101,9 +98,9 @@
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
-					<!-- 指明编译源代码时使用的字符编码，  
-        maven编译的时候默认使用的GBK编码，   
-          通过encoding属性设置字符编码，  
+					<!-- 指明编译源代码时使用的字符编码，
+        maven编译的时候默认使用的GBK编码，
+          通过encoding属性设置字符编码，
           告诉maven这个项目使用UTF-8来编译 -->
 					<encoding>utf8</encoding>
 				</configuration>
@@ -154,7 +151,7 @@
 			<!--		    <version>3.4</version>-->
 			<!--jdk1.8可以使用更高版本，甚至5.1.5-->
 			<!--<version>4.9.01</version>-->
-			<version>5.2.3</version>
+			<version>5.1.5</version>
 		</dependency>
 
 
@@ -185,19 +182,19 @@
 		<!--jdk1.6最高支持2.3.28的freemarker-->
 		<!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
 		<dependency>
-		    <groupId>org.freemarker</groupId>
-		    <artifactId>freemarker</artifactId>
-		    <version>2.3.32</version>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<version>2.3.32</version>
 		</dependency>
 
-		
+
 		<!--早于 4.9.18  的 jfinal 只能使用 cos 2020.4 以及更早其的 cos 版本-->
 		<!-- https://mvnrepository.com/artifact/com.jfinal/cos -->
 		<dependency>
-		    <groupId>com.jfinal</groupId>
-		    <artifactId>cos</artifactId>
-		    <!--<version>26Dec2008</version>-->
-		    <version>2022.2</version>
+			<groupId>com.jfinal</groupId>
+			<artifactId>cos</artifactId>
+			<!--<version>26Dec2008</version>-->
+			<version>2022.2</version>
 		</dependency>
 
 
@@ -362,13 +359,13 @@
 			<artifactId>dom4j</artifactId>
 			<version>2.0.3</version>
 		</dependency>
-		
-			<!-- 避免控制台输出如下提示信息：
-		 SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
-		 项目中实际上用不到这个 jar 包，本 jfinal demo 用不上这个依赖，在此仅为大家
-		 在未来基于 jfinal demo 为模板做开发时做准备工作
-		 注意：eclipse 下可以将 scope 设置为 provided
-		-->
+
+		<!-- 避免控制台输出如下提示信息：
+     SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+     项目中实际上用不到这个 jar 包，本 jfinal demo 用不上这个依赖，在此仅为大家
+     在未来基于 jfinal demo 为模板做开发时做准备工作
+     注意：eclipse 下可以将 scope 设置为 provided
+    -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-nop</artifactId>
@@ -377,34 +374,34 @@
 			<scope>compile</scope>
 		</dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
-    <dependency>
-	    <groupId>batik</groupId>
-	    <artifactId>batik-svggen</artifactId>
-	    <version>1.6-1</version>
-	</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+		<dependency>
+			<groupId>batik</groupId>
+			<artifactId>batik-svggen</artifactId>
+			<version>1.6-1</version>
+		</dependency>
 
 		<!--jfinal推荐的ehcache-->
 		<!-- https://mvnrepository.com/artifact/net.sf.ehcache/ehcache -->
-<!--		<dependency>
-			<groupId>net.sf.ehcache</groupId>
-			<artifactId>ehcache</artifactId>
-			<version>2.10.9.2</version>
-		</dependency>-->
+		<!--		<dependency>
+                    <groupId>net.sf.ehcache</groupId>
+                    <artifactId>ehcache</artifactId>
+                    <version>2.10.9.2</version>
+                </dependency>-->
 
 
 		<!-- redis相关 begin-->
-<!--		<dependency>
-			<groupId>redis.clients</groupId>
-			<artifactId>jedis</artifactId>
-			<version>3.6.3</version>
-		</dependency>
+		<!--		<dependency>
+                    <groupId>redis.clients</groupId>
+                    <artifactId>jedis</artifactId>
+                    <version>3.6.3</version>
+                </dependency>
 
-		<dependency>
-			<groupId>de.ruedigermoeller</groupId>
-			<artifactId>fst</artifactId>
-			<version>2.57</version> 注意：更高版本不支持 jdk 8 
-		</dependency>-->
+                <dependency>
+                    <groupId>de.ruedigermoeller</groupId>
+                    <artifactId>fst</artifactId>
+                    <version>2.57</version> 注意：更高版本不支持 jdk 8
+                </dependency>-->
 		<!-- redis相关 end-->
 
 		<!--废弃的东西 begin-->
@@ -426,6 +423,6 @@
 		<!--
 		参考：https://blog.csdn.net/u013310119/article/details/79803134++++++++++++++++end -->
 		<!--废弃的东西 end-->
-		
+
 	</dependencies>
 </project>
