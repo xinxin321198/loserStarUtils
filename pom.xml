@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.loserstar</groupId>
 	<artifactId>loserStarUtils</artifactId>
-	<version>8.6-1.8jdk</version>
+	<version>8.7-1.8jdk</version>
 	<!--如果执行maven命令报jdk版本不符合或者其他异常：
 	java.lang.UnsupportedClassVersionError: org/codehaus/plexus/classworlds/launcher/Launcher : Unsupported major.minor version 52.0
 	javac: 无效的目标版本： 1.8
@@ -86,6 +86,7 @@
 	<!-- 8.4 LoserStarHttpUtil 增加http和https得最大并发数-->
 	<!--	8.5 com.loserstar.utils.convertToJavaString.CreateSqlWin鸡肋，移除，直接用网上现成得在线工具即可-->
 	<!--	8.6 升级jfinal至5.2.3-->
+	<!--	8.7 优化水印svg生成工具类-->
 	<name>loserStarUtils</name>
 	<description>362527240@qq.com</description>
 	<packaging>jar</packaging>
